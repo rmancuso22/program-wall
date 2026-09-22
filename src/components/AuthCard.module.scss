@@ -1,0 +1,73 @@
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/type' as *;
+
+.page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: $spacing-07;
+  background: $background;
+}
+
+.panel {
+  width: 100%;
+  max-width: 28rem;
+  padding: $spacing-07;
+  background: $layer-01;
+}
+
+.brand {
+  @include type-style('body-compact-01');
+  margin-bottom: $spacing-09;
+  color: $text-primary;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.title {
+  @include type-style('heading-05');
+  margin-bottom: $spacing-03;
+}
+
+.lede {
+  @include type-style('body-01');
+  margin-bottom: $spacing-07;
+  color: $text-secondary;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-06;
+}
+
+.submit {
+  width: 100%;
+  max-width: none;
+}
+
+.footer {
+  @include type-style('body-compact-01');
+  margin-top: $spacing-07;
+  padding-top: $spacing-05;
+  border-top: 1px solid $border-subtle-01;
+  color: $text-secondary;
+}
+
+.row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(-1 * #{$spacing-04});
+}
+
+.footer a {
+  color: $link-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

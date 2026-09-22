@@ -1,0 +1,61 @@
+// Carbon styles for Next.js App Router.
+// Fonts are self-hosted via next/font/google (see src/app/fonts.ts), so Carbon's
+// own @font-face output is disabled and its font stacks point at the next/font
+// CSS variables instead.
+@use 'sass:string';
+@use '@carbon/react/scss/config' with (
+  $css--font-face: false
+);
+@use '@carbon/react/scss/type' with (
+  $font-families: (
+    'mono':
+      string.unquote(
+        "var(--font-plex-mono), 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace"
+      ),
+    'sans':
+      string.unquote(
+        "var(--font-plex-sans), 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif"
+      ),
+    'sans-condensed':
+      string.unquote(
+        "'IBM Plex Sans Condensed', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif"
+      ),
+    'serif':
+      string.unquote(
+        "'IBM Plex Serif', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', serif"
+      ),
+  )
+);
+@use '@carbon/react';
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme';
+
+// Theme resolution. The server renders data-theme-pref from the user's stored
+// override ("light" | "dark" | "system"). "system" follows prefers-color-scheme.
+:root,
+[data-theme-pref='light'] {
+  @include theme.theme(themes.$g10);
+  color-scheme: light;
+}
+
+[data-theme-pref='dark'] {
+  @include theme.theme(themes.$g100);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme-pref='light']) {
+    @include theme.theme(themes.$g100);
+    color-scheme: dark;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: theme.$background;
+  color: theme.$text-primary;
+}
