@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import NextLink from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Checkmark, ChevronLeft, ChevronRight, Dashboard, Document, Grid, List, Pen, Share, Timeline } from "@carbon/icons-react";
+import { ArrowLeft, Calendar, Checkmark, ChevronLeft, ChevronRight, Dashboard, Document, Grid, List, Pen, Share, Timeline } from "@carbon/icons-react";
 import { filtersToQuery, matchesFilters, parseFilters, sortWithinQuarters, type FilterableProject } from "@/lib/filters";
 import type { ThemePref } from "@/lib/theme";
 import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
 import { useCopy } from "@/components/Toast";
-import { useTimelineBadge } from "@/stores/timeline-badge";
+import { useNavBadges } from "@/stores/nav-badges";
 import styles from "./workspace.module.scss";
 
 function useFilterQuery() {
@@ -103,6 +103,7 @@ const NAV = [
   { tab: "mural", label: "Mural", Icon: Grid },
   { tab: "tickets", label: "Jira tickets", Icon: List },
   { tab: "timeline", label: "Timeline", Icon: Timeline },
+  { tab: "meetings", label: "Meetings", Icon: Calendar },
   { tab: "documents", label: "Documents", Icon: Document },
 ] as const;
 
@@ -113,11 +114,15 @@ type NavProps = {
   designMerged: boolean;
   /** "done/total" for the Timeline badge; the Timeline tab keeps it live. */
   timelineProgress: string;
+  /** Open meeting actions; the Meetings tab keeps it live. */
+  openActions: number;
 };
 
-export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelineProgress }: NavProps) {
+export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelineProgress, openActions }: NavProps) {
   const pathname = usePathname();
-  const liveProgress = useTimelineBadge((s) => s.byProject[projectKey]);
+  const liveProgress = useNavBadges((s) => s.values[`${projectKey}:timeline`]);
+  const liveActions = useNavBadges((s) => s.values[`${projectKey}:meetings`]);
+  const actions = liveActions ?? String(openActions);
   const { query } = useFilterQuery();
   const current = pathname.split("/")[3] ?? "";
 
@@ -143,6 +148,11 @@ export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelin
                 {pendingReviews}
               </span>
             ) : null)}
+          {tab === "meetings" && actions !== "0" && (
+            <span className={styles.navCount} title="Open meeting actions">
+              {actions}
+            </span>
+          )}
           {tab === "timeline" && (
             <span className={styles.navCount} title="Lifecycle items done">
               {liveProgress ?? timelineProgress}

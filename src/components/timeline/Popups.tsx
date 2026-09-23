@@ -14,7 +14,7 @@ import styles from "./timeline.module.scss";
  * caught at window capture so it never reaches the workspace's "back to
  * roadmap" shortcut.
  */
-function Popup({
+export function Popup({
   anchor,
   width,
   onClose,
@@ -249,6 +249,99 @@ export function OwnerPopup({
           Unassign
         </button>
       </div>
+    </Popup>
+  );
+}
+
+export type PickerGroup = { label: string; people: { person: Person; role: string }[] };
+
+/**
+ * The person picker used across Liftoff (Timeline owner style): grouped list,
+ * search, Enter picks the single match or submits the typed name, Unassign.
+ */
+export function PersonPicker({
+  anchor,
+  title,
+  groups,
+  currentId,
+  onPick,
+  onTyped,
+  onUnassign,
+  footerNote,
+  onClose,
+}: {
+  anchor: HTMLElement;
+  title?: string;
+  groups: PickerGroup[];
+  currentId: string | null;
+  onPick: (person: Person) => void;
+  /** Called with a typed name that matches nobody; omit to disallow. */
+  onTyped?: (name: string) => void;
+  onUnassign?: () => void;
+  footerNote?: React.ReactNode;
+  onClose: () => void;
+}) {
+  const [q, setQ] = useState("");
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => input.current?.focus(), []);
+
+  const match = (p: Person) => p.name.toLowerCase().includes(q.trim().toLowerCase());
+  const seen = new Set<string>();
+  const shown = groups.map((g) => ({
+    ...g,
+    people: g.people.filter(({ person }) => (seen.has(person.id) ? false : (seen.add(person.id), true))),
+  }));
+  const visible = shown.flatMap((g) => g.people.map((x) => x.person)).filter(match);
+
+  return (
+    <Popup anchor={anchor} onClose={onClose}>
+      {title && <div className="tp-h">{title}</div>}
+      <input
+        ref={input}
+        type="text"
+        className="tp-search"
+        placeholder="Search or type a name"
+        autoComplete="off"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && q.trim()) {
+            e.preventDefault();
+            if (visible.length === 1) onPick(visible[0]);
+            else if (onTyped) onTyped(q.trim());
+          }
+        }}
+      />
+      <div className="tp-list">
+        {shown.map((g) => (
+          <div key={g.label}>
+            <div className="tp-grp">{g.label}</div>
+            {g.people.map(({ person, role }) => (
+              <button
+                key={person.id}
+                type="button"
+                className={`tp-person${currentId === person.id ? " sel" : ""}`}
+                style={match(person) ? undefined : { display: "none" }}
+                onClick={() => onPick(person)}
+              >
+                <span className="av">{initials(person.name)}</span>
+                <span>{person.name}</span>
+                <em>{role}</em>
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      {(onUnassign || footerNote) && (
+        <div className="tp-f">
+          {footerNote}
+          {onUnassign && (
+            <button type="button" className="tp-link" style={footerNote ? { marginLeft: "auto" } : undefined} onClick={onUnassign}>
+              Unassign
+            </button>
+          )}
+        </div>
+      )}
     </Popup>
   );
 }

@@ -19,7 +19,7 @@ import {
   type Filters,
   type SortKey,
 } from "@/lib/filters";
-import type { ProjectView, Quarter } from "@/lib/projects";
+import type { Person, ProjectView, Quarter } from "@/lib/projects";
 import { PRODUCT, PROGRAM } from "@/lib/config";
 import type { ThemePref } from "@/lib/theme";
 import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
@@ -33,6 +33,7 @@ type Props = {
   quarters: Quarter[];
   teams: string[];
   projects: ProjectView[];
+  directory: Person[];
   canEdit: boolean;
   today: string;
   themePref: ThemePref;
@@ -45,7 +46,7 @@ const DENSITIES = [
   { key: "compact", label: "Compact" },
 ] as const;
 
-export function RoadmapView({ quarters, teams, projects, canEdit, today, themePref }: Props) {
+export function RoadmapView({ quarters, teams, projects, directory, canEdit, today, themePref }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -309,6 +310,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
         <ProjectPanel
           key={selected.key}
           project={selected}
+          directory={directory}
           quarter={quarters.find((q) => q.id === selected.quarterId)}
           today={today}
           canEdit={canEdit}

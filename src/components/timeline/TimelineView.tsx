@@ -21,7 +21,7 @@ import {
 import type { Person, ProjectView } from "@/lib/projects";
 import { localToday } from "@/components/TimezoneSync";
 import { useToast } from "@/components/Toast";
-import { useTimelineBadge } from "@/stores/timeline-badge";
+import { useNavBadges } from "@/stores/nav-badges";
 import { Checklist } from "./Checklist";
 import { DatePopup, OwnerPopup, type DatePatch } from "./Popups";
 import { Gantt } from "./Gantt";
@@ -76,7 +76,7 @@ export function TimelineView({ project, stages, items, initialRows, initialScope
   const router = useRouter();
   const toast = useToast();
   const supabase = useMemo(() => createClient(), []);
-  const setBadge = useTimelineBadge((s) => s.set);
+  const setBadge = useNavBadges((s) => s.set);
 
   const [today, setToday] = useState(serverToday);
   const [rows, setRows] = useState(() => new Map(initialRows.map((r) => [r.itemId, r])));
@@ -114,7 +114,7 @@ export function TimelineView({ project, stages, items, initialRows, initialScope
   );
   const stats = tl.stats();
 
-  useEffect(() => setBadge(project.key, `${stats.done}/${stats.total}`), [setBadge, project.key, stats.done, stats.total]);
+  useEffect(() => setBadge(project.key, "timeline", `${stats.done}/${stats.total}`), [setBadge, project.key, stats.done, stats.total]);
 
   const ownerOf = useCallback(
     (item: TemplateItem): Person | null => {

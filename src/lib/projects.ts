@@ -4,6 +4,7 @@ import { createClient } from "./supabase/server";
 import type { DateField } from "./domain";
 import type { ReviewDocView } from "./reviews";
 import { scopesFromRow, toItemRow, type Stage, type TemplateItem } from "./lifecycle";
+import { toAction, toAgenda, toAttendance, toOccurrence, toSeries } from "./meetings-rows";
 import type { ProfileRole, ProjectPhase, ProjectRag, ProjectRole, ReviewKind } from "./supabase/types";
 
 export type Person = {
@@ -25,6 +26,8 @@ export type ProjectView = {
   statusUpdatedAt: string;
   dates: Record<DateField, string | null>;
   teams: string[];
+  /** One lead per team, in team order (for the meeting roster). */
+  teamLeads: { teamId: string; team: string; lead: Person | null }[];
   people: Partial<Record<ProjectRole, Person>>;
   risks: string[];
 };
@@ -36,7 +39,7 @@ const PERSON = "id, display_name, email, slack_handle, profile:profiles(email)";
 const PROJECT_FIELDS = `
   id, key, name, description, quarter_id, phase, rag, status_text, status_updated_at,
   srb_merge, api_spec_merge, commit_pitch, dev_complete, release,
-  project_teams(position, team:teams(name)),
+  project_teams(position, team:teams(id, name), lead:people(${PERSON})),
   project_people(role, person:people(${PERSON})),
   project_risks(position, body)
 `;
@@ -64,7 +67,7 @@ type ProjectRowWithRelations = {
   commit_pitch: string | null;
   dev_complete: string | null;
   release: string | null;
-  project_teams: { position: number; team: { name: string } | null }[];
+  project_teams: { position: number; team: { id: string; name: string } | null; lead: PersonRow | null }[];
   project_people: { role: ProjectRole; person: PersonRow | null }[];
   project_risks: { position: number; body: string }[];
 };
@@ -102,6 +105,9 @@ function toProject(row: ProjectRowWithRelations): ProjectView {
     teams: [...row.project_teams]
       .sort((a, b) => a.position - b.position)
       .flatMap((t) => (t.team ? [t.team.name] : [])),
+    teamLeads: [...row.project_teams]
+      .sort((a, b) => a.position - b.position)
+      .flatMap((t) => (t.team ? [{ teamId: t.team.id, team: t.team.name, lead: t.lead ? toPerson(t.lead) : null }] : [])),
     people,
     risks: [...row.project_risks].sort((a, b) => a.position - b.position).map((r) => r.body),
   };
@@ -287,4 +293,39 @@ export const getPeopleDirectory = cache(async () => {
   const { data, error } = await supabase.from("people").select(PERSON).order("display_name");
   if (error) throw new Error(`Could not load people: ${error.message}`);
   return (data as unknown as PersonRow[]).map(toPerson);
+});
+
+// ---------------------------------------------------------------------------
+// Meetings
+// ---------------------------------------------------------------------------
+
+export const getProjectMeetings = cache(async (projectId: string) => {
+  const supabase = await createClient();
+  const [series, occ, agenda, att, actions] = await Promise.all([
+    supabase.from("meeting_series").select("*").eq("project_id", projectId).order("slug"),
+    supabase.from("meeting_occurrences").select("*").eq("project_id", projectId),
+    supabase.from("meeting_agenda_items").select("*").eq("project_id", projectId).order("position"),
+    supabase.from("meeting_attendance").select("*").eq("project_id", projectId),
+    supabase.from("meeting_actions").select("*").eq("project_id", projectId).order("position").order("created_at"),
+  ]);
+  const error = series.error ?? occ.error ?? agenda.error ?? att.error ?? actions.error;
+  if (error) throw new Error(`Could not load meetings: ${error.message}`);
+  return {
+    series: (series.data ?? []).map(toSeries),
+    occurrences: (occ.data ?? []).map(toOccurrence),
+    agenda: (agenda.data ?? []).map(toAgenda),
+    attendance: (att.data ?? []).map(toAttendance),
+    actions: (actions.data ?? []).map(toAction),
+  };
+});
+
+/** Open meeting actions across a project, for the nav badge. */
+export const getOpenActionCount = cache(async (projectId: string) => {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("meeting_actions")
+    .select("id", { count: "exact", head: true })
+    .eq("project_id", projectId)
+    .eq("done", false);
+  return count ?? 0;
 });

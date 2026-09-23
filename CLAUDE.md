@@ -23,7 +23,10 @@ our own components for cards, the filter bar and timelines.
 - **Never commit secrets.** `.env*` is gitignored. Keys live in `.env.local` locally and in Vercel
   project settings. The Supabase access token and database password are for the CLI only; pass them
   as environment variables for the command and never write them to a file.
-- **Only kill processes you started, by PID.** Record the PID when you start a process and stop it
+- **Never run `next build` while `next dev` is running** on the same checkout: they share `.next`
+  and the dev server breaks. Stop the dev server first.
+- **Only kill processes you started, by PID.** In zsh, pass PIDs as separate arguments (a
+  newline- or space-joined string in one variable is a single illegal argument). Record the PID when you start a process and stop it
   with `kill <pid>`. Never use `pkill`, `killall`, `pgrep | xargs kill` or any other name or pattern
   match: that once killed an unrelated dev server on port 3000. If a port is taken, use another
   port; don't free it.
@@ -173,6 +176,28 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
 - Per-viewer prefs (Hide N/A, collapsed lanes) are in `localStorage` `pw.tlui`.
 - Styles: `src/components/timeline/timeline.module.scss` is the mock's CSS with the mock's class
   names, scoped under `.root`, colours mapped to Carbon or `--pw-*` tokens.
+
+## Meetings (Meetings tab)
+
+- `meeting_series` is a definition: RRULE subset (`FREQ=WEEKLY[;INTERVAL=n];BYDAY=XX` or
+  `FREQ=MONTHLY;BYDAY=1XX`), `starts_on` as the anchor, local `start_time` + duration in an IANA
+  `timezone` (default America/Chicago), invited roles (`project_people` roles plus `team` = team
+  leads), agenda template. Six defaults per project from the mock's `MT_SERIES`
+  (`seed_project_meetings()`, also run by a trigger for new projects).
+- Occurrences are lazy. **Series occurrences are created only by
+  `rpc('ensure_meeting_occurrence', { p_series_id, p_occurs_on })`**: idempotent, checks the date is
+  on the rule, computes starts/ends in the series zone (DST-correct), copies the agenda template
+  once. RLS lets clients insert only one-off occurrences (`series_id is null`) directly.
+- Attendance rows = people who attended (`person_id` or `guest_name`); invited is derived.
+  Actions hang off an occurrence (person or guest assignee); carried-over = open actions on
+  earlier occurrences of the same series. Typed guests stay out of the people directory.
+- Outlook later: `source` (liftoff | outlook), `outlook_series_id`, `outlook_event_id`. Until then
+  the button is "Connect Outlook" (popover only), labels say "Created in Liftoff", minutes say
+  "N attended" (not "sent to"), and nothing is emailed.
+- Team leads: `project_teams.lead_person_id`, set from the side panel's Teams section.
+- Times are shown in the viewer's zone (`pw-tz` cookie); the week grid is 8 AM–6 PM local.
+- Writes to one occurrence are queued client-side so they land in order.
+- Rules: `src/lib/meetings.ts`; rows: `src/lib/meetings-rows.ts`; UI: `src/components/meetings/`.
 
 ## Seed
 

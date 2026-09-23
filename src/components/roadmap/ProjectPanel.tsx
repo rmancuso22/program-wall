@@ -25,10 +25,13 @@ import {
   TeamTags,
 } from "@/components/project/ProjectBits";
 import { PeopleList } from "@/components/project/PeopleList";
+import { TeamLeads } from "@/components/project/TeamLeads";
+import type { Person } from "@/lib/projects";
 import styles from "./roadmap.module.scss";
 
 type Props = {
   project: ProjectView;
+  directory: Person[];
   quarter: Quarter | undefined;
   today: string;
   canEdit: boolean;
@@ -75,7 +78,7 @@ export function ProjectPanel(props: Props) {
         <>
           <div className={styles.panelBody}>
             <Block label="Teams">
-              <TeamTags teams={project.teams} />
+              <TeamLeads key={project.id} project={project} directory={props.directory} canEdit={canEdit} />
             </Block>
             <Block label="Description">
               <Description text={project.description} />
