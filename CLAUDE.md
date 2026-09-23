@@ -201,7 +201,9 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
   `can_edit_projects()` and renumbers the target cell 1..n.
 - **Jira is a placeholder.** `convert_stickies()` issues keys from `jira_key_sequences`, one global
   counter per prefix (CW-24 is unique across Liftoff, like real Jira). Projects are `JIRA_PROJECTS`
-  in config. "Open in Jira" is inert and nothing syncs until the integration exists.
+  in config. Nothing syncs until the integration exists, so the copy must not claim it does:
+  toasts say "Created ticket CW-24", the drawer says "Ticket CW-24", the card popup says "Jira sync
+  not connected yet", and "Open in Jira" is hidden. Keep the PLACEHOLDER markers in code.
 - Sprints: two weeks, sprint 1 = 2026-01-05 (the Meetings anchor). `project_sprints` holds the
   current number and start; it only advances on Complete sprint (carry-over is a decision). Past the
   end, the board shows "Sprint N ended D Mon. Complete it to start Sprint N+1." and the header says

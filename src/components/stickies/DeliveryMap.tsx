@@ -364,7 +364,7 @@ export function DeliveryMap({ project, initial, directory, canEdit, selectId }: 
 
   const convert = async (s: Sticky) => {
     const rows = await data.convert({ stickyId: s.id });
-    if (rows[0]?.jiraKey) toast(`Created ${rows[0].jiraKey} in Jira from “${rows[0].title}”`);
+    if (rows[0]?.jiraKey) toast(`Created ticket ${rows[0].jiraKey}`);
   };
 
   const pickerPeople = useMemo(
@@ -421,7 +421,7 @@ export function DeliveryMap({ project, initial, directory, canEdit, selectId }: 
           The project&apos;s working wall. A row per team, a column per work area, stickies become Jira tickets when they are ready.
         </span>
         <span className="stat">
-          {stickies.length} stickies · {converted} in Jira · {links.length} dependencies
+          {stickies.length} stickies · {converted} converted · {links.length} dependencies
         </span>
       </div>
 

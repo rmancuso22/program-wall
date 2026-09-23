@@ -235,13 +235,11 @@ export function StickyDrawer(p: Props) {
         </div>
 
         {s.jiraKey && (
-          <div className="keyline" title="Status and assignee sync both ways once Jira is connected">
+          // PLACEHOLDER: the key is issued by Liftoff; nothing exists in Jira yet.
+          <div className="keyline" title="Jira sync not connected yet">
             <JiraIcon />
-            <span style={{ whiteSpace: "nowrap" }}>In Jira as {s.jiraKey}</span>
-            {/* PLACEHOLDER: no Jira link until the integration exists. */}
-            <a href="#" aria-disabled="true" title="Available once Jira is connected" onClick={(e) => e.preventDefault()}>
-              Open in Jira
-            </a>
+            <span style={{ whiteSpace: "nowrap" }}>Ticket {s.jiraKey}</span>
+            {/* PLACEHOLDER: "Open in Jira" comes back with the Jira integration. */}
           </div>
         )}
       </div>

@@ -103,7 +103,7 @@ export function TicketPopup({
         </button>
         {/* PLACEHOLDER: nothing syncs until the Jira integration exists. */}
         <span className="tp-note" style={{ marginLeft: "auto" }}>
-          Syncs to Jira
+          Jira sync not connected yet
         </span>
       </div>
     </Popup>

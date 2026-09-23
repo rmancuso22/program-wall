@@ -234,96 +234,16 @@
   .empty b{display:block;color:var(--text);font-size:15px;font-weight:600;margin-bottom:6px}
 
   /* ---------- detail panel ---------- */
-  .panel{position:fixed;inset:0;z-index:60;background:rgba(22,22,22,.42);display:grid;place-items:center;padding:24px;animation:qvfade .14s ease-out}
+  .panel{
+    position:fixed;top:0;right:0;bottom:0;width:380px;max-width:100%;background:var(--surface);
+    border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(0,0,0,.18);z-index:40;display:flex;flex-direction:column;
+  }
   .panel[hidden]{display:none!important}
-  @keyframes qvfade{from{opacity:0}to{opacity:1}}
-  @keyframes qvrise{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
-  .qv-dialog{width:min(940px,100%);max-height:min(86vh,860px);background:var(--surface);box-shadow:0 24px 64px rgba(0,0,0,.28);display:flex;flex-direction:column;border-top:4px solid var(--pc);animation:qvrise .16s ease-out}
-  .qv-scroll{overflow-y:auto;display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
-  .qv-head{padding:18px 24px 16px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:6px 16px}
-  .qv-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--text-3)}
-  .qv-id{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--text-2)}
-  .qv-meta .tag{font-size:11.5px}
-  .qv-nav{display:flex;align-items:center;gap:2px;grid-row:1 / span 2;grid-column:2;align-self:start}
-  .qv-ib{width:32px;height:32px;display:grid;place-items:center;color:var(--text-2)}
-  .qv-ib:hover{background:var(--surface-2);color:var(--text)}
-  .qv-ib svg{width:16px;height:16px;fill:currentColor}
-  .qv-saved{font-size:12px;color:var(--ok);margin-right:8px;opacity:0;transition:opacity .2s}
-  .qv-saved.on{opacity:1}
-  .qv-title{grid-column:1;margin:0;font-size:22px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
-  .qv-steps{grid-column:1 / -1;display:flex;gap:4px;margin-top:8px}
-  .qv-steps span{flex:1 1 0;display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--text-3)}
-  .qv-steps i{height:4px;background:var(--track-empty)}
-  .qv-steps .done i{background:var(--pc)}
-  .qv-steps .now i{background:var(--pc)}
-  .qv-steps .now{color:var(--text);font-weight:600}
-  .qv-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:0}
-  .qv-col{padding:20px 24px;display:flex;flex-direction:column;gap:22px;min-width:0}
-  .qv-col + .qv-col{border-left:1px solid var(--line);background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}
-  .qv-h{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;display:flex;gap:6px}
-  .qv-h .n{color:var(--text-2)}
-  .qv-statuscard{background:var(--surface-2);padding:14px 16px;border-left:3px solid var(--ok)}
-  .qv-statuscard.yellow{border-left-color:var(--flag-risk)} .qv-statuscard.red{border-left-color:var(--flag-block)}
-  .qv-rag{display:flex;align-items:center;gap:10px;position:relative;margin-bottom:6px}
-  .qv-rag .stamp{font-size:12px;color:var(--text-3)}
-  .rag-pick{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 8px 0 10px;border-radius:999px;border:1px solid transparent;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-  .rag-pick i{width:9px;height:9px;border-radius:50%}
-  .rag-pick svg{width:12px;height:12px;fill:currentColor;opacity:.6}
-  .rag-pick:hover{border-color:currentColor}
-  .rag-pick.green{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)} .rag-pick.green i{background:var(--ok)}
-  .rag-pick.yellow{color:var(--flag-risk);background:color-mix(in srgb,var(--flag-risk) 14%,transparent)} .rag-pick.yellow i{background:var(--flag-risk)}
-  .rag-pick.red{color:var(--flag-block);background:color-mix(in srgb,var(--flag-block) 12%,transparent)} .rag-pick.red i{background:var(--flag-block)}
-  .rag-menu{position:absolute;top:34px;left:0;z-index:5;background:var(--surface);border:1px solid var(--line-strong);box-shadow:0 8px 24px rgba(0,0,0,.16);padding:4px 0;min-width:170px}
-  .rag-menu button{display:flex;align-items:center;gap:9px;width:100%;height:34px;padding:0 12px;font-size:13px;text-align:left}
-  .rag-menu button:hover{background:var(--surface-2)}
-  .rag-menu button[aria-pressed="true"]{font-weight:600}
-  .rag-menu i{width:9px;height:9px;border-radius:50%}
-  /* editable field: looks like text, pencil on hover, becomes an input on click */
-  .ef{position:relative;margin:0 -8px;padding:4px 32px 4px 8px;border:1px solid transparent;cursor:text;transition:background .1s,border-color .1s}
-  .ef:hover{background:var(--surface);border-color:var(--line)}
-  .qv-statuscard .ef:hover{background:var(--surface)}
-  .ef-pen{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:24px;height:24px;display:grid;place-items:center;opacity:0;transition:opacity .1s}
-  .ef-pen svg{width:13px;height:13px;fill:var(--text-3)}
-  .ef:hover .ef-pen,.ef-pen:focus-visible{opacity:1}
-  .ef-pen:hover svg{fill:var(--accent)}
-  .ef.big .ef-pen{top:6px;transform:none}
-  .ef.editing{padding:0;margin:0;border:0;cursor:auto}
-  .ef-in{display:block;width:100%;border:0;border-bottom:2px solid var(--accent);background:var(--surface);color:var(--text);font:inherit;font-size:14px;line-height:1.5;padding:8px 10px;outline:none;resize:vertical;box-shadow:0 0 0 1px var(--line) inset}
-  .ef-hint{font-size:11.5px;color:var(--text-3);margin-top:6px}
-  .qv-status{margin:0;font-size:14.5px;line-height:1.55;color:var(--text)}
-  .qv-desc{margin:0;font-size:14px;line-height:1.6;color:var(--text-2)}
-  .ph{color:var(--text-3);font-style:italic}
-  .qv-risks{display:flex;flex-direction:column;gap:4px}
-  .qv-risk{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:color-mix(in srgb,var(--flag-risk) 9%,var(--surface));font-size:13.5px;line-height:1.45}
-  .qv-risk svg{width:15px;height:15px;fill:var(--flag-risk);flex:0 0 auto;margin-top:2px}
-  .qv-risk span{flex:1 1 auto;cursor:text}
-  .qv-risk .ef-x{width:22px;height:22px;display:grid;place-items:center;opacity:0}
-  .qv-risk .ef-x svg{fill:var(--text-3);margin:0;width:13px;height:13px}
-  .qv-risk:hover .ef-x{opacity:1}
-  .qv-risk .ef-x:hover svg{fill:var(--flag-block)}
-  .qv-risk.editing{padding:0;background:none}
-  .qv-risk .rdate{font-style:normal;font-size:12px;color:var(--text-3);white-space:nowrap;margin-top:1px}
-  .qv-h .upd{margin-left:auto;font-weight:400;letter-spacing:0;text-transform:none;font-size:12px;color:var(--text-3)}
-  .risk .rdate{margin-left:auto;padding-left:10px;font-size:11.5px;color:var(--text-3);white-space:nowrap}
-  .qv-add{align-self:flex-start;font-size:13px;color:var(--accent);padding:6px 0}
-  .qv-add:hover{text-decoration:underline}
-  .qv-kv{display:flex;flex-direction:column}
-  .ef.row{display:grid;grid-template-columns:118px 1fr;align-items:center;min-height:40px;border-bottom:1px solid var(--line);border-left:1px solid transparent;border-right:1px solid transparent;border-top:1px solid transparent}
-  .ef.row:hover{border-color:var(--line)}
-  .ef.row.editing{grid-template-columns:118px 1fr;padding:4px 0 4px 8px;margin:0 -8px}
-  .ef-l{font-size:12px;color:var(--text-3)}
-  .ef-v{display:flex;align-items:center;gap:8px;min-width:0;font-size:13.5px}
-  .ef-v .av{width:22px;height:22px;font-size:8.5px;flex:0 0 auto}
-  .ef-v .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ef-v .contact{margin-left:auto;opacity:.0;transition:opacity .1s}
-  .ef.row:hover .contact{opacity:1}
-  .ef-v .ok{display:inline-flex;align-items:center;gap:5px;color:var(--ok)}
-  .ef-v .ok svg{width:13px;height:13px;fill:currentColor}
-  .ef.row .ef-in{font-size:13.5px;padding:6px 8px}
-  .qv-foot{padding:14px 24px;border-top:1px solid var(--line);display:flex;align-items:center;gap:16px;position:sticky;bottom:0;background:var(--surface)}
-  .qv-tip{font-size:12.5px;color:var(--text-3)}
-  .qv-foot .btn{width:auto;margin-left:auto;gap:40px}
-  @media (max-width:760px){ .qv-body{grid-template-columns:1fr} .qv-col + .qv-col{border-left:0;border-top:1px solid var(--line)} .panel{padding:0} .qv-dialog{max-height:100vh;height:100%} }
+  .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px}
+  .panel-head .x{width:28px;height:28px;display:grid;place-items:center;color:var(--text-3);flex:0 0 auto;margin-left:auto}
+  .panel-head .x:hover{background:var(--surface-2);color:var(--text)}
+  .panel-body{padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;flex:1 1 auto}
+  .panel-foot{padding:12px 16px 16px;border-top:1px solid var(--line)}
   .pblock{display:flex;flex-direction:column;gap:7px}
   .steps{display:flex;flex-direction:column;gap:1px}
   .step{display:flex;align-items:center;gap:10px;padding:7px 9px;background:var(--surface-2);font-size:12px}
@@ -1354,14 +1274,9 @@
                 status: e.status != null ? e.status : base.status,
                 rag: e.rag || ragDefault(p),
                 risks: e.risks != null ? e.risks : (RISKS[p.id] || []),
-                riskDates: e.riskDates ? e.riskDates.slice() : null,
                 people:{}, dates:{}, updated: e.updatedAt ? "just now" : base.updated+"d ago", edited: !!e.updatedAt };
     ROLES.forEach(function(r){ out.people[r[0]] = (e.people && e.people[r[0]] != null) ? e.people[r[0]] : base.people[r[0]]; });
     DATES.forEach(function(d){ out.dates[d[0]] = (e.dates && e.dates[d[0]] != null) ? e.dates[d[0]] : base.dates[d[0]]; });
-    // each risk carries the date it was last updated (seeded ones get a plausible past date)
-    if(!out.riskDates) out.riskDates = [];
-    out.risks.forEach(function(r, i){ if(!out.riskDates[i]) out.riskDates[i] = shiftDate(TODAY, -(2 + hash(p.id + r) % 19)); });
-    out.riskDates.length = out.risks.length;
     return out;
   }
   function saveRecord(id, data){
@@ -1601,7 +1516,7 @@
   function risksHTML(rec){
     var warn = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5L15 14H1L8 1.5zM7.5 6v4h1V6h-1zm0 5v1h1v-1h-1z"/></svg>';
     if(!rec.risks.length) return '<div class="risks"><div class="risk none"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 11.2L2.8 7.5l.7-.7 3 3 6-6 .7.7z"/></svg>No open risks</div></div>';
-    return '<div class="risks">'+rec.risks.map(function(r, i){ return '<div class="risk">'+warn+'<span>'+esc(r)+'</span><span class="rdate">'+esc(ago(rec.riskDates[i]))+'</span></div>'; }).join("")+'</div>';
+    return '<div class="risks">'+rec.risks.map(function(r){ return '<div class="risk">'+warn+'<span>'+esc(r)+'</span></div>'; }).join("")+'</div>';
   }
   function ragSegHTML(cur){
     return '<div class="ragseg" id="f_rag">'+["green","yellow","red"].map(function(k){
@@ -1609,135 +1524,93 @@
     }).join("")+'</div>';
   }
 
-  /* ---------- quick look: centered project card, edit any field in place ---------- */
-  var PENCIL = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.7 2.3l1 1c.4.4.4 1 0 1.4L6 12.4 2 13.5l1.1-4L10.8 2c.4-.4 1-.4 1.4 0l.5.3zM4 10.3l-.5 2 2-.5 6.3-6.3-1.5-1.5L4 10.3z"/></svg>';
-  var XS = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 4.7L11.3 4 8 7.3 4.7 4 4 4.7 7.3 8 4 11.3l.7.7L8 8.7l3.3 3.3.7-.7L8.7 8z"/></svg>';
-  var qvEdit = null;   // which field is open: "desc" | "status" | "risk:new" | "p:pm" | "d:srb"
-  function ago(iso){ if(!iso) return ""; var d = daysBetween(iso, TODAY); return d <= 0 ? "Updated today" : d === 1 ? "Updated yesterday" : d < 7 ? "Updated "+d+"d ago" : "Updated "+shortDate(iso); }
-  function qvData(p){ var r = record(p); return { description:r.description, status:r.status, rag:r.rag, risks:r.risks.slice(), riskDates:r.riskDates.slice(), people:JSON.parse(JSON.stringify(r.people)), dates:JSON.parse(JSON.stringify(r.dates)) }; }
-  function qvSave(p, fn, what){
-    var d = qvData(p); fn(d); saveRecord(p.id, d); qvEdit = null; refreshCard(p); select(p.id, "stay");
-    var s = $("qvSaved"); if(s){ s.textContent = "Saved " + what; s.classList.add("on"); setTimeout(function(){ s.classList.remove("on"); }, 1600); }
-  }
-  function qvField(key, label, inner, editor, extraCls){
-    var on = qvEdit === key;
-    return '<div class="ef'+(on?' editing':'')+(extraCls?' '+extraCls:'')+'" data-ef="'+key+'">'+(label?'<span class="ef-l">'+label+'</span>':'')+
-      (on ? editor : '<div class="ef-v">'+inner+'</div><button type="button" class="ef-pen" data-efgo="'+key+'" aria-label="Edit '+esc(label||key)+'">'+PENCIL+'</button>')+'</div>';
-  }
-  function qvHTML(p){
-    var rec = record(p), q = QUARTERS[p.q];
-    var stepper = '<div class="qv-steps">'+PHASES.map(function(ph, i){ return '<span class="'+(i < p.phase ? 'done' : i === p.phase ? 'now' : '')+'"><i></i>'+esc(ph.short)+'</span>'; }).join("")+'</div>';
-    var ragBtn = '<div class="qv-rag"><button type="button" class="rag-pick '+rec.rag+'" id="qvRag" aria-haspopup="true"><i></i>'+RAG[rec.rag].label+'<svg viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg></button>'+
-      '<div class="rag-menu" id="qvRagMenu" hidden>'+["green","yellow","red"].map(function(k){ return '<button type="button" data-setrag="'+k+'" aria-pressed="'+(k===rec.rag)+'"><i style="background:'+RAG_COLOR[k]+'"></i>'+RAG[k].label+'</button>'; }).join("")+'</div>'+
-      '<span class="stamp">Updated '+esc(rec.updated)+'</span></div>';
-    var status = qvField("status", "", '<p class="qv-status">'+(rec.status ? esc(rec.status) : '<span class="ph">Add a status update</span>')+'</p>',
-      '<textarea class="ef-in" rows="3">'+esc(rec.status)+'</textarea><div class="ef-hint">Enter to save · Shift+Enter for a new line · Esc to cancel</div>', "big");
-    var desc = qvField("desc", "", '<p class="qv-desc">'+(rec.description ? esc(rec.description) : '<span class="ph">Add a description</span>')+'</p>',
-      '<textarea class="ef-in" rows="3">'+esc(rec.description)+'</textarea><div class="ef-hint">Enter to save · Esc to cancel</div>', "big");
-    var warn = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5L15 14H1L8 1.5zM7.5 6v4h1V6h-1zm0 5v1h1v-1h-1z"/></svg>';
-    var risks = '<div class="qv-risks">'+rec.risks.map(function(r, i){
-        return qvEdit === "risk:"+i ? '<div class="qv-risk editing"><input class="ef-in" data-risk="'+i+'" value="'+esc(r)+'"></div>'
-          : '<div class="qv-risk">'+warn+'<span data-efgo="risk:'+i+'">'+esc(r)+'</span><em class="rdate" title="Last updated '+esc(fmtDate(rec.riskDates[i]))+'">'+esc(ago(rec.riskDates[i]).replace("Updated ",""))+'</em><button type="button" class="ef-x" data-delrisk="'+i+'" aria-label="Remove risk">'+XS+'</button></div>';
-      }).join("")+
-      (qvEdit === "risk:new" ? '<div class="qv-risk editing"><input class="ef-in" data-risk="new" placeholder="Describe the risk and press Enter"></div>'
-        : '<button type="button" class="qv-add" data-efgo="risk:new">+ Add risk</button>')+'</div>';
-    var names = []; Object.keys(POOL).forEach(function(k){ POOL[k].forEach(function(n){ if(names.indexOf(n) < 0) names.push(n); }); });
-    var people = ROLES.map(function(r){
-      var v = rec.people[r[0]] || "", h = v ? handle(v) : null;
-      var inner = v ? '<span class="av">'+esc(initials(v))+'</span><span class="pn">'+esc(v)+'</span>'+
-          '<span class="contact"><button type="button" class="cbtn" data-slack="'+esc(h.slack)+'" data-name="'+esc(v)+'" title="Slack '+esc(v)+'"><svg viewBox="0 0 16 16"><path d="M2 3h12v8H6.5L3 13.5V11H2V3zm1 1v6h1v1.6L6.1 10H13V4H3z"/></svg></button>'+
-          '<a class="cbtn" href="mailto:'+esc(h.email)+'" title="Email '+esc(v)+'"><svg viewBox="0 0 16 16"><path d="M2 3h12v10H2V3zm1 1v.6l5 3.3 5-3.3V4H3zm10 1.8L8 9.1 3 5.8V12h10V5.8z"/></svg></a></span>'
-        : '<span class="ph">Unassigned</span>';
-      return qvField("p:"+r[0], esc(r[1]), inner, '<input class="ef-in" list="qvNames" value="'+esc(v)+'" placeholder="Type a name">', "row");
-    }).join("");
-    var dates = DATES.map(function(d){
-      var iso = rec.dates[d[0]], done = p.phase >= d[2] && iso && iso <= TODAY;
-      var inner = !iso ? '<span class="ph">TBD</span>' : done ? '<span class="ok">'+CHECK+fmtDate(iso)+'</span>' : '<span>'+fmtDate(iso)+'</span>';
-      return qvField("d:"+d[0], esc(d[1].replace(" Date","")), inner, '<input class="ef-in" type="date" value="'+esc(iso||"")+'">', "row");
-    }).join("");
-    return '<div class="qv-head">'+
-        '<div class="qv-meta"><span class="qv-id">'+esc(p.id)+'</span><span>'+esc(q.label)+'</span>'+p.teams.map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join("")+'</div>'+
-        '<div class="qv-nav"><span class="qv-saved" id="qvSaved"></span>'+
-          '<button type="button" class="qv-ib" data-qvstep="-1" aria-label="Previous project" title="Previous (←)"><svg viewBox="0 0 16 16"><path d="M10.5 3.5L6 8l4.5 4.5-.7.7L4.6 8l5.2-5.2z"/></svg></button>'+
-          '<button type="button" class="qv-ib" data-qvstep="1" aria-label="Next project" title="Next (→)"><svg viewBox="0 0 16 16"><path d="M5.5 3.5L10 8l-4.5 4.5.7.7L11.4 8 6.2 2.8z"/></svg></button>'+
-          '<button type="button" class="qv-ib" id="closePanel" aria-label="Close" title="Close (Esc)">'+XS+'</button></div>'+
-        '<h2 class="qv-title">'+esc(p.name)+'</h2>'+stepper+
-      '</div>'+
-      '<div class="qv-body">'+
-        '<div class="qv-col">'+
-          '<section class="qv-card qv-statuscard '+rec.rag+'"><div class="qv-h">Current status</div>'+ragBtn+status+'</section>'+
-          '<section><div class="qv-h">Key risks <span class="n">'+(rec.risks.length || "")+'</span>'+(rec.risks.length ? '<span class="upd">'+esc(ago(rec.riskDates.slice().sort().pop()))+'</span>' : '')+'</div>'+risks+'</section>'+
-          '<section><div class="qv-h">Description</div>'+desc+'</section>'+
-        '</div>'+
-        '<div class="qv-col">'+
-          '<section><div class="qv-h">People</div><div class="qv-kv">'+people+'</div></section>'+
-          '<section><div class="qv-h">Key dates</div><div class="qv-kv">'+dates+'</div></section>'+
-        '</div>'+
-      '</div>'+
-      '<div class="qv-foot"><span class="qv-tip">Click any field to edit. Changes save on their own.</span><button class="btn pri" id="enterBtn">Enter project<svg class="icon" viewBox="0 0 16 16"><path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z"/></svg></button></div>'+
-      '<datalist id="qvNames">'+names.map(function(n){ return '<option value="'+esc(n)+'">'; }).join("")+'</datalist>';
-  }
-  function qvVisibleOrder(){
-    var ids = []; QUARTERS.forEach(function(q, qi){ var g = $("grid-"+qi); if(g && !$("lane-"+qi).hidden) [].forEach.call(g.children, function(c){ if(!c.hidden) ids.push(c.dataset.id); }); });
-    return ids;
-  }
   function select(id, mode){
     var p = proj(id); if(!p) return;
     if(state.sel === id && !mode){ closePanel(); return; }
-    if(state.sel !== id) qvEdit = null;
     state.sel = id;
+    var editing = mode === "edit";
     Object.keys(cardEls).forEach(function(k){ cardEls[k].setAttribute("aria-pressed", k === id ? "true" : "false"); });
-    var panel = $("panel"), body = panel.querySelector(".qv-scroll"), y = body ? body.scrollTop : 0;
-    panel.style.setProperty("--pc", pc(p.phase));
-    panel.innerHTML = '<div class="qv-dialog" role="dialog" aria-modal="true" aria-label="'+esc(p.name)+'"><div class="qv-scroll">'+qvHTML(p)+'</div></div>';
-    panel.hidden = false; document.body.classList.add("qv-open");
-    if(mode === "stay"){ panel.querySelector(".qv-scroll").scrollTop = y; }
-    wireQuickLook(p);
-  }
-  function wireQuickLook(p){
+    var rec = record(p);
+    var flagLine = p.flag === "risk" ? '<span class="tag" style="color:var(--flag-risk);border-color:var(--flag-risk)">At risk</span>'
+                 : p.flag === "block" ? '<span class="tag" style="color:var(--flag-block);border-color:var(--flag-block)">Blocked</span>' : "";
     var panel = $("panel");
-    panel.onclick = function(e){ if(e.target === panel) closePanel(); };
+    panel.style.setProperty("--pc", pc(p.phase));
+
+    var body;
+    if(!editing){
+      body =
+        '<div class="pblock"><span class="lbl">Teams</span><div class="teams">'+
+          p.teams.map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join("")+'</div></div>'+
+        '<div class="pblock"><span class="lbl">Description</span><p class="desc">'+esc(rec.description || "No description yet.")+'</p></div>'+
+        '<div class="pblock"><span class="lbl">Current status</span>'+statusHTML(p, rec)+'</div>'+
+        '<div class="pblock"><span class="lbl">Key risks</span>'+risksHTML(rec)+'</div>'+
+        '<div class="pblock"><span class="lbl">People</span>'+peopleHTML(rec)+'</div>'+
+        '<div class="pblock"><span class="lbl">Key dates</span>'+datesHTML(p, rec)+'</div>'+
+        '<div class="pblock"><span class="lbl">Phase</span><div class="steps">'+stepsHTML(p)+'</div></div>';
+    } else {
+      body =
+        '<div class="pblock"><span class="lbl">Teams</span><div class="teams">'+
+          p.teams.map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join("")+'</div></div>'+
+        '<div class="fld"><span class="lbl">Description</span><textarea class="ctrl" id="f_desc">'+esc(rec.description)+'</textarea></div>'+
+        '<div class="fld"><span class="lbl">Status light</span>'+ragSegHTML(rec.rag)+'</div>'+
+        '<div class="fld"><span class="lbl">Current status</span><textarea class="ctrl" id="f_status">'+esc(rec.status)+'</textarea></div>'+
+        '<div class="fld"><span class="lbl">Key risks</span><textarea class="ctrl" id="f_risks" placeholder="One risk per line">'+esc(rec.risks.join("\n"))+'</textarea>'+
+          '<span class="hint">One per line. Leave empty for no open risks.</span></div>'+
+        '<div class="pblock"><span class="lbl">People</span><div class="fgrid">'+
+          ROLES.map(function(r){ return '<div class="fld"><span class="lbl">'+esc(r[1])+'</span><input class="ctrl" id="f_p_'+r[0]+'" value="'+esc(rec.people[r[0]]||"")+'" placeholder="Unassigned"></div>'; }).join("")+
+        '</div></div>'+
+        '<div class="pblock"><span class="lbl">Key dates</span><div class="fgrid">'+
+          DATES.map(function(d){ return '<div class="fld"><span class="lbl">'+esc(d[1])+'</span><input class="ctrl" type="date" id="f_d_'+d[0]+'" value="'+esc(rec.dates[d[0]]||"")+'"></div>'; }).join("")+
+        '</div></div>';
+    }
+
+    panel.innerHTML =
+      '<div class="panel-head"><div>'+
+        '<div class="lbl">'+esc(p.id)+' · '+esc(QUARTERS[p.q].label)+' · '+esc(PHASES[p.phase].name)+'</div>'+
+        '<div style="font-size:17px;font-weight:600;line-height:1.25;margin-top:4px">'+esc(p.name)+'</div></div>'+
+        '<button class="x" id="closePanel" aria-label="Close"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12 3.3L11.3 2.6 8 5.9 4.7 2.6 4 3.3 7.3 6.6 4 9.9l.7.7L8 7.3l3.3 3.3.7-.7-3.3-3.3z"/></svg></button>'+
+      '</div>'+
+      '<div class="panel-body">'+body+'</div>'+
+      (editing
+        ? '<div class="panel-foot row">'+
+            '<button class="btn sec" id="cancelBtn">Cancel</button>'+
+            '<button class="btn pri" id="saveBtn">Save<svg class="icon" viewBox="0 0 16 16"><path d="M6.5 12.2L2.3 8l.7-.7 3.5 3.5 6.5-6.5.7.7z"/></svg></button>'+
+          '</div>'
+        : '<div class="panel-foot row">'+
+            '<button class="btn sec" id="editBtn">Edit<svg class="icon" viewBox="0 0 16 16"><path d="M12.7 2.3l1 1c.4.4.4 1 0 1.4L6 12.4 2 13.5l1.1-4L10.8 2c.4-.4 1-.4 1.4 0l.5.3zM4 10.3l-.5 2 2-.5 6.3-6.3-1.5-1.5L4 10.3z"/></svg></button>'+
+            '<button class="btn pri" id="enterBtn">Enter project<svg class="icon" viewBox="0 0 16 16"><path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z"/></svg></button>'+
+          '</div>');
+    panel.hidden = false;
     $("closePanel").addEventListener("click", closePanel);
-    $("enterBtn").addEventListener("click", function(){ enterProject(p.id); });
     wireContacts(panel);
-    panel.querySelectorAll("[data-qvstep]").forEach(function(b){ b.addEventListener("click", function(){ qvStep(+this.dataset.qvstep); }); });
-    // open a field for editing
-    panel.querySelectorAll("[data-efgo]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); qvEdit = this.dataset.efgo; select(p.id, "stay"); }); });
-    panel.querySelectorAll(".ef:not(.editing)").forEach(function(f){ f.addEventListener("click", function(e){ if(e.target.closest("a,.cbtn")) return; qvEdit = this.dataset.ef; select(p.id, "stay"); }); });
-    // rag picker
-    var rb = $("qvRag"), rm = $("qvRagMenu");
-    rb.addEventListener("click", function(e){ e.stopPropagation(); rm.hidden = !rm.hidden; });
-    rm.querySelectorAll("[data-setrag]").forEach(function(b){ b.addEventListener("click", function(){ var k = this.dataset.setrag; qvSave(p, function(d){ d.rag = k; }, "status light"); }); });
-    panel.querySelectorAll("[data-delrisk]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); var i = +this.dataset.delrisk; qvSave(p, function(d){ d.risks.splice(i, 1); d.riskDates.splice(i, 1); }, "risks"); }); });
-    // the open editor
-    var inp = panel.querySelector(".ef-in"); if(!inp) return;
-    var key = qvEdit, done = false;
-    inp.focus(); if(inp.select && inp.type !== "date") { var L = inp.value.length; try{ inp.setSelectionRange(L, L); }catch(_){} }
-    var commit = function(){
-      if(done) return; done = true;
-      var v = inp.value.trim();
-      if(key === "status") qvSave(p, function(d){ d.status = v; }, "status");
-      else if(key === "desc") qvSave(p, function(d){ d.description = v; }, "description");
-      else if(key.indexOf("risk:") === 0){ var r = key.slice(5); if(!v && r === "new"){ qvEdit = null; select(p.id, "stay"); return; }
-        qvSave(p, function(d){ if(r === "new"){ d.risks.push(v); d.riskDates.push(TODAY); } else if(v){ if(d.risks[+r] !== v){ d.risks[+r] = v; d.riskDates[+r] = TODAY; } } else { d.risks.splice(+r, 1); d.riskDates.splice(+r, 1); } }, "risks"); }
-      else if(key.indexOf("p:") === 0) qvSave(p, function(d){ d.people[key.slice(2)] = v; }, ROLES.filter(function(x){ return x[0] === key.slice(2); })[0][1]);
-      else if(key.indexOf("d:") === 0) qvSave(p, function(d){ d.dates[key.slice(2)] = inp.value; }, "date");
-    };
-    var cancel = function(){ done = true; qvEdit = null; select(p.id, "stay"); };
-    inp.addEventListener("keydown", function(e){
-      if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); cancel(); }
-      else if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); commit(); }
-    });
-    inp.addEventListener("blur", function(){ commit(); });
-    if(inp.type === "date") inp.addEventListener("change", commit);
-  }
-  function qvStep(dir){
-    var ids = qvVisibleOrder(), i = ids.indexOf(state.sel); if(i < 0) return;
-    var n = ids[(i + dir + ids.length) % ids.length]; qvEdit = null; select(n, "stay");
-    var c = cardEls[n]; if(c) c.scrollIntoView({block:"nearest"});
+    if(editing){
+      var ragPick = rec.rag;
+      $("f_rag").querySelectorAll("[data-rag]").forEach(function(b){
+        b.addEventListener("click", function(){
+          ragPick = this.dataset.rag;
+          $("f_rag").querySelectorAll("[data-rag]").forEach(function(x){ x.setAttribute("aria-pressed", x.dataset.rag===ragPick ? "true" : "false"); });
+        });
+      });
+      $("cancelBtn").addEventListener("click", function(){ select(p.id, "read"); });
+      $("saveBtn").addEventListener("click", function(){
+        var data = { status: $("f_status").value.trim(), description: $("f_desc").value.trim(), rag: ragPick,
+                     risks: $("f_risks").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean),
+                     people:{}, dates:{} };
+        ROLES.forEach(function(r){ data.people[r[0]] = $("f_p_"+r[0]).value.trim(); });
+        DATES.forEach(function(d){ data.dates[d[0]] = $("f_d_"+d[0]).value; });
+        saveRecord(p.id, data);
+        refreshCard(p);
+        select(p.id, "read");
+      });
+      $("f_desc").focus();
+    } else {
+      $("editBtn").addEventListener("click", function(){ select(p.id, "edit"); });
+      $("enterBtn").addEventListener("click", function(){ enterProject(p.id); });
+      $("enterBtn").focus();
+    }
   }
   function closePanel(){
-    state.sel = null; qvEdit = null; $("panel").hidden = true; document.body.classList.remove("qv-open");
+    state.sel = null; $("panel").hidden = true;
     Object.keys(cardEls).forEach(function(k){ cardEls[k].setAttribute("aria-pressed","false"); });
   }
 
@@ -3471,7 +3344,6 @@
       else if(!$("panel").hidden){ closePanel(); }
       else if(anyFilter()){ clearAll(); }
     }
-    if(!$("panel").hidden && !state.open && (ev.key === "ArrowLeft" || ev.key === "ArrowRight") && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||"")){ ev.preventDefault(); qvStep(ev.key === "ArrowLeft" ? -1 : 1); return; }
     if(ev.key === "/" && !state.open && document.activeElement !== $("search")){ ev.preventDefault(); $("search").focus(); }
     if(state.open && (ev.key === "[" || ev.key === "]")) stepProject(ev.key === "[" ? -1 : 1);
   });

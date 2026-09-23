@@ -177,7 +177,7 @@ export function JiraBoard({ project, initial, directory, canEdit, serverToday }:
   const convertLane = async (laneId: string) => {
     const rows = await data.convert({ laneId });
     const lane = lanes.find((l) => l.id === laneId)?.name ?? "";
-    toast(`Created ${rows.length} Jira ticket${rows.length === 1 ? "" : "s"} from ${lane} stickies`);
+    toast(`Created ${rows.length} ticket${rows.length === 1 ? "" : "s"} from ${lane} stickies`);
   };
 
   // ---------------------------------------------------------------------------
@@ -418,7 +418,7 @@ export function JiraBoard({ project, initial, directory, canEdit, serverToday }:
 
         <p className="mu-hint">
           Drag tickets between columns to plan sprints, or up and down to reorder. Dropping in another team&apos;s row moves the sticky to that
-          team on the Delivery Map too. Completed means Closed in Jira.
+          team on the Delivery Map too. Completed means closed.
         </p>
       </div>
 
