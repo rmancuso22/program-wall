@@ -1,8 +1,8 @@
 "use client";
 
 import { Chat, Email } from "@carbon/icons-react";
-import { PROJECT_ROLES, initials } from "@/lib/domain";
-import type { Person, ProjectView } from "@/lib/projects";
+
+import type { Person } from "@/lib/projects";
 import { useCopy } from "@/components/Toast";
 import styles from "./project.module.scss";
 
@@ -38,33 +38,5 @@ export function ContactButtons({ person }: { person: Person }) {
         </a>
       )}
     </span>
-  );
-}
-
-export function PeopleList({ people }: { people: ProjectView["people"] }) {
-  return (
-    <div className={styles.kv}>
-      {PROJECT_ROLES.map((r) => {
-        const person = people[r.key];
-        return (
-          <div key={r.key} className={styles.kvRow}>
-            <span className={styles.k}>{r.label}</span>
-            <span className={styles.v}>
-              {person ? (
-                <>
-                  <span className={styles.avatar} aria-hidden="true">
-                    {initials(person.name)}
-                  </span>
-                  <span className={styles.personName}>{person.name}</span>
-                  <ContactButtons person={person} />
-                </>
-              ) : (
-                <span className={styles.unassigned}>Unassigned</span>
-              )}
-            </span>
-          </div>
-        );
-      })}
-    </div>
   );
 }

@@ -5,6 +5,7 @@
 // mock's class names scoped under .root. Colours map to Carbon or --pw-*
 // tokens. Card size "compact" is a class on the page wrapper.
 
+// The roadmap page: fixed under the 48px shell header.
 .root {
   position: fixed;
   inset: 48px 0 0;
@@ -12,6 +13,10 @@
   flex-direction: column;
   min-height: 0;
   background: var(--cds-background);
+}
+
+// The mock's roadmap, quick look and Overview classes (shared editing kit).
+.kit {
   color: var(--cds-text-primary);
   font-size: 14px;
   line-height: 1.4;
@@ -301,6 +306,78 @@
     .rag.green{color:var(--pw-ok)} .rag.yellow{color:var(--pw-risk)} .rag.red{color:var(--pw-block)}
     .card .rag{margin-left:auto}
     .av{width:22px;height:22px;display:inline-grid;place-items:center;font-size:9px;font-weight:600;background:var(--pw-surface-3);color:var(--cds-text-primary)}
+    /* overview */
+    .ov{position:relative;display:flex;flex-direction:column;gap:16px;max-width:1240px}
+    .ov-saved{position:absolute;right:0;top:-24px}
+    .ov-about{max-width:900px;margin:-4px 0 2px}
+    .qv-norisk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--cds-text-secondary);padding:6px 0}
+    .qv-norisk svg{width:14px;height:14px;fill:var(--pw-ok);flex:0 0 auto}
+    .ov-strip{margin:auto 0 !important}
+    .ov-about .ef{margin:0 -8px}
+    .ov-about .qv-desc{font-size:14.5px;color:var(--cds-text-secondary)}
+    .ov-row{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;align-items:stretch}
+    .ov-card{background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);padding:16px 20px 18px;min-width:0;display:flex;flex-direction:column}
+    .ov-ch{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:12px}
+    .ov-health{border-top:3px solid var(--pw-ok)}
+    .ov-health.yellow{border-top-color:var(--pw-risk)} .ov-health.red{border-top-color:var(--pw-block)}
+    .ov-health .qv-rag{margin-bottom:8px}
+    .ov-health .qv-status{font-size:17px;line-height:1.5}
+    .ov-sub{display:flex;align-items:baseline;gap:6px;margin:16px 0 8px;padding-top:14px;border-top:1px solid var(--cds-border-subtle-01);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--cds-text-helper)}
+    .ov-sub .n{color:var(--cds-text-secondary)}
+    .ov-sub .upd{margin-left:auto;font-weight:400;letter-spacing:0;text-transform:none;font-size:12px}
+    .ov-health .qv-risk{background:color-mix(in srgb,var(--pw-risk) 8%,var(--cds-layer-01))}
+    .ov-upnext{padding:16px 8px 8px}
+    .ov-upnext .ov-ch{padding:0 12px;margin-bottom:4px}
+    .ov-next{display:grid;grid-template-columns:96px minmax(0,1fr) auto 14px;align-items:center;gap:10px;width:100%;padding:12px 12px;text-align:left;border-top:1px solid var(--cds-border-subtle-01);flex:1 1 auto}
+    .ov-upnext .ov-ch + .ov-next{border-top:0}
+    .ov-next:hover{background:var(--pw-surface-2)}
+    .ov-next .k{font-size:12px;color:var(--cds-text-helper)}
+    .ov-next .v{font-size:14px;font-weight:500;color:var(--cds-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ov-next .s{font-size:12.5px;color:var(--cds-text-secondary);white-space:nowrap}
+    .ov-next .s .late{color:var(--pw-block);font-weight:500}
+    .ov-next svg{width:13px;height:13px;fill:var(--cds-text-helper)}
+    /* key dates strip */
+    .ov-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative;margin-top:4px}
+    .ov-strip::before{content:"";position:absolute;left:10%;right:10%;top:17px;height:2px;background:var(--pw-track-empty)}
+    .ef.ms{margin:0;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px}
+    .ef.ms .ef-v{flex-direction:column;align-items:center;gap:3px}
+    .ef.ms .ef-pen{top:2px;right:2px;transform:none}
+    .ms-dot{width:22px;height:22px;border-radius:50%;background:var(--cds-layer-01);border:2px solid var(--cds-border-strong-01);display:grid;place-items:center;position:relative;z-index:1;margin-bottom:4px}
+    .ms-dot svg{width:13px;height:13px;fill:#fff}
+    .ef.ms.done .ms-dot{background:var(--pw-ok);border-color:var(--pw-ok)}
+    .ef.ms.next .ms-dot{border-color:var(--cds-interactive);box-shadow:0 0 0 4px color-mix(in srgb,var(--cds-interactive) 18%,transparent)}
+    .ms-l{font-size:11.5px;color:var(--cds-text-helper);line-height:1.25}
+    .ms-d{font-size:14px;font-weight:600;color:var(--cds-text-primary)}
+    .ef.ms.done .ms-d{color:var(--pw-ok);font-weight:500}
+    .ms-d.late{color:var(--pw-block)}
+    .ms-s{font-size:11.5px;color:var(--cds-interactive);font-weight:500}
+    .ef.ms.editing{padding:6px 4px;align-items:stretch;gap:6px}
+    .ef.ms.editing .ef-in{font-size:12.5px;padding:5px 6px}
+    /* team grid */
+    .ov-team{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px}
+    .ef.tm{margin:0;padding:7px 28px 7px 6px}
+    .ef.tm .ef-v{gap:10px}
+    .ef.tm .av{width:30px;height:30px;font-size:10px;border-radius:50%}
+    .tm-t{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+    .tm-t b{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tm-t em{font-style:normal;font-size:11.5px;color:var(--cds-text-helper)}
+    .ef.tm.editing{padding:4px 6px;display:flex;flex-direction:column;gap:4px}
+    .tm-role{font-style:normal;font-size:11.5px;color:var(--cds-text-helper)}
+    .ef.tm.editing .ef-in{font-size:13px;padding:5px 8px}
+    @media (max-width:1080px){ .ov-row{grid-template-columns:1fr} }
+
+    /* Team leads under the role tiles (not in the mock): one compact row per team. */
+    .ov-leads{margin-top:8px;padding-top:4px;border-top:1px solid var(--cds-border-subtle-01);display:flex;flex-direction:column}
+    a.ov-next,a.ov-next:hover{text-decoration:none;color:inherit}
+    .ef.ld{margin:0;padding:4px 28px 4px 6px;font-size:13px}
+    .ef.ld .ef-v{gap:6px;font-size:13px;min-width:0;white-space:nowrap}
+    .ld-k{color:var(--cds-text-helper)}
+    .ld-sep{color:var(--cds-text-helper)}
+    .ld-v{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .picking .ef{background:var(--cds-layer-01);border-color:var(--cds-border-subtle-01)}
+    .ov .picking .ef{background:var(--pw-surface-2)}
+    /* The editor's background shorthand would drop the drawn calendar icon. */
+    .ef-in[type=date]{background-image:var(--pw-date-icon);background-position:right 8px center;background-repeat:no-repeat;background-size:16px 16px}
   }
 }
 
@@ -309,17 +386,17 @@
 
 // Keyframes stay local (pure mode); these rules sit outside :global so the
 // animation names resolve to them.
-.root :global(.panel) {
+.kit :global(.panel) {
   animation: qvfade 0.14s ease-out;
 }
 
-.root :global(.qv-dialog) {
+.kit :global(.qv-dialog) {
   animation: qvrise 0.16s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .root :global(.panel),
-  .root :global(.qv-dialog) {
+  .kit :global(.panel),
+  .kit :global(.qv-dialog) {
     animation: none;
   }
 }

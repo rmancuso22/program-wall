@@ -238,7 +238,7 @@ export function RoadmapView({ quarters, teams, projects: initialProjects, direct
         </div>
       </ShellHeader>
 
-      <div className={`${styles.root}${density === "compact" ? " compact" : ""}`}>
+      <div className={`${styles.root} ${styles.kit}${density === "compact" ? " compact" : ""}`}>
         <section className="filters" aria-label="Filters" ref={barRef}>
           <div className="toolrow">
             <label className="search">
