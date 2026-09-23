@@ -592,6 +592,7 @@ export type Database = {
           id: string
           position: number
           project_id: string
+          updated_at: string
         }
         Insert: {
           body: string
@@ -599,6 +600,7 @@ export type Database = {
           id?: string
           position?: number
           project_id: string
+          updated_at?: string
         }
         Update: {
           body?: string
@@ -606,6 +608,7 @@ export type Database = {
           id?: string
           position?: number
           project_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
