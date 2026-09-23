@@ -6,12 +6,18 @@ import { Search } from "@carbon/react";
 import { Download } from "@carbon/icons-react";
 import { PHASES, RAGS, phaseColor, phaseIndex } from "@/lib/domain";
 import {
+  NO_FILTERS,
+  SORTS,
+  SORT_STORAGE_KEY,
+  compareProjects,
   filtersToQuery,
   hasFilters,
   matchesFilters,
   parseFilters,
+  parseSort,
   toggle,
   type Filters,
+  type SortKey,
 } from "@/lib/filters";
 import type { ProjectView, Quarter } from "@/lib/projects";
 import { PRODUCT, PROGRAM } from "@/lib/config";
@@ -20,6 +26,7 @@ import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/component
 import { useToast } from "@/components/Toast";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectPanel } from "./ProjectPanel";
+import { SegmentedControl } from "./SegmentedControl";
 import styles from "./roadmap.module.scss";
 
 type Props = {
@@ -33,6 +40,10 @@ type Props = {
 
 type Density = "comfortable" | "compact";
 const DENSITY_KEY = "pw.density";
+const DENSITIES = [
+  { key: "comfortable", label: "Comfortable" },
+  { key: "compact", label: "Compact" },
+] as const;
 
 export function RoadmapView({ quarters, teams, projects, canEdit, today, themePref }: Props) {
   const router = useRouter();
@@ -63,6 +74,26 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
     (next: Filters) => window.history.replaceState(null, "", `${pathname}${filtersToQuery(next)}`),
     [pathname],
   );
+  const clearFilters = useCallback(() => setFilters({ ...NO_FILTERS, sort: filters.sort }), [setFilters, filters.sort]);
+
+  // Sort is in the URL too, and remembered in this browser. A link without a
+  // sort picks up the remembered one.
+  const chooseSort = (sort: SortKey) => {
+    setFilters({ ...filters, sort });
+    try {
+      localStorage.setItem(SORT_STORAGE_KEY, sort);
+    } catch {}
+  };
+  useEffect(() => {
+    if (searchParams.has("sort")) return;
+    let saved: SortKey = "number";
+    try {
+      saved = parseSort(localStorage.getItem(SORT_STORAGE_KEY));
+    } catch {}
+    if (saved !== "number") setFilters({ ...parseFilters(new URLSearchParams(searchParams.toString())), sort: saved });
+    // Only on arrival; later changes go through chooseSort.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const visible = useMemo(() => projects.filter((p) => matchesFilters(p, filters)), [projects, filters]);
   const visibleKeys = useMemo(() => new Set(visible.map((p) => p.key)), [visible]);
@@ -88,7 +119,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
       if (e.key === "Escape") {
         if (editing) setEditing(false);
         else if (selectedKey) setSelectedKey(null);
-        else if (hasFilters(filters)) setFilters({ status: [], quarter: [], team: [], phase: [], search: "" });
+        else if (hasFilters(filters)) clearFilters();
       } else if (e.key === "/" && !typing) {
         e.preventDefault();
         searchRef.current?.focus();
@@ -96,7 +127,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [editing, selectedKey, filters, setFilters]);
+  }, [editing, selectedKey, filters, clearFilters]);
 
   const counts = useMemo(() => {
     const by = <K extends string>(fn: (p: ProjectView) => K | K[]) => {
@@ -202,7 +233,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
             <div className={styles.search}>
               <Search
                 ref={searchRef}
-                size="md"
+                size="sm"
                 labelText="Search projects"
                 placeholder="Search project or number"
                 value={filters.search}
@@ -218,32 +249,27 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
                 type="button"
                 className="cds--link"
                 style={{ background: "none", border: 0, cursor: "pointer", fontSize: 12 }}
-                onClick={() => setFilters({ status: [], quarter: [], team: [], phase: [], search: "" })}
+                onClick={clearFilters}
               >
                 Clear filters
               </button>
             )}
             <span className={styles.spacer} />
             <span className={styles.hint}>Click a card for detail · double-click to enter</span>
-            <div className={styles.segmented} role="group" aria-label="Card density">
-              <button
-                type="button"
-                aria-pressed={density === "comfortable"}
-                onClick={() => chooseDensity("comfortable")}
-              >
-                Comfortable
-              </button>
-              <button type="button" aria-pressed={density === "compact"} onClick={() => chooseDensity("compact")}>
-                Compact
-              </button>
-            </div>
+            <span className={styles.sortLabel} aria-hidden="true">
+              Sort
+            </span>
+            <SegmentedControl label="Sort within quarter" options={SORTS} value={filters.sort} onChange={chooseSort} />
+            <SegmentedControl label="Card density" options={DENSITIES} value={density} onChange={chooseDensity} />
           </div>
         </section>
 
         <div className={styles.scroll}>
           {quarters.map((q) => {
             if (filters.quarter.length && !filters.quarter.includes(q.id)) return null;
-            const inLane = projects.filter((p) => p.quarterId === q.id && visibleKeys.has(p.key));
+            const inLane = projects
+              .filter((p) => p.quarterId === q.id && visibleKeys.has(p.key))
+              .sort(compareProjects(filters.sort));
             return (
               <section key={q.id} className={`${styles.lane} ${q.isBacklog ? styles.backlog : ""}`}>
                 <div className={styles.laneHead}>

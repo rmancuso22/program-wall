@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import NextLink from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Checkmark, ChevronLeft, ChevronRight, Dashboard, Document, Grid, List, Pen, Share, Timeline } from "@carbon/icons-react";
-import { filtersToQuery, matchesFilters, parseFilters, type FilterableProject } from "@/lib/filters";
+import { filtersToQuery, matchesFilters, parseFilters, sortWithinQuarters, type FilterableProject } from "@/lib/filters";
 import type { ThemePref } from "@/lib/theme";
 import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
 import { useCopy } from "@/components/Toast";
@@ -33,7 +33,11 @@ export function WorkspaceHeader({ projectKey, projectName, projects, themePref }
   const copy = useCopy();
 
   const tab = pathname.split("/")[3] ?? "";
-  const visible = projects.filter((p) => matchesFilters(p, filters));
+  // Same list, same order as the roadmap shows.
+  const visible = sortWithinQuarters(
+    projects.filter((p) => matchesFilters(p, filters)),
+    filters.sort,
+  );
   const i = visible.findIndex((p) => p.key === projectKey);
   const step = (dir: -1 | 1) => {
     if (i === -1 || visible.length < 2) return;

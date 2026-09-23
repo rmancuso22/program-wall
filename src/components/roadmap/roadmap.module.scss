@@ -140,6 +140,27 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 .search {
   flex: 0 1 280px;
   min-width: 180px;
+
+  // Carbon's small search, tuned to the mock: 32px, grey field, 13px text,
+  // 14px icon 10px in.
+  :global(.cds--search-input) {
+    height: 32px;
+    padding-left: 32px;
+    background: $field-02;
+    font-size: 13px;
+    letter-spacing: 0;
+
+    &::placeholder {
+      color: $text-helper;
+    }
+  }
+
+  :global(.cds--search-magnifier-icon) {
+    width: 14px;
+    height: 14px;
+    inset-inline-start: 10px;
+    fill: $text-helper;
+  }
 }
 
 .shown {
@@ -162,6 +183,16 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   font-family: $mono;
   font-size: 10px;
   letter-spacing: 0.04em;
+  color: $text-helper;
+}
+
+// "SORT" label before the sort toggle; the mock tucks it 2px closer.
+.sortLabel {
+  margin-right: -2px;
+  font-family: $mono;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   color: $text-helper;
 }
 

@@ -65,7 +65,8 @@ src/components/
   design/               ReviewDoc (banner, tiles, reviewer queue), ApproversTable, MarkdownDoc
 src/lib/
   domain.ts             phases, status lights, roles, key dates, UTC date helpers
-  filters.ts            roadmap filters <-> URL query (?status=&quarter=&team=&phase=&search=)
+  filters.ts            roadmap filters and sort <-> URL query
+                        (?status=&quarter=&team=&phase=&search=&sort=)
   reviews.ts            review derivations (SLA states, doc display state, tiles)
   projects.ts           server data loading and normalisation
   config.ts             program name, review SLA, review roles, GitHub host
@@ -142,6 +143,14 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
   - **A dependency is an edge, not a card**, and one pair of items gets one edge.
   - Refuse a new edge when its reverse already exists (the app must enforce this).
 
+## Roadmap sort
+
+Number (project key), Phase (requirements first; ties red, yellow, green, then key) or Health
+(red, yellow, green; ties by phase, then key). Cards sort within each quarter lane; lanes keep
+quarter order. The sort is in the URL with the filters and remembered in the browser
+(`localStorage` `pw.sort`, like density); a URL without `sort` picks up the remembered one.
+Previous/next in a project walk the same filtered, sorted list (`sortWithinQuarters`).
+
 ## Seed
 
 `supabase/migrations/20260922200100_seed_roadmap.sql` is generated. Don't edit it by hand. It was
@@ -179,3 +188,5 @@ fictional: `first.last@ibm.com`, with a Slack handle on half of them.
   secret key (`auth.admin.createUser`), sign in with supabase-js, and send its session as the
   `sb-jicsbnhiqcsjvagzhwha-auth-token` cookie (`base64-` + base64url JSON). Put back any rows you
   change, delete the test users afterwards, and never type passwords into a browser.
+- A background Chrome tab reports `visibilityState: hidden` and the app never hydrates, so clicks
+  do nothing. Ask the user to bring the localhost tab to the front before interactive checks.
