@@ -3,9 +3,10 @@ import { cache } from "react";
 import { createClient } from "./supabase/server";
 import type { DateField } from "./domain";
 import type { ReviewDocView } from "./reviews";
-import { scopesFromRow, toItemRow, type Stage, type TemplateItem } from "./lifecycle";
+import { scopesFromRow, toAddedItem, toItemRow, type AddedItemDb, type Plan, type Stage, type TemplateItem } from "./lifecycle";
 import { toAction, toAgenda, toAttendance, toOccurrence, toSeries } from "./meetings-rows";
 import { byPosition, toColumn, toLane, toLink, toSprint, toSticky } from "./stickies";
+import type { MilestoneKey, MilestoneTicks } from "./milestones";
 import type { ProfileRole, ProjectPhase, ProjectRag, ProjectRole, ReviewKind } from "./supabase/types";
 
 export type Person = {
@@ -31,6 +32,8 @@ export type ProjectView = {
   teamLeads: { teamId: string; team: string; lead: Person | null }[];
   people: Partial<Record<ProjectRole, Person>>;
   risks: Risk[];
+  /** Explicit ticks on the five key milestones (milestoneDone() decides the rest). */
+  milestoneTicks: MilestoneTicks;
 };
 
 /** A key risk; updatedAt changes only when its text does. */
@@ -45,7 +48,8 @@ const PROJECT_FIELDS = `
   srb_merge, api_spec_merge, commit_pitch, dev_complete, release,
   project_teams(position, team:teams(id, name), lead:people(${PERSON})),
   project_people(role, person:people(${PERSON})),
-  project_risks(id, position, body, updated_at)
+  project_risks(id, position, body, updated_at),
+  project_milestone_ticks(milestone, status, done_on)
 `;
 
 type PersonRow = {
@@ -74,6 +78,7 @@ type ProjectRowWithRelations = {
   project_teams: { position: number; team: { id: string; name: string } | null; lead: PersonRow | null }[];
   project_people: { role: ProjectRole; person: PersonRow | null }[];
   project_risks: { id: string; position: number; body: string; updated_at: string }[];
+  project_milestone_ticks: { milestone: MilestoneKey; status: "open" | "done" | "na"; done_on: string | null }[];
 };
 
 // A person's own contact details win; a linked profile fills in the email.
@@ -116,6 +121,9 @@ function toProject(row: ProjectRowWithRelations): ProjectView {
     risks: [...row.project_risks]
       .sort((a, b) => a.position - b.position)
       .map((r) => ({ id: r.id, body: r.body, position: r.position, updatedAt: r.updated_at })),
+    milestoneTicks: Object.fromEntries(
+      row.project_milestone_ticks.map((t) => [t.milestone, { status: t.status === "done" ? "done" : "open", doneOn: t.done_on }]),
+    ) as MilestoneTicks,
   };
 }
 
@@ -278,19 +286,30 @@ export const getLifecycleTemplate = cache(async () => {
   };
 });
 
-/** A project's lifecycle state: scopes and touched items. */
+/** A project's lifecycle state: plan, scopes, touched template items and added items. */
 export const getProjectLifecycle = cache(async (projectId: string) => {
   const supabase = await createClient();
-  const [scope, rows] = await Promise.all([
-    supabase.from("project_lifecycle").select("scope_api, scope_ux, scope_commercial, scope_external").eq("project_id", projectId).maybeSingle(),
+  const [lc, rows, added] = await Promise.all([
+    supabase
+      .from("project_lifecycle")
+      .select("scope_api, scope_ux, scope_commercial, scope_external, plan, test_complete_on")
+      .eq("project_id", projectId)
+      .maybeSingle(),
     supabase
       .from("project_lifecycle_items")
-      .select("item_id, status, start_date, end_date, done_on, owner_person_id, owner_set")
+      .select("item_id, status, start_date, end_date, done_on, owner_person_id, owner_set, type_override, name_override, track_override")
       .eq("project_id", projectId),
+    supabase.from("project_timeline_items").select("*").eq("project_id", projectId).order("position").order("created_at"),
   ]);
-  const error = scope.error ?? rows.error;
+  const error = lc.error ?? rows.error ?? added.error;
   if (error) throw new Error(`Could not load the timeline: ${error.message}`);
-  return { scopes: scopesFromRow(scope.data), rows: (rows.data ?? []).map(toItemRow) };
+  return {
+    plan: ((lc.data?.plan as Plan | undefined) ?? "simple") as Plan,
+    testCompleteOn: lc.data?.test_complete_on ?? null,
+    scopes: scopesFromRow(lc.data),
+    rows: (rows.data ?? []).map(toItemRow),
+    added: (added.data ?? []).map((r) => toAddedItem(r as unknown as AddedItemDb)),
+  };
 });
 
 /** Everyone in the people directory, for owner pickers. */

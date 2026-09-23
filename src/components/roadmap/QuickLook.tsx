@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { KEY_DATES, PHASES, PROJECT_ROLES, formatDate, phaseColor, phaseIndex } from "@/lib/domain";
 import type { Person, ProjectView, Quarter } from "@/lib/projects";
+import { keyDateDone } from "@/lib/milestones";
 import { CHECK, DateEditor, PersonValue, XS, useProjectEditing } from "@/components/project/ProjectEditing";
 
 type Props = {
@@ -175,7 +176,7 @@ export function QuickLook({ project: p, quarter, directory, canEdit, today, tz, 
                 <div className="qv-kv">
                   {KEY_DATES.map((d) => {
                     const iso = p.dates[d.key];
-                    const done = Boolean(iso) && phase >= d.doneFromPhase && iso! <= today;
+                    const done = keyDateDone(d.key, p, today).done;
                     return (
                       <div key={d.key}>
                         {ed.field(

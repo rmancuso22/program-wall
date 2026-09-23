@@ -3,7 +3,8 @@
 import { Fragment, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { KEY_DATES, PROJECT_ROLES, daysBetween, formatShortDate, initials, phaseColor, phaseIndex } from "@/lib/domain";
+import { KEY_DATES, PROJECT_ROLES, daysBetween, formatShortDate, initials, phaseColor } from "@/lib/domain";
+import { keyDateDone } from "@/lib/milestones";
 import type { UpNextRow } from "@/lib/overview";
 import type { Person, ProjectView } from "@/lib/projects";
 import { CHECK, DateEditor, useProjectEditing } from "@/components/project/ProjectEditing";
@@ -49,10 +50,9 @@ export function Overview({ project: initial, directory: initialDirectory, upNext
   });
 
   // Key dates: the first date that isn't done is "next" (blue ring, "in Nd").
-  const phase = phaseIndex(p.phase);
   const dates = KEY_DATES.map((d) => {
     const iso = p.dates[d.key];
-    const done = Boolean(iso) && phase >= d.doneFromPhase && iso! <= today;
+    const done = keyDateDone(d.key, p, today).done;
     const late = !done && Boolean(iso) && iso! < today;
     return { ...d, iso, done, late };
   });
