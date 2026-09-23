@@ -33,7 +33,7 @@ export function SignUpForm() {
         id="name"
         name="name"
         labelText="Name (optional)"
-        helperText="Shown to people on your boards."
+        helperText="Shown to people on your projects."
         autoComplete="name"
         maxLength={100}
         invalid={Boolean(errors.name)}

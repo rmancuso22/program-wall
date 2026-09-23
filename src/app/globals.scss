@@ -29,25 +29,50 @@
 @use '@carbon/react';
 @use '@carbon/react/scss/themes';
 @use '@carbon/react/scss/theme';
+@use '@carbon/react/scss/zone';
+@use '@carbon/react/scss/colors' as c;
 
-// Theme resolution. The server renders data-theme-pref from the user's stored
-// override ("light" | "dark" | "system"). "system" follows prefers-color-scheme.
+// Theme: light (g10) for everyone unless the user picked dark. The server
+// renders data-theme-pref from the pw-theme cookie, which mirrors profiles.theme.
+// The OS colour scheme is deliberately ignored.
 :root,
 [data-theme-pref='light'] {
   @include theme.theme(themes.$g10);
   color-scheme: light;
+
+  // Program Wall tokens, built from the Carbon palette.
+  --pw-p0: #{c.$gray-60}; // requirements
+  --pw-p1: #{c.$purple-60}; // design
+  --pw-p2: #{c.$blue-60}; // dev
+  --pw-p3: #{c.$orange-40}; // pipeline
+  --pw-p4: #{c.$teal-60}; // test
+  --pw-p5: #{c.$green-60}; // released
+  --pw-ok: #{c.$green-60};
+  --pw-risk: #{c.$yellow-50};
+  --pw-block: #{c.$red-60};
+  --pw-track-empty: #{c.$gray-20};
+  --pw-grid: #{c.$gray-10};
+  --pw-shadow: 0 1px 0 rgb(22 22 22 / 6%), 0 2px 6px rgb(22 22 22 / 6%);
+  --pw-shadow-lift: 0 2px 0 rgb(22 22 22 / 10%), 0 10px 24px rgb(22 22 22 / 14%);
 }
 
 [data-theme-pref='dark'] {
   @include theme.theme(themes.$g100);
   color-scheme: dark;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme-pref='light']) {
-    @include theme.theme(themes.$g100);
-    color-scheme: dark;
-  }
+  --pw-p0: #{c.$gray-40};
+  --pw-p1: #{c.$purple-40};
+  --pw-p2: #{c.$blue-50};
+  --pw-p3: #{c.$orange-40};
+  --pw-p4: #{c.$teal-40};
+  --pw-p5: #{c.$green-40};
+  --pw-ok: #{c.$green-40};
+  --pw-risk: #{c.$yellow-30};
+  --pw-block: #{c.$red-50};
+  --pw-track-empty: #{c.$gray-80};
+  --pw-grid: #{c.$gray-90};
+  --pw-shadow: 0 1px 0 rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 35%);
+  --pw-shadow-lift: 0 2px 0 rgb(0 0 0 / 50%), 0 12px 28px rgb(0 0 0 / 50%);
 }
 
 html,
@@ -58,4 +83,17 @@ body {
 body {
   background: theme.$background;
   color: theme.$text-primary;
+}
+
+// Shared small utilities used across the app's own components.
+.pw-mono {
+  font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+}
+
+.pw-label {
+  font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: theme.$text-helper;
 }

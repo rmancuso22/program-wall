@@ -1,24 +1,20 @@
-// Row and enum aliases over the generated schema types.
+// Aliases over the generated schema types.
 // Regenerate database.types.ts after every migration:
 //   npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts
-import type { Database as Generated, Tables, Enums } from "./database.types";
+import type { Database as Generated, Enums, Tables } from "./database.types";
 
 export type Database = Generated;
 
-export type MemberRole = Enums<"member_role">;
-export type CardType = Enums<"card_type">;
-export type CardStatus = Enums<"card_status">;
-export type LinkKind = Enums<"link_kind">;
-export type ThemeSetting = "system" | "light" | "dark";
+export type ProfileRole = Enums<"profile_role">;
+export type ProjectPhase = Enums<"project_phase">;
+export type ProjectRag = Enums<"project_rag">;
+export type ProjectRole = Enums<"project_role">;
+export type ReviewKind = Enums<"review_kind">;
+export type ReviewDocState = Enums<"review_doc_state">;
+export type ApprovalState = Enums<"approval_state">;
 
-// boards.columns is jsonb; the app always stores an array of quarter labels.
-export type Board = Omit<Tables<"boards">, "columns"> & { columns: string[] };
-export type Profile = Tables<"profiles">;
-export type BoardMember = Tables<"board_members">;
-export type Lane = Tables<"lanes">;
-export type Card = Tables<"cards">;
-export type Link = Tables<"links">;
-
-export function quarterLabels(columns: unknown): string[] {
-  return Array.isArray(columns) ? columns.filter((c): c is string => typeof c === "string") : [];
-}
+export type ProjectRow = Tables<"projects">;
+export type QuarterRow = Tables<"quarters">;
+export type TeamRow = Tables<"teams">;
+export type ReviewDocRow = Tables<"review_docs">;
+export type ReviewApprovalRow = Tables<"review_approvals">;

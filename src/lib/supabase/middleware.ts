@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/auth"];
-// Signed-in users are sent on to their boards from these.
+// Signed-in users are sent on to the roadmap from these.
 const SIGNED_OUT_ONLY = ["/login", "/signup", "/forgot-password"];
 
 export async function updateSession(request: NextRequest) {
@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
 
   if (signedIn && SIGNED_OUT_ONLY.includes(pathname)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/boards";
+    url.pathname = "/roadmap";
     url.search = "";
     return copyCookies(response, NextResponse.redirect(url));
   }

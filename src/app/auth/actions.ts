@@ -62,7 +62,7 @@ export async function signUp(_prev: AuthFormState, formData: FormData): Promise<
       // Read by the on_auth_user_created trigger into profiles.display_name.
       data: name ? { full_name: name } : undefined,
       // Only used when email confirmation is enabled in Supabase.
-      emailRedirectTo: `${await requestOrigin()}/auth/confirm?next=/boards`,
+      emailRedirectTo: `${await requestOrigin()}/auth/confirm?next=/roadmap`,
     },
   });
   if (error) return mapAuthError(error, email);
@@ -70,7 +70,7 @@ export async function signUp(_prev: AuthFormState, formData: FormData): Promise<
   // Email confirmation off: signUp returns a session and the user is in.
   if (data.session) {
     await syncThemeCookie(supabase, data.session.user.id);
-    redirect("/boards");
+    redirect("/roadmap");
   }
 
   // Email confirmation on: no session until the link is opened. Supabase also
@@ -147,5 +147,5 @@ export async function resetPassword(
   if (error) return mapAuthError(error);
 
   await syncThemeCookie(supabase, data.user.id);
-  redirect("/boards");
+  redirect("/roadmap");
 }

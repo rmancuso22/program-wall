@@ -1,0 +1,295 @@
+@use '@carbon/react/scss/theme' as *;
+
+$mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+
+.label {
+  font-family: $mono;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: $text-helper;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+// Status light
+.rag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: $mono;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    background: currentColor;
+    box-shadow: 0 0 0 2px $layer-01;
+  }
+}
+
+.green { color: var(--pw-ok); }
+.yellow { color: var(--pw-risk); }
+.red { color: var(--pw-block); }
+
+// Phase track on cards
+.track {
+  display: flex;
+  gap: 2px;
+  flex: 0 0 auto;
+
+  i {
+    display: block;
+    width: 13px;
+    height: 4px;
+    background: var(--pw-track-empty);
+  }
+
+  i.on {
+    background: var(--pc);
+  }
+}
+
+.tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-block;
+  border: 1px solid $border-subtle-01;
+  border-radius: 999px;
+  padding: 1px 8px;
+  background: $layer-02;
+  color: $text-secondary;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.desc {
+  margin: 0;
+  color: $text-secondary;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+// Current status callout
+.callout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--rag);
+  background: $layer-02;
+  font-size: 12.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.calloutHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: normal;
+}
+
+.stamp {
+  font-family: $mono;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: $text-helper;
+}
+
+// Key risks
+.risks {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.risk {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 10px;
+  background: $layer-02;
+  font-size: 12.5px;
+  line-height: 1.4;
+
+  svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    fill: var(--pw-risk);
+  }
+}
+
+.riskNone {
+  color: $text-helper;
+
+  svg {
+    fill: var(--pw-ok);
+  }
+}
+
+// Key/value lists (people, dates)
+.kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+}
+
+.kvRow {
+  display: contents;
+
+  &:last-child > * {
+    border-bottom: 0;
+  }
+}
+
+.k {
+  display: flex;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid $border-subtle-01;
+  font-family: $mono;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $text-helper;
+  white-space: nowrap;
+}
+
+.v {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 6px 0;
+  border-bottom: 1px solid $border-subtle-01;
+  font-size: 12.5px;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  background: $layer-accent-01;
+  color: $text-primary;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.personName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unassigned {
+  color: $text-helper;
+}
+
+.contact {
+  display: flex;
+  gap: 2px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.contactBtn {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  background: none;
+  color: $text-helper;
+  cursor: pointer;
+
+  &:hover {
+    background: $layer-hover-02;
+    color: $link-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $focus;
+    outline-offset: -2px;
+  }
+}
+
+.date {
+  font-family: $mono;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dateDone {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--pw-ok);
+}
+
+.datePlanned {
+  color: $text-secondary;
+}
+
+.dateTbd {
+  color: $text-helper;
+}
+
+// Phase ladder
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px;
+  background: $layer-02;
+  font-size: 12px;
+}
+
+.pip {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--pw-track-empty);
+}
+
+.stepDone .pip {
+  background: var(--pc);
+}
+
+.stepNow {
+  background: $highlight;
+  font-weight: 600;
+}
+
+.when {
+  margin-left: auto;
+  font-family: $mono;
+  font-size: 10px;
+  color: $text-helper;
+}
