@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      lifecycle_items: {
+        Row: {
+          end_week: number
+          id: string
+          name: string
+          position: number
+          scope: string | null
+          start_week: number
+          track: string
+          type: Database["public"]["Enums"]["lifecycle_item_type"]
+        }
+        Insert: {
+          end_week: number
+          id: string
+          name: string
+          position: number
+          scope?: string | null
+          start_week: number
+          track: string
+          type: Database["public"]["Enums"]["lifecycle_item_type"]
+        }
+        Update: {
+          end_week?: number
+          id?: string
+          name?: string
+          position?: number
+          scope?: string | null
+          start_week?: number
+          track?: string
+          type?: Database["public"]["Enums"]["lifecycle_item_type"]
+        }
+        Relationships: []
+      }
+      lifecycle_stages: {
+        Row: {
+          duration_label: string
+          end_week: number
+          name: string
+          position: number
+          start_week: number
+        }
+        Insert: {
+          duration_label?: string
+          end_week: number
+          name: string
+          position: number
+          start_week: number
+        }
+        Update: {
+          duration_label?: string
+          end_week?: number
+          name?: string
+          position?: number
+          start_week?: number
+        }
+        Relationships: []
+      }
       people: {
         Row: {
           created_at: string
@@ -84,6 +141,99 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_lifecycle: {
+        Row: {
+          project_id: string
+          scope_api: boolean
+          scope_commercial: boolean
+          scope_external: boolean
+          scope_ux: boolean
+          updated_at: string
+        }
+        Insert: {
+          project_id: string
+          scope_api?: boolean
+          scope_commercial?: boolean
+          scope_external?: boolean
+          scope_ux?: boolean
+          updated_at?: string
+        }
+        Update: {
+          project_id?: string
+          scope_api?: boolean
+          scope_commercial?: boolean
+          scope_external?: boolean
+          scope_ux?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_lifecycle_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_lifecycle_items: {
+        Row: {
+          done_on: string | null
+          end_date: string | null
+          item_id: string
+          owner_person_id: string | null
+          owner_set: boolean
+          project_id: string
+          start_date: string | null
+          status: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at: string
+        }
+        Insert: {
+          done_on?: string | null
+          end_date?: string | null
+          item_id: string
+          owner_person_id?: string | null
+          owner_set?: boolean
+          project_id: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at?: string
+        }
+        Update: {
+          done_on?: string | null
+          end_date?: string | null
+          item_id?: string
+          owner_person_id?: string | null
+          owner_set?: boolean
+          project_id?: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_lifecycle_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "lifecycle_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_lifecycle_items_owner_person_id_fkey"
+            columns: ["owner_person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_lifecycle_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_people: {
         Row: {
@@ -445,6 +595,8 @@ export type Database = {
         | "approved"
         | "changes_requested"
         | "not_requested"
+      lifecycle_item_status: "open" | "done" | "na"
+      lifecycle_item_type: "gate" | "milestone" | "task" | "weekly"
       profile_role: "admin" | "member" | "viewer"
       project_phase:
         | "requirements"
@@ -590,6 +742,8 @@ export const Constants = {
         "changes_requested",
         "not_requested",
       ],
+      lifecycle_item_status: ["open", "done", "na"],
+      lifecycle_item_type: ["gate", "milestone", "task", "weekly"],
       profile_role: ["admin", "member", "viewer"],
       project_phase: [
         "requirements",
