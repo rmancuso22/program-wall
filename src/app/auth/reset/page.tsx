@@ -1,8 +1,9 @@
 import NextLink from "next/link";
 import { AuthCard } from "@/components/AuthCard";
+import { PRODUCT } from "@/lib/config";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 
-export const metadata = { title: "Choose a new password · Program Wall" };
+export const metadata = { title: `Choose a new password · ${PRODUCT.name}` };
 
 // Landing page for the password recovery email. Accepts the token_hash email
 // template (works on any device) or the default PKCE ?code= redirect.

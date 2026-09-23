@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { plexMono, plexSans } from "./fonts";
 import { getThemePref } from "@/lib/theme-server";
+import { PRODUCT } from "@/lib/config";
 import "./globals.scss";
 
 export const metadata: Metadata = {
-  title: "Program Wall",
-  description: "Program planning board for IBM program teams",
+  title: PRODUCT.name,
+  description: PRODUCT.tagline,
 };
 
 export default async function RootLayout({

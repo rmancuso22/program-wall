@@ -14,7 +14,7 @@ import {
   type Filters,
 } from "@/lib/filters";
 import type { ProjectView, Quarter } from "@/lib/projects";
-import { PROGRAM } from "@/lib/config";
+import { PRODUCT, PROGRAM } from "@/lib/config";
 import type { ThemePref } from "@/lib/theme";
 import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
 import { useToast } from "@/components/Toast";
@@ -115,7 +115,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
   return (
     <>
       <ShellHeader
-        label={`IBM Program Wall: ${PROGRAM.roadmapTitle}`}
+        label={`IBM ${PRODUCT.name}: ${PROGRAM.roadmapTitle}`}
         themePref={themePref}
         actions={
           <ShellButton onClick={() => toast("Export isn't available yet.")}>
@@ -126,7 +126,7 @@ export function RoadmapView({ quarters, teams, projects, canEdit, today, themePr
       >
         <a className={shellStyles.brand} href="/roadmap">
           <b>IBM</b>
-          <span>Program Wall</span>
+          <span>{PRODUCT.name}</span>
         </a>
         <ShellDivider />
         <div className={shellStyles.scope}>

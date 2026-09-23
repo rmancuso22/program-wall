@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import { getRoadmap, getViewer } from "@/lib/projects";
 import { todayISO } from "@/lib/domain";
 import { getThemePref } from "@/lib/theme-server";
-import { PROGRAM } from "@/lib/config";
+import { PRODUCT } from "@/lib/config";
 import { ToastProvider } from "@/components/Toast";
 import { RoadmapView } from "@/components/roadmap/RoadmapView";
 
-export const metadata = { title: `${PROGRAM.roadmapTitle} · Program Wall` };
+export const metadata = { title: PRODUCT.name };
 
 export default async function RoadmapPage() {
   const [{ quarters, teams, projects }, viewer, themePref] = await Promise.all([

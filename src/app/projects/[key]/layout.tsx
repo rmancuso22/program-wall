@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getProject, getRoadmap } from "@/lib/projects";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
 import { pendingReviewCount } from "@/lib/reviews";
-import { PROGRAM } from "@/lib/config";
+import { PRODUCT, PROGRAM } from "@/lib/config";
 import { getThemePref } from "@/lib/theme-server";
 import { ToastProvider } from "@/components/Toast";
 import { StatusLight } from "@/components/project/ProjectBits";
@@ -15,7 +15,7 @@ type Props = { children: React.ReactNode; params: Promise<{ key: string }> };
 export async function generateMetadata({ params }: Omit<Props, "children">) {
   const { key } = await params;
   const data = await getProject(decodeURIComponent(key));
-  return { title: data ? `${data.project.key} ${data.project.name} · Program Wall` : "Program Wall" };
+  return { title: data ? `${data.project.key} · ${PRODUCT.name}` : PRODUCT.name };
 }
 
 export default async function ProjectLayout({ children, params }: Props) {

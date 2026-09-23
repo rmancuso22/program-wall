@@ -18,13 +18,22 @@
 }
 
 .brand {
-  @include type-style('body-compact-01');
   margin-bottom: $spacing-09;
+}
+
+.product {
+  @include type-style('heading-03');
   color: $text-primary;
 
   strong {
     font-weight: 600;
   }
+}
+
+.tagline {
+  @include type-style('body-compact-01');
+  margin-top: $spacing-02;
+  color: $text-secondary;
 }
 
 .title {

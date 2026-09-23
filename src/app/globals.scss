@@ -40,7 +40,7 @@
   @include theme.theme(themes.$g10);
   color-scheme: light;
 
-  // Program Wall tokens, built from the Carbon palette.
+  // Liftoff tokens, built from the Carbon palette.
   --pw-p0: #{c.$gray-60}; // requirements
   --pw-p1: #{c.$purple-60}; // design
   --pw-p2: #{c.$blue-60}; // dev

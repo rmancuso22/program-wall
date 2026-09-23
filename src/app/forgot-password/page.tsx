@@ -1,8 +1,9 @@
 import NextLink from "next/link";
 import { AuthCard } from "@/components/AuthCard";
+import { PRODUCT } from "@/lib/config";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
-export const metadata = { title: "Reset password · Program Wall" };
+export const metadata = { title: `Reset password · ${PRODUCT.name}` };
 
 export default function ForgotPasswordPage() {
   return (

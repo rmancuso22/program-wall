@@ -1,6 +1,11 @@
-# Program Wall
+# Liftoff
 
-Planning board for IBM program teams. Next.js 15 (App Router), Supabase, Carbon.
+From idea to release. Everything connected.
+
+Program planning for IBM program teams. Next.js 15 (App Router), Supabase, Carbon.
+
+The repository, Vercel project and Supabase project keep the name `program-wall`; renaming them
+would break links and the Supabase CLI link.
 
 ## Local setup
 

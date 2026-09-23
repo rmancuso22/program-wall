@@ -1,6 +1,11 @@
-# Program Wall
+# Liftoff
 
-Planning board replacing Mural for IBM program teams. The roadmap is the front door; a project is
+"From idea to release. Everything connected."
+
+Program planning for IBM program teams, replacing Mural. The product was called Program Wall; the
+repo, Vercel project and Supabase project keep the name `program-wall` on purpose (renaming breaks
+links and the CLI link). Use "Liftoff" in all user-facing copy, from `PRODUCT` in
+`src/lib/config.ts`. Text only: no rocket or launch imagery. The roadmap is the front door; a project is
 the top-level object, with a workspace of tabs (Overview, Design, Mural, Jira tickets, Timeline,
 Documents).
 

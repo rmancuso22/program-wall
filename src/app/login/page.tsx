@@ -1,9 +1,10 @@
 import NextLink from "next/link";
 import { AuthCard } from "@/components/AuthCard";
+import { PRODUCT } from "@/lib/config";
 import { safeNext } from "@/lib/safe-next";
 import { SignInForm } from "./SignInForm";
 
-export const metadata = { title: "Sign in · Program Wall" };
+export const metadata = { title: `Sign in · ${PRODUCT.name}` };
 
 export default async function LoginPage({
   searchParams,
@@ -17,7 +18,7 @@ export default async function LoginPage({
       title="Sign in"
       footer={
         <>
-          New to Program Wall? <NextLink href="/signup">Create an account</NextLink>
+          New to {PRODUCT.name}? <NextLink href="/signup">Create an account</NextLink>
         </>
       }
     >

@@ -1,6 +1,11 @@
 // App-level configuration. Values that will later come from an org model or
 // admin settings live here until then.
 
+export const PRODUCT = {
+  name: "Liftoff",
+  tagline: "From idea to release. Everything connected.",
+};
+
 export const PROGRAM = {
   name: "Compute Workloads",
   roadmapTitle: "Compute Workloads Roadmap",

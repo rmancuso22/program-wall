@@ -1,8 +1,9 @@
 import NextLink from "next/link";
 import { AuthCard } from "@/components/AuthCard";
+import { PRODUCT } from "@/lib/config";
 import { SignUpForm } from "./SignUpForm";
 
-export const metadata = { title: "Create account · Program Wall" };
+export const metadata = { title: `Create account · ${PRODUCT.name}` };
 
 export default function SignUpPage() {
   return (
