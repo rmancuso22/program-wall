@@ -1,6 +1,6 @@
 "use client";
 
-import { SCOPES, isSpan, weekDate, type TemplateItem, type Timeline } from "@/lib/lifecycle";
+import { SCOPES, isSpan, weekDate, type Stage, type Timeline, type TimelineItem } from "@/lib/lifecycle";
 import { daysBetween, formatShortDate, initials } from "@/lib/domain";
 import type { Person } from "@/lib/projects";
 
@@ -15,17 +15,19 @@ const CHECK = (
 
 type Props = {
   tl: Timeline;
-  ownerOf: (item: TemplateItem) => Person | null;
-  hidden: (item: TemplateItem) => boolean;
+  ownerOf: (item: TimelineItem) => Person | null;
+  hidden: (item: TimelineItem) => boolean;
   canEdit: boolean;
   /** Stage open/closed, keyed by index; undefined means the default. */
   stageOpen: Record<number, boolean>;
   highlight: string | null;
   onToggleStage: (index: number, open: boolean) => void;
-  onTick: (item: TemplateItem) => void;
-  onNa: (item: TemplateItem) => void;
-  onDates: (item: TemplateItem, anchor: HTMLElement) => void;
-  onOwner: (item: TemplateItem, anchor: HTMLElement) => void;
+  onTick: (item: TimelineItem) => void;
+  onNa: (item: TimelineItem) => void;
+  onDates: (item: TimelineItem, anchor: HTMLElement) => void;
+  onOwner: (item: TimelineItem, anchor: HTMLElement) => void;
+  onEdit: (item: TimelineItem, anchor: HTMLElement) => void;
+  onAddToStage: (stage: Stage, anchor: HTMLElement) => void;
   onHover: (itemId: string | null) => void;
 };
 
@@ -86,6 +88,11 @@ export function Checklist(props: Props) {
               {items.map((it) => (
                 <Row key={it.id} item={it} {...props} highlighted={highlight === it.id} />
               ))}
+              {props.canEdit && (
+                <button type="button" className="cl-add" onClick={(e) => props.onAddToStage(st, e.currentTarget)}>
+                  + Add to {st.name}
+                </button>
+              )}
             </div>
           </div>
         );
@@ -104,8 +111,9 @@ function Row({
   onNa,
   onDates,
   onOwner,
+  onEdit,
   onHover,
-}: Props & { item: TemplateItem; highlighted: boolean }) {
+}: Props & { item: TimelineItem; highlighted: boolean }) {
   const s = tl.state(it);
   const span = isSpan(it);
   const end = tl.end(it);
@@ -160,7 +168,14 @@ function Row({
       </button>
       <span className="nm">
         <i style={{ background: `var(--pw-tk-${it.track})` }} />
-        <span>{it.name}</span>
+        {canEdit ? (
+          <span className="nmx" role="button" tabIndex={0} title="Edit" onClick={(e) => onEdit(it, e.currentTarget)} onKeyDown={(e) => e.key === "Enter" && onEdit(it, e.currentTarget)}>
+            {it.name}
+          </span>
+        ) : (
+          <span>{it.name}</span>
+        )}
+        {it.origin === "added" && <em className="cust">Added</em>}
       </span>
       {kind}
       {it.type === "weekly" ? (

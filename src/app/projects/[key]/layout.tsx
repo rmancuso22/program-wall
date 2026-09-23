@@ -8,7 +8,7 @@ import {
   getRoadmap,
   getStickyCounts,
 } from "@/lib/projects";
-import { Timeline, anchorDate } from "@/lib/lifecycle";
+import { buildTimeline } from "@/lib/lifecycle";
 import { getToday } from "@/lib/today";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
 import { pendingReviewCount } from "@/lib/reviews";
@@ -42,14 +42,17 @@ export default async function ProjectLayout({ children, params }: Props) {
     getOpenActionCount(data.project.id),
     getStickyCounts(data.project.id),
   ]);
-  const tlStats = new Timeline(
-    template.items,
-    template.stages,
-    new Map(lifecycle.rows.map((r) => [r.itemId, r])),
-    lifecycle.scopes,
-    anchorDate(data.project.dates.release, today),
+  const tlStats = buildTimeline({
+    plan: lifecycle.plan,
+    template: template.items,
+    stages: template.stages,
+    rows: lifecycle.rows,
+    added: lifecycle.added,
+    scopes: lifecycle.scopes,
+    project: data.project,
+    testCompleteOn: lifecycle.testCompleteOn,
     today,
-  ).stats();
+  }).stats();
 
   const { project, reviews } = data;
   const quarter = roadmap.quarters.find((q) => q.id === project.quarterId);

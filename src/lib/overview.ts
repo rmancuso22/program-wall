@@ -1,6 +1,6 @@
 import "server-only";
 import { addDays, daysBetween, formatShortDate } from "./domain";
-import { Timeline, anchorDate } from "./lifecycle";
+import { buildTimeline } from "./lifecycle";
 import { formatTime, listMeetings } from "./meetings";
 import { getLifecycleTemplate, getProjectLifecycle, getProjectMeetings, getProjectStickies, type ProjectView } from "./projects";
 
@@ -23,14 +23,17 @@ export async function getUpNext(project: ProjectView, today: string, tz: string)
   const rows: UpNextRow[] = [];
 
   // Next gate
-  const tl = new Timeline(
-    template.items,
-    template.stages,
-    new Map(lifecycle.rows.map((r) => [r.itemId, r])),
-    lifecycle.scopes,
-    anchorDate(project.dates.release, today),
+  const tl = buildTimeline({
+    plan: lifecycle.plan,
+    template: template.items,
+    stages: template.stages,
+    rows: lifecycle.rows,
+    added: lifecycle.added,
+    scopes: lifecycle.scopes,
+    project,
+    testCompleteOn: lifecycle.testCompleteOn,
     today,
-  );
+  });
   const gate = tl.nextGate();
   if (gate) {
     const d = daysBetween(today, tl.end(gate));

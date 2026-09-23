@@ -1,182 +1,175 @@
 "use client";
 
-import { FIRST_WEEK, LAST_WEEK, TRACKS, weekDate, weekOf, type TemplateItem, type Timeline, type TrackKey } from "@/lib/lifecycle";
-import { formatShortDate, initials } from "@/lib/domain";
+import { FIRST_WEEK, LAST_WEEK, TRACKS, isSpan, weekDate, weekOf, type Timeline, type TimelineItem, type TrackKey } from "@/lib/lifecycle";
+import { formatShortDate } from "@/lib/domain";
 import type { Person } from "@/lib/projects";
+import { Axis, CHEVRON, DateTag, Glyph, LABEL_W, OwnerTag, itemClass, planned, useBarDrag, type LabelHandlers } from "./chart";
 
-// Port of the mock's ganttHTML(): stage band, week axis, gates and milestones,
-// one packed lane per track, TODAY line, legend.
+// Port of the mock's ganttHTML(): stage band, two-row axis, gates and
+// milestones, one row per item under each team header, TODAY line, legend.
 
-const WK = 38; // px per week
-const LABEL_W = 190;
-const x = (w: number) => (w - FIRST_WEEK) * WK;
-const W = x(LAST_WEEK) + WK;
+export type Zoom = "fit" | "week" | "wide";
 
-type Props = {
+type Props = LabelHandlers & {
   tl: Timeline;
-  ownerOf: (item: TemplateItem) => Person | null;
-  hidden: (item: TemplateItem) => boolean;
+  ownerOf: (item: TimelineItem) => Person | null;
+  hidden: (item: TimelineItem) => boolean;
   shut: Partial<Record<TrackKey, boolean>>;
   highlight: string | null;
+  zoom: Zoom;
+  /** Width available for the chart area (the tab's width minus the label column). */
+  avail: number;
   onToggleLane: (track: TrackKey) => void;
+  onAdd: (track: TrackKey, anchor: HTMLElement) => void;
   onGo: (itemId: string) => void;
+  onMove: (item: TimelineItem, start: string, end: string) => void;
 };
 
-type Placed = {
-  item: TemplateItem;
-  ws: number;
-  we: number;
-  wd: number | null;
-  short: boolean;
-  left: boolean;
-  row: number;
-};
-
-const chev = (
-  <svg className="lchev" viewBox="0 0 16 16" aria-hidden="true">
-    <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z" />
-  </svg>
-);
-
-export function Gantt({ tl, ownerOf, hidden, shut, highlight, onToggleLane, onGo }: Props) {
+export function Gantt(props: Props) {
+  const { tl, ownerOf, hidden, shut, highlight, zoom, avail, canEdit } = props;
+  const WK = zoom === "wide" ? 64 : zoom === "week" ? 42 : Math.max(22, Math.floor(avail / 33));
+  const x = (w: number) => (w - FIRST_WEEK) * WK;
+  const W = x(LAST_WEEK) + WK;
+  const xd = (iso: string) => x(weekOf(tl.anchor, iso));
   const cur = tl.currentStage();
   const clamp = (w: number) => Math.max(FIRST_WEEK, Math.min(LAST_WEEK, w));
+  const drag = useBarDrag({ pxPerDay: WK / 7, onCommit: props.onMove });
 
-  const place = (item: TemplateItem) => {
-    const ws = Math.max(FIRST_WEEK, weekOf(tl.anchor, tl.start(item)));
-    let we = Math.min(LAST_WEEK, weekOf(tl.anchor, tl.end(item)));
+  const place = (it: TimelineItem) => {
+    const ws = Math.max(FIRST_WEEK, weekOf(tl.anchor, tl.start(it)));
+    let we = Math.min(LAST_WEEK, weekOf(tl.anchor, tl.end(it)));
     if (we < ws) we = ws;
-    const dn = tl.doneOn(item);
+    const dn = tl.doneOn(it);
     return { ws, we, wd: dn ? clamp(weekOf(tl.anchor, dn)) : null };
   };
-
-  const tipTail = (item: TemplateItem) => {
-    const dn = tl.doneOn(item);
-    const o = ownerOf(item);
-    return (dn ? ` · Done ${formatShortDate(dn)}` : ` · ${tl.label(item)}`) + (o ? ` · ${o.name}` : "");
+  const tipTail = (it: TimelineItem) => {
+    const dn = tl.doneOn(it);
+    const o = ownerOf(it);
+    return (dn ? ` · Done ${formatShortDate(dn)}` : ` · ${tl.label(it)}`) + (o ? ` · ${o.name}` : "");
   };
 
-  const cls = (item: TemplateItem) => {
-    const s = tl.state(item);
-    let c = s === "done" ? "done" : s === "na" || s === "oos" ? "na" : s === "rec" ? "rec" : "";
-    if (tl.late(item)) c += " late";
-    return c;
-  };
-
-  const ticks: number[] = [];
-  for (let w = FIRST_WEEK; w <= LAST_WEEK; w += 2) ticks.push(w);
+  const weeks: string[] = [];
+  for (let w = FIRST_WEEK; w <= LAST_WEEK; w++) weeks.push(weekDate(tl.anchor, w));
 
   const gates = tl.items.filter((it) => (it.type === "gate" || it.type === "milestone") && !hidden(it));
 
   const lanes = TRACKS.map((tk) => {
-    const all = tl.items.filter((it) => it.track === tk.key && it.type !== "gate" && it.type !== "milestone");
-    const visible = all.filter((it) => !hidden(it));
-    const placed = visible
-      .map((item) => ({ item, ...place(item) }))
+    const all = tl.items.filter((it) => it.track === tk.key);
+    const items = all
+      .filter((it) => !hidden(it))
+      .map((it) => ({ it, ...place(it) }))
       .sort((a, b) => a.ws - b.ws || b.we - a.we);
     const nOpen = all.filter((it) => tl.state(it) === "open").length;
     const nDone = all.filter((it) => tl.state(it) === "done").length;
     const color = `var(--pw-tk-${tk.key})`;
+    const area = (h: number, children?: React.ReactNode) => (
+      <div className="gt-area" style={{ width: W, height: h, ["--wk" as string]: `${WK * 2}px` }}>
+        {children}
+      </div>
+    );
 
     if (shut[tk.key]) {
       return (
         <div key={tk.key} className="gt-row gt-track shut">
-          <button type="button" className="gt-lbl" title="Expand lane" onClick={() => onToggleLane(tk.key)}>
-            {chev}
+          <button type="button" className="gt-lbl" title="Expand lane" onClick={() => props.onToggleLane(tk.key)}>
+            {CHEVRON}
             <i style={{ background: color }} />
             <span className="tn">{tk.label}</span>
             <span className="n">
               {nDone}/{nDone + nOpen}
             </span>
           </button>
-          <div className="gt-area" style={{ width: W, height: 26, ["--wk" as string]: `${WK * 2}px` }}>
-            {placed.map((p) => (
+          {area(
+            26,
+            items.map((p) => (
               <i
-                key={p.item.id}
-                className={`gmini ${cls(p.item)}`}
-                data-tip={`${p.item.name}|${formatShortDate(tl.start(p.item))} to ${formatShortDate(tl.end(p.item))}${tipTail(p.item)}`}
+                key={p.it.id}
+                className={`gmini ${itemClass(tl, p.it)}`}
+                data-tip={`${p.it.name}|${formatShortDate(tl.start(p.it))} to ${formatShortDate(tl.end(p.it))}${tipTail(p.it)}`}
                 style={{ ["--tc" as string]: color, left: x(p.ws) + 1, width: Math.max(4, x(p.we) - x(p.ws) - 2) }}
-                onClick={() => onGo(p.item.id)}
+                onClick={() => props.onGo(p.it.id)}
               />
-            ))}
-          </div>
+            )),
+          )}
         </div>
       );
     }
 
-    // Pack bars into rows; short bars carry their label outside the bar.
-    const rows: number[] = [];
-    const laid: Placed[] = placed.map((p) => {
-      const o = ownerOf(p.item);
-      const done = tl.state(p.item) === "done";
-      const meta = (o ? 24 : 0) + (done && tl.doneOn(p.item) ? 50 : 0);
-      const bw = Math.max(WK * 0.8, x(p.we) - x(p.ws) - 2);
-      const lw = p.item.name.length * 5.9 + meta + (done ? 30 : 16);
-      const tw = p.item.name.length * 5.9 + meta + 8;
-      const short = bw < Math.min(lw, 120);
-      const left = short && x(p.ws) + bw + tw > W;
-      const start = left ? p.ws - tw / WK : p.ws;
-      const end = short && !left ? p.ws + (bw + tw) / WK : p.we;
-      let r = 0;
-      for (; r < rows.length; r++) if (rows[r] <= start) break;
-      if (r === rows.length) rows.push(-99);
-      rows[r] = end + 0.15;
-      return { ...p, short, left, row: r };
-    });
-    const h = Math.max(1, rows.length) * 24 + 8;
-
     return (
-      <div key={tk.key} className="gt-row gt-track">
-        <button type="button" className="gt-lbl" title="Collapse lane" onClick={() => onToggleLane(tk.key)}>
-          {chev}
-          <i style={{ background: color }} />
-          <span className="tn">{tk.label}</span>
-          <span className="n">{nOpen ? `${nOpen} open` : ""}</span>
-        </button>
-        <div className="gt-area" style={{ width: W, height: h, ["--wk" as string]: `${WK * 2}px` }}>
-          {laid.map((p) => {
-            const s = tl.state(p.item);
-            const o = ownerOf(p.item);
-            const dn = tl.doneOn(p.item);
-            const bw = Math.max(WK * 0.8, x(p.we) - x(p.ws) - 2);
-            const top = 6 + p.row * 24;
-            const meta = (
-              <>
-                {dn && <span className="gdn">{formatShortDate(dn)}</span>}
-                {o && p.item.type !== "weekly" && s !== "na" && s !== "oos" && <span className="gow">{initials(o.name)}</span>}
-              </>
-            );
-            const tip = `${p.item.name}|${formatShortDate(tl.start(p.item))} to ${formatShortDate(tl.end(p.item))}${tipTail(p.item)}`;
-            return (
-              <span key={p.item.id} style={{ display: "contents" }}>
-                <div
-                  className={`gbar ${cls(p.item)}${highlight === p.item.id ? " hl" : ""}`}
-                  data-tlgo={p.item.id}
-                  data-tip={tip}
-                  style={{ ["--tc" as string]: color, left: x(p.ws) + 1, width: bw, top }}
-                  onClick={() => onGo(p.item.id)}
-                >
-                  {!p.short && (
-                    <>
-                      <span className="gnm">{p.item.name}</span>
-                      {meta}
-                    </>
-                  )}
-                </div>
-                {p.short && (
-                  <span
-                    className={`glbl${s === "na" || s === "oos" ? " na" : ""}`}
-                    style={p.left ? { right: W - x(p.ws) + 6, top } : { left: x(p.ws) + bw + 6, top }}
-                    onClick={() => onGo(p.item.id)}
-                  >
-                    {p.item.name}
-                    {meta}
-                  </span>
-                )}
-              </span>
-            );
-          })}
+      <div key={tk.key} style={{ display: "contents" }}>
+        <div className="gt-row gt-track gt-trackhead">
+          <button type="button" className="gt-lbl" title="Collapse lane" onClick={() => props.onToggleLane(tk.key)}>
+            {CHEVRON}
+            <i style={{ background: color }} />
+            <span className="tn">{tk.label}</span>
+            <span className="n">
+              {nDone}/{nDone + nOpen} done
+            </span>
+          </button>
+          {area(30)}
         </div>
+        {items.map(({ it, ws, we, wd }) => {
+          const s = tl.state(it);
+          const span = isSpan(it);
+          const cls = itemClass(tl, it);
+          const draggable = canEdit && span && s !== "rec" && s !== "oos" && s !== "na";
+          const plannedText = planned(tl, it);
+          return (
+            <div key={it.id} className={`gt-row gt-item ${cls}${span ? "" : " point"}${highlight === it.id ? " hl" : ""}`} data-row={it.id}>
+              <div className="gt-lbl gt-il">
+                <Glyph tl={tl} it={it} canEdit={canEdit} onTick={props.onTick} />
+                {it.type === "gate" ? <span className="gk gate">Gate</span> : it.type === "milestone" ? <span className="gk">MS</span> : null}
+                <span
+                  className="nm"
+                  data-tip={`${it.name}|${it.type === "gate" ? "Gate · " : it.type === "milestone" ? "Milestone · " : ""}${plannedText}${tipTail(it)}${canEdit ? " · click to edit" : ""}`}
+                  onClick={canEdit ? (e) => props.onEdit(it, e.currentTarget) : undefined}
+                  role={canEdit ? "button" : undefined}
+                  tabIndex={canEdit ? 0 : undefined}
+                  onKeyDown={canEdit ? (e) => e.key === "Enter" && props.onEdit(it, e.currentTarget) : undefined}
+                >
+                  {it.name}
+                </span>
+                <DateTag tl={tl} it={it} canEdit={canEdit} onDates={props.onDates} />
+                <OwnerTag tl={tl} it={it} owner={ownerOf(it)} />
+              </div>
+              {area(
+                28,
+                span ? (
+                  <div
+                    className={`gbar ${cls}`}
+                    data-tlgo={it.id}
+                    data-drag={draggable ? it.id : ""}
+                    data-tip={`${it.name}|${plannedText}${tipTail(it)}${draggable ? " · drag to move, drag the end to resize" : ""}`}
+                    style={{ ["--tc" as string]: color, left: x(ws) + 1, width: Math.max(WK * 0.6, x(we) - x(ws) - 2), top: 6, height: 16 }}
+                    onPointerDown={draggable ? (e) => drag.onPointerDown(e, tl, it) : undefined}
+                    onClickCapture={drag.swallow}
+                    onClick={() => props.onGo(it.id)}
+                  >
+                    {draggable && <i className="gh" />}
+                  </div>
+                ) : (
+                  <i
+                    className={`dia rowdia ${s === "done" ? "done" : s === "na" || s === "oos" ? "na" : tl.late(it) ? "late" : ""}${it.type === "milestone" ? " ms" : ""}`}
+                    data-tlgo={it.id}
+                    style={{ left: x(wd ?? we) }}
+                    data-tip={`${it.name}|${it.type === "gate" ? "Gate" : "Milestone"} · due ${formatShortDate(tl.end(it))}${tipTail(it)}`}
+                    onClick={() => props.onGo(it.id)}
+                  />
+                ),
+              )}
+            </div>
+          );
+        })}
+        {canEdit && (
+          <div className="gt-row gt-add">
+            <div className="gt-lbl gt-il">
+              <button type="button" className="gt-addbtn" onClick={(e) => props.onAdd(tk.key, e.currentTarget)}>
+                + Add task, milestone or gate
+              </button>
+            </div>
+            {area(28)}
+          </div>
+        )}
       </div>
     );
   });
@@ -191,31 +184,24 @@ export function Gantt({ tl, ownerOf, hidden, shut, highlight, onToggleLane, onGo
             <span className="lbl">Stage</span>
           </div>
           <div className="gt-area" style={{ width: W }}>
-            {tl.stages.map((s, i) => (
-              <div
-                key={s.position}
-                className={`gt-stage${i === cur ? " cur" : i < cur ? " past" : ""}`}
-                style={{ left: x(s.startWeek), width: x(s.endWeek) - x(s.startWeek) }}
-                title={`${s.name} · ${s.durationLabel}`}
-              >
-                <b>{s.name}</b>
-                <span>{s.durationLabel}</span>
-              </div>
-            ))}
+            {tl.stages.map((s, i) => {
+              const sw = x(s.endWeek) - x(s.startWeek);
+              const narrow = sw < s.name.length * 6.4 + 14;
+              return (
+                <div
+                  key={s.position}
+                  className={`gt-stage${i === cur ? " cur" : i < cur ? " past" : ""}${narrow ? " narrow" : ""}`}
+                  style={{ left: x(s.startWeek), width: sw }}
+                  data-tip={`${s.name}|${s.durationLabel} · ${formatShortDate(weekDate(tl.anchor, s.startWeek))} to ${formatShortDate(weekDate(tl.anchor, s.endWeek))}`}
+                >
+                  <b>{s.name}</b>
+                  <span>{narrow ? "" : s.durationLabel}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
-        <div className="gt-row gt-axis">
-          <div className="gt-lbl" style={{ fontWeight: 400 }}>
-            <span className="lbl">Week of</span>
-          </div>
-          <div className="gt-area" style={{ width: W }}>
-            {ticks.map((w) => (
-              <span key={w} className="tk" style={{ left: x(w) }}>
-                {formatShortDate(weekDate(tl.anchor, w))}
-              </span>
-            ))}
-          </div>
-        </div>
+        <Axis weeks={weeks} x={xd} width={W} pxPerWeek={WK} />
         <div className="gt-row gt-gates">
           <div className="gt-lbl">Gates &amp; milestones</div>
           <div className="gt-area" style={{ width: W }}>
@@ -228,12 +214,10 @@ export function Gantt({ tl, ownerOf, hidden, shut, highlight, onToggleLane, onGo
                 <i
                   key={it.id}
                   className={`dia ${c}`}
+                  data-tlgo={it.id}
                   data-tip={`${it.name}|${it.type === "gate" ? "Gate" : "Milestone"} · due ${formatShortDate(tl.end(it))}${tipTail(it)}`}
-                  style={{
-                    left: x(w) + (w >= 28.8 ? -8 : 0),
-                    ...(it.type === "milestone" ? { width: 9, height: 9, top: 10 } : {}),
-                  }}
-                  onClick={() => onGo(it.id)}
+                  style={{ left: x(w) + (w >= 28.8 ? -8 : 0), ...(it.type === "milestone" ? { width: 9, height: 9, top: 10 } : {}) }}
+                  onClick={() => props.onGo(it.id)}
                 />
               );
             })}
@@ -265,18 +249,14 @@ export function Gantt({ tl, ownerOf, hidden, shut, highlight, onToggleLane, onGo
           <i
             className="sw"
             style={{
-              background:
-                "repeating-linear-gradient(135deg,transparent 0 3px,var(--cds-border-strong-01) 3px 5px)",
+              background: "repeating-linear-gradient(135deg,transparent 0 3px,var(--cds-border-strong-01) 3px 5px)",
               border: "1px dashed var(--cds-border-strong-01)",
             }}
           />
           N/A
         </span>
         <span>
-          <i
-            className="sw"
-            style={{ boxShadow: "inset 0 -2px 0 var(--pw-block)", border: "1.5px solid var(--cds-text-secondary)" }}
-          />
+          <i className="sw" style={{ boxShadow: "inset 0 -2px 0 var(--pw-block)", border: "1.5px solid var(--cds-text-secondary)" }} />
           Late
         </span>
       </div>

@@ -216,7 +216,26 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
 - Writes go from the browser through supabase-js (RLS decides). An existing row is updated with
   only the changed fields; a first touch inserts the whole row. **Never upsert a partial row**:
   Postgres checks constraints on the would-be insert before detecting the conflict.
-- Per-viewer prefs (Hide N/A, collapsed lanes) are in `localStorage` `pw.tlui`.
+- **Two plans**, `project_lifecycle.plan` (simple | complete, default simple). Switching never
+  deletes anything; each plan keeps its own data.
+  - **Simple**: five parents (`MILESTONES` in `src/lib/milestones.ts`): SRB, API, Dev complete read
+    and write the key dates `srb_merge`, `api_spec_merge`, `dev_complete`; Release writes
+    `release`; Test complete has its own `project_lifecycle.test_complete_on` (default release − 14).
+    Items under them are `project_timeline_items` rows with `plan = 'simple'`, a `parent`, and type
+    task or milestone only. Parent ids in the UI are `P_<key>`.
+  - **Complete**: the template, plus `project_timeline_items` rows with `plan = 'complete'`, a
+    `track`, and type task, milestone or gate (never weekly). Template items can be renamed, retyped
+    or moved to another team through `name_override`, `type_override`, `track_override` on
+    `project_lifecycle_items` ("Reset to template" clears them).
+  - The plan's gates drive Next gate, the workspace badge and the Overview's Up next
+    (`buildTimeline()` builds either plan).
+- **One milestone rule**: `milestoneDone()` / `keyDateDone()` in `src/lib/milestones.ts` drive the
+  Timeline parents, the Overview and quick look Key dates, and Up next. A tick in
+  `project_milestone_ticks` (srb | api | dev | test | release; open or done) wins; without one, done
+  = date passed and the phase has reached the milestone (`KEY_DATES` threshold; test = released).
+- Default owner of a Simple item comes from its parent (`PARENT_OWNER_ROLE`, next to `OWNER_ROLE`):
+  srb, api → Architect; dev → Dev Lead; test → Dev Manager; release → PM.
+- Per-viewer prefs (Hide N/A, collapsed lanes, zoom) are in `localStorage` `pw.tlui`.
 - Styles: `src/components/timeline/timeline.module.scss` is the mock's CSS with the mock's class
   names, scoped under `.root`, colours mapped to Carbon or `--pw-*` tokens.
 

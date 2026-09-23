@@ -2,7 +2,8 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { isSpan, type TemplateItem, type Timeline } from "@/lib/lifecycle";
+import { ITEM_TYPES, TRACKS, isSpan, type ItemType, type TemplateItem, type Timeline, type TimelineItem, type TrackKey } from "@/lib/lifecycle";
+import { MILESTONES, type MilestoneKey } from "@/lib/milestones";
 import { PROJECT_ROLES, formatShortDate, initials } from "@/lib/domain";
 import type { Person } from "@/lib/projects";
 import type { ProjectRole } from "@/lib/supabase/types";
@@ -29,6 +30,10 @@ export function Popup({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Listeners are attached once; a new onClose from a re-render must not
+  // detach them (an Escape during the re-attach would be lost).
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
 
   useLayoutEffect(() => {
@@ -44,14 +49,14 @@ export function Popup({
 
   useEffect(() => {
     const onDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+      if (ref.current && !ref.current.contains(e.target as Node)) closeRef.current();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopPropagation();
         e.stopImmediatePropagation();
         e.preventDefault();
-        onClose();
+        closeRef.current();
       }
     };
     const t = setTimeout(() => {
@@ -63,7 +68,7 @@ export function Popup({
       document.removeEventListener("mousedown", onDown, true);
       window.removeEventListener("keydown", onKey, true);
     };
-  }, [onClose]);
+  }, []);
 
   return createPortal(
     <div className={className ? `${styles.root} ${className}` : styles.root}>
@@ -91,7 +96,7 @@ export function DatePopup({
   onClose,
 }: {
   tl: Timeline;
-  item: TemplateItem;
+  item: TimelineItem;
   anchor: HTMLElement;
   onChange: (patch: DatePatch) => void;
   onReset: () => void;
@@ -140,17 +145,24 @@ export function DatePopup({
           </label>
         )}
       </div>
-      <div className="tp-f">
-        <span className="tp-note">
-          Template: {span ? `${formatShortDate(tl.templateStart(it))} – ` : ""}
-          {formatShortDate(tl.templateEnd(it))}
-        </span>
-        {edited && (
-          <button type="button" className="tp-link" onClick={onReset}>
-            Reset to template
-          </button>
-        )}
-      </div>
+      {it.origin === "template" && (
+        <div className="tp-f">
+          <span className="tp-note">
+            Template: {span ? `${formatShortDate(tl.templateStart(it))} – ` : ""}
+            {formatShortDate(tl.templateEnd(it))}
+          </span>
+          {edited && (
+            <button type="button" className="tp-link" onClick={onReset}>
+              Reset to template
+            </button>
+          )}
+        </div>
+      )}
+      {it.origin === "parent" && MILESTONES.find((m) => m.key === it.milestone)?.dateField && (
+        <div className="tp-f">
+          <span className="tp-note">Also the project&apos;s key date on the Overview</span>
+        </div>
+      )}
     </Popup>
   );
 }
@@ -345,6 +357,188 @@ export function PersonPicker({
           )}
         </div>
       )}
+    </Popup>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Item editor (the mock's tlItemPop): name, type, Under (Simple) or Team
+// (Complete), owner, dates. New items get "Add"; added items get Delete;
+// template items get "Reset to template".
+// ---------------------------------------------------------------------------
+
+export type ItemDraft = {
+  name: string;
+  type: Exclude<ItemType, "weekly">;
+  track: TrackKey;
+  parent: MilestoneKey | null;
+  start: string;
+  end: string;
+  /** The owner's name as typed; resolved against the directory on save. */
+  owner: string;
+};
+
+export function ItemEditor({
+  anchor,
+  isNew,
+  simple,
+  fromTemplate,
+  weekly,
+  initial,
+  directory,
+  onSave,
+  onDelete,
+  onReset,
+  onClose,
+}: {
+  anchor: HTMLElement;
+  isNew: boolean;
+  simple: boolean;
+  fromTemplate: boolean;
+  weekly: boolean;
+  initial: ItemDraft;
+  directory: Person[];
+  onSave: (draft: ItemDraft) => void;
+  onDelete?: () => void;
+  onReset?: () => void;
+  onClose: () => void;
+}) {
+  const [d, setD] = useState(initial);
+  const [nameErr, setNameErr] = useState(false);
+  const nameRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isNew) nameRef.current?.focus();
+  }, [isNew]);
+
+  const types = ITEM_TYPES.filter((t) => !simple || t.key !== "gate");
+  const span = d.type === "task";
+  const save = () => {
+    const name = d.name.trim();
+    if (!name) {
+      setNameErr(true);
+      nameRef.current?.focus();
+      return;
+    }
+    onSave({ ...d, name, end: span && d.end < d.start ? d.start : d.end });
+  };
+
+  return (
+    <Popup anchor={anchor} width={380} onClose={onClose}>
+      <div className="tp-h">
+        {isNew ? "New item" : "Edit item"}
+        {fromTemplate && <span className="tp-tpl">from the template</span>}
+      </div>
+      <div className="tp-body">
+        <label className="tp-full">
+          Name
+          <input
+            ref={nameRef}
+            type="text"
+            value={d.name}
+            placeholder="What needs to happen"
+            aria-invalid={nameErr || undefined}
+            onChange={(e) => {
+              setNameErr(false);
+              setD({ ...d, name: e.target.value });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                save();
+              }
+            }}
+          />
+        </label>
+        {!weekly && (
+          <div className="tp-full">
+            <span className="tp-lbl">Type</span>
+            <div className="kb-seg tp-type" role="group" aria-label="Type">
+              {types.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  aria-pressed={d.type === t.key}
+                  onClick={() => setD({ ...d, type: t.key, start: t.key === "task" ? d.start : d.end })}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <span className="tp-help">{ITEM_TYPES.find((t) => t.key === d.type)!.help}</span>
+          </div>
+        )}
+        {simple ? (
+          <label>
+            Under
+            <select className="ctrl" value={d.parent ?? "srb"} onChange={(e) => setD({ ...d, parent: e.target.value as MilestoneKey })}>
+              {MILESTONES.map((m) => (
+                <option key={m.key} value={m.key}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label>
+            Team
+            <select className="ctrl" value={d.track} onChange={(e) => setD({ ...d, track: e.target.value as TrackKey })}>
+              {TRACKS.map((t) => (
+                <option key={t.key} value={t.key}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        <label>
+          Owner
+          <input type="text" list="tlPeople" value={d.owner} placeholder="Unassigned" onChange={(e) => setD({ ...d, owner: e.target.value })} />
+        </label>
+        {span ? (
+          <>
+            <label>
+              Start
+              <input
+                type="date"
+                value={d.start}
+                onChange={(e) => e.target.value && setD({ ...d, start: e.target.value, end: d.end < e.target.value ? e.target.value : d.end })}
+              />
+            </label>
+            <label>
+              End
+              <input type="date" value={d.end} onChange={(e) => e.target.value && setD({ ...d, end: e.target.value })} />
+            </label>
+          </>
+        ) : (
+          <>
+            <label>
+              {d.type === "gate" ? "Gate date" : "Date"}
+              <input type="date" value={d.end} onChange={(e) => e.target.value && setD({ ...d, end: e.target.value, start: e.target.value })} />
+            </label>
+            <span />
+          </>
+        )}
+      </div>
+      <datalist id="tlPeople">
+        {directory.map((p) => (
+          <option key={p.id} value={p.name} />
+        ))}
+      </datalist>
+      <div className="tp-f">
+        {onDelete && (
+          <button type="button" className="tp-link tp-del" onClick={onDelete}>
+            Delete item
+          </button>
+        )}
+        {onReset && (
+          <button type="button" className="tp-link" onClick={onReset}>
+            Reset to template
+          </button>
+        )}
+        <button type="button" className="btn pri tp-save" onClick={save}>
+          {isNew ? "Add" : "Done"}
+        </button>
+      </div>
     </Popup>
   );
 }

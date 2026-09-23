@@ -1,11 +1,5 @@
 import { notFound } from "next/navigation";
-import {
-  getLifecycleTemplate,
-  getPeopleDirectory,
-  getProject,
-  getProjectLifecycle,
-  getViewer,
-} from "@/lib/projects";
+import { getLifecycleTemplate, getPeopleDirectory, getProject, getProjectLifecycle, getViewer } from "@/lib/projects";
 import { getToday } from "@/lib/today";
 import { TimelineView } from "@/components/timeline/TimelineView";
 import styles from "@/components/workspace/workspace.module.scss";
@@ -29,11 +23,17 @@ export default async function TimelinePage({ params }: Props) {
   return (
     <section className={styles.section} aria-label="Timeline">
       <TimelineView
-        project={{ id: project.id, key: project.key, people: project.people, release: project.dates.release }}
+        project={{
+          id: project.id,
+          key: project.key,
+          people: project.people,
+          phase: project.phase,
+          dates: project.dates,
+          milestoneTicks: project.milestoneTicks,
+        }}
         stages={template.stages}
         items={template.items}
-        initialRows={lifecycle.rows}
-        initialScopes={lifecycle.scopes}
+        initial={lifecycle}
         directory={directory}
         serverToday={today}
         canEdit={viewer.canEdit}
