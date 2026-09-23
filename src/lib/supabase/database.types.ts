@@ -452,27 +452,33 @@ export type Database = {
       }
       project_lifecycle: {
         Row: {
+          plan: string
           project_id: string
           scope_api: boolean
           scope_commercial: boolean
           scope_external: boolean
           scope_ux: boolean
+          test_complete_on: string | null
           updated_at: string
         }
         Insert: {
+          plan?: string
           project_id: string
           scope_api?: boolean
           scope_commercial?: boolean
           scope_external?: boolean
           scope_ux?: boolean
+          test_complete_on?: string | null
           updated_at?: string
         }
         Update: {
+          plan?: string
           project_id?: string
           scope_api?: boolean
           scope_commercial?: boolean
           scope_external?: boolean
           scope_ux?: boolean
+          test_complete_on?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -490,33 +496,48 @@ export type Database = {
           done_on: string | null
           end_date: string | null
           item_id: string
+          name_override: string | null
           owner_person_id: string | null
           owner_set: boolean
           project_id: string
           start_date: string | null
           status: Database["public"]["Enums"]["lifecycle_item_status"]
+          track_override: string | null
+          type_override:
+            | Database["public"]["Enums"]["lifecycle_item_type"]
+            | null
           updated_at: string
         }
         Insert: {
           done_on?: string | null
           end_date?: string | null
           item_id: string
+          name_override?: string | null
           owner_person_id?: string | null
           owner_set?: boolean
           project_id: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          track_override?: string | null
+          type_override?:
+            | Database["public"]["Enums"]["lifecycle_item_type"]
+            | null
           updated_at?: string
         }
         Update: {
           done_on?: string | null
           end_date?: string | null
           item_id?: string
+          name_override?: string | null
           owner_person_id?: string | null
           owner_set?: boolean
           project_id?: string
           start_date?: string | null
           status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          track_override?: string | null
+          type_override?:
+            | Database["public"]["Enums"]["lifecycle_item_type"]
+            | null
           updated_at?: string
         }
         Relationships: [
@@ -536,6 +557,38 @@ export type Database = {
           },
           {
             foreignKeyName: "project_lifecycle_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_milestone_ticks: {
+        Row: {
+          done_on: string | null
+          milestone: string
+          project_id: string
+          status: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at: string
+        }
+        Insert: {
+          done_on?: string | null
+          milestone: string
+          project_id: string
+          status: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at?: string
+        }
+        Update: {
+          done_on?: string | null
+          milestone?: string
+          project_id?: string
+          status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_milestone_ticks_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -688,6 +741,78 @@ export type Database = {
             columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_timeline_items: {
+        Row: {
+          created_at: string
+          done_on: string | null
+          end_date: string
+          id: string
+          name: string
+          owner_person_id: string | null
+          owner_set: boolean
+          parent: string | null
+          plan: string
+          position: number
+          project_id: string
+          start_date: string | null
+          status: Database["public"]["Enums"]["lifecycle_item_status"]
+          track: string | null
+          type: Database["public"]["Enums"]["lifecycle_item_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          done_on?: string | null
+          end_date: string
+          id?: string
+          name: string
+          owner_person_id?: string | null
+          owner_set?: boolean
+          parent?: string | null
+          plan: string
+          position?: number
+          project_id: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          track?: string | null
+          type?: Database["public"]["Enums"]["lifecycle_item_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          done_on?: string | null
+          end_date?: string
+          id?: string
+          name?: string
+          owner_person_id?: string | null
+          owner_set?: boolean
+          parent?: string | null
+          plan?: string
+          position?: number
+          project_id?: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["lifecycle_item_status"]
+          track?: string | null
+          type?: Database["public"]["Enums"]["lifecycle_item_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_timeline_items_owner_person_id_fkey"
+            columns: ["owner_person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_timeline_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
