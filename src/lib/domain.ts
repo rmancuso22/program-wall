@@ -110,6 +110,27 @@ export function formatShortDate(iso: string | null | undefined) {
   return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
+/** The calendar date of an instant in a time zone (YYYY-MM-DD). */
+export function dateInZone(instant: string, timeZone: string) {
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone }).format(new Date(instant));
+  } catch {
+    return isoDate(instant);
+  }
+}
+
+/**
+ * Age of an update, as in the mock's ago(): "today", "yesterday", "5d ago",
+ * then the short date ("12 Sep") after a week. `date` is a local YYYY-MM-DD.
+ */
+export function updatedAgo(date: string, today: string) {
+  const n = daysBetween(date, today);
+  if (n <= 0) return "today";
+  if (n === 1) return "yesterday";
+  if (n < 7) return `${n}d ago`;
+  return formatShortDate(date);
+}
+
 /** "today", "yesterday", "4d ago" */
 export function formatAgo(iso: string, today: string) {
   const n = daysBetween(isoDate(iso), today);

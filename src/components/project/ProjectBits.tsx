@@ -5,13 +5,15 @@ import { Checkmark, WarningAlt } from "@carbon/icons-react";
 import {
   KEY_DATES,
   PHASES,
+  dateInZone,
   formatAgo,
   formatDate,
   phaseColor,
   phaseIndex,
   ragMeta,
+  updatedAgo,
 } from "@/lib/domain";
-import type { ProjectView } from "@/lib/projects";
+import type { ProjectView, Risk } from "@/lib/projects";
 import type { ProjectRag } from "@/lib/supabase/types";
 import styles from "./project.module.scss";
 
@@ -64,7 +66,14 @@ export function StatusCallout({ project, today }: { project: ProjectView; today:
   );
 }
 
-export function RiskList({ risks }: { risks: string[] }) {
+/** "Updated 5d ago" for the most recently changed risk, or null with none. */
+export function risksUpdated(risks: Risk[], today: string, tz: string) {
+  if (!risks.length) return null;
+  const latest = risks.map((r) => r.updatedAt).sort().at(-1)!;
+  return `Updated ${updatedAgo(dateInZone(latest, tz), today)}`;
+}
+
+export function RiskList({ risks, today, tz }: { risks: Risk[]; today: string; tz: string }) {
   if (risks.length === 0) {
     return (
       <div className={styles.risks}>
@@ -77,12 +86,18 @@ export function RiskList({ risks }: { risks: string[] }) {
   }
   return (
     <ul className={styles.risks}>
-      {risks.map((r, i) => (
-        <li key={i} className={styles.risk}>
-          <WarningAlt size={14} aria-hidden="true" />
-          <span>{r}</span>
-        </li>
-      ))}
+      {risks.map((r) => {
+        const day = dateInZone(r.updatedAt, tz);
+        return (
+          <li key={r.id} className={styles.risk}>
+            <WarningAlt size={14} aria-hidden="true" />
+            <span>{r.body}</span>
+            <span className={styles.rdate} title={`Last updated ${formatDate(day)}`}>
+              {updatedAgo(day, today)}
+            </span>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -135,10 +150,13 @@ export function PhaseLadder({ project }: { project: Pick<ProjectView, "phase"> }
   );
 }
 
-export function Block({ label, children }: { label: string; children: React.ReactNode }) {
+export function Block({ label, aside, children }: { label: string; aside?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className={styles.block}>
-      <h3 className={styles.label}>{label}</h3>
+      <h3 className={`${styles.label} ${aside ? styles.labelRow : ""}`}>
+        {label}
+        {aside && <span className={styles.labelAside}>{aside}</span>}
+      </h3>
       {children}
     </section>
   );

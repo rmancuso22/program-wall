@@ -1,6 +1,6 @@
 import type { ProjectPhase, ProjectRag } from "./supabase/types";
 
-// Roadmap filters and sort live in the URL so the project workspace can step
+// Roadmap filters and sort live in the URL (?status=&quarter=&team=&phase=&owner=&search=&sort=) so the project workspace can step
 // through the same list, in the same order, and the back button returns to it.
 
 export const SORTS = [
@@ -20,11 +20,13 @@ export type Filters = {
   quarter: string[];
   team: string[];
   phase: ProjectPhase[];
+  /** Program managers (people ids) from project_people. */
+  owner: string[];
   search: string;
   sort: SortKey;
 };
 
-export const NO_FILTERS: Omit<Filters, "sort"> = { status: [], quarter: [], team: [], phase: [], search: "" };
+export const NO_FILTERS: Omit<Filters, "sort"> = { status: [], quarter: [], team: [], phase: [], owner: [], search: "" };
 
 export type FilterableProject = {
   key: string;
@@ -33,6 +35,7 @@ export type FilterableProject = {
   quarterId: string;
   phase: ProjectPhase;
   teams: string[];
+  people: { pm?: { id: string } };
 };
 
 const list = (params: URLSearchParams, name: string) =>
@@ -44,6 +47,7 @@ export function parseFilters(params: URLSearchParams): Filters {
     quarter: list(params, "quarter"),
     team: list(params, "team"),
     phase: list(params, "phase") as ProjectPhase[],
+    owner: list(params, "owner"),
     search: (params.get("search") ?? "").trim(),
     sort: parseSort(params.get("sort")),
   };
@@ -55,6 +59,7 @@ export function filtersToQuery(f: Filters) {
   if (f.quarter.length) params.set("quarter", f.quarter.join(","));
   if (f.team.length) params.set("team", f.team.join(","));
   if (f.phase.length) params.set("phase", f.phase.join(","));
+  if (f.owner.length) params.set("owner", f.owner.join(","));
   if (f.search) params.set("search", f.search);
   if (f.sort !== "number") params.set("sort", f.sort);
   const s = params.toString();
@@ -63,7 +68,7 @@ export function filtersToQuery(f: Filters) {
 
 /** True when any filter narrows the list. Sort is not a filter. */
 export function hasFilters(f: Filters) {
-  return Boolean(f.status.length || f.quarter.length || f.team.length || f.phase.length || f.search);
+  return Boolean(f.status.length || f.quarter.length || f.team.length || f.phase.length || f.owner.length || f.search);
 }
 
 export function matchesFilters(p: FilterableProject, f: Filters) {
@@ -71,6 +76,7 @@ export function matchesFilters(p: FilterableProject, f: Filters) {
   if (f.quarter.length && !f.quarter.includes(p.quarterId)) return false;
   if (f.team.length && !p.teams.some((t) => f.team.includes(t))) return false;
   if (f.phase.length && !f.phase.includes(p.phase)) return false;
+  if (f.owner.length && !(p.people.pm && f.owner.includes(p.people.pm.id))) return false;
   if (f.search) {
     const q = f.search.toLowerCase();
     if (!p.name.toLowerCase().includes(q) && !p.key.toLowerCase().includes(q)) return false;

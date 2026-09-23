@@ -30,8 +30,11 @@ export type ProjectView = {
   /** One lead per team, in team order (for the meeting roster). */
   teamLeads: { teamId: string; team: string; lead: Person | null }[];
   people: Partial<Record<ProjectRole, Person>>;
-  risks: string[];
+  risks: Risk[];
 };
+
+/** A key risk; updatedAt changes only when its text does. */
+export type Risk = { id: string; body: string; position: number; updatedAt: string };
 
 export type Quarter = { id: string; label: string; subtitle: string; isBacklog: boolean };
 
@@ -42,7 +45,7 @@ const PROJECT_FIELDS = `
   srb_merge, api_spec_merge, commit_pitch, dev_complete, release,
   project_teams(position, team:teams(id, name), lead:people(${PERSON})),
   project_people(role, person:people(${PERSON})),
-  project_risks(position, body)
+  project_risks(id, position, body, updated_at)
 `;
 
 type PersonRow = {
@@ -70,7 +73,7 @@ type ProjectRowWithRelations = {
   release: string | null;
   project_teams: { position: number; team: { id: string; name: string } | null; lead: PersonRow | null }[];
   project_people: { role: ProjectRole; person: PersonRow | null }[];
-  project_risks: { position: number; body: string }[];
+  project_risks: { id: string; position: number; body: string; updated_at: string }[];
 };
 
 // A person's own contact details win; a linked profile fills in the email.
@@ -110,7 +113,9 @@ function toProject(row: ProjectRowWithRelations): ProjectView {
       .sort((a, b) => a.position - b.position)
       .flatMap((t) => (t.team ? [{ teamId: t.team.id, team: t.team.name, lead: t.lead ? toPerson(t.lead) : null }] : [])),
     people,
-    risks: [...row.project_risks].sort((a, b) => a.position - b.position).map((r) => r.body),
+    risks: [...row.project_risks]
+      .sort((a, b) => a.position - b.position)
+      .map((r) => ({ id: r.id, body: r.body, position: r.position, updatedAt: r.updated_at })),
   };
 }
 

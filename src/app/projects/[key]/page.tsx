@@ -2,7 +2,7 @@ import NextLink from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getRoadmap, getStickyCounts } from "@/lib/projects";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
-import { getToday } from "@/lib/today";
+import { getToday, getViewerTz } from "@/lib/today";
 import { deriveDoc, pendingReviewCount } from "@/lib/reviews";
 import { REVIEW_SLA_BUSINESS_DAYS } from "@/lib/config";
 import {
@@ -12,6 +12,7 @@ import {
   PhaseLadder,
   RiskList,
   StatusCallout,
+  risksUpdated,
 } from "@/components/project/ProjectBits";
 import { PeopleList } from "@/components/project/PeopleList";
 import styles from "@/components/workspace/workspace.module.scss";
@@ -24,7 +25,7 @@ export default async function OverviewPage({ params }: Props) {
   if (!data) notFound();
 
   const { project, reviews } = data;
-  const [today, counts] = await Promise.all([getToday(), getStickyCounts(project.id)]);
+  const [today, tz, counts] = await Promise.all([getToday(), getViewerTz(), getStickyCounts(project.id)]);
   const quarter = roadmap.quarters.find((q) => q.id === project.quarterId);
   const current = phaseIndex(project.phase);
 
@@ -65,8 +66,8 @@ export default async function OverviewPage({ params }: Props) {
           <Block label="Current status">
             <StatusCallout project={project} today={today} />
           </Block>
-          <Block label="Key risks">
-            <RiskList risks={project.risks} />
+          <Block label="Key risks" aside={risksUpdated(project.risks, today, tz)}>
+            <RiskList risks={project.risks} today={today} tz={tz} />
           </Block>
           <div className={styles.secHead}>
             <h2>Phase</h2>

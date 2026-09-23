@@ -1,13 +1,37 @@
 @use '@carbon/react/scss/theme' as *;
 
-$mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+// JetBrains Mono only for project numbers, Jira keys and code; Inter elsewhere.
+$mono: var(--font-mono), ui-monospace, monospace;
+$sans: var(--font-sans), sans-serif;
 
 .label {
-  font-family: $mono;
-  font-size: 10px;
-  letter-spacing: 0.07em;
+  font-family: $sans;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: $text-helper;
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+}
+
+.labelAside {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.rdate {
+  margin-left: auto;
+  padding-left: 10px;
+  font-size: 11.5px;
+  color: $text-helper;
+  white-space: nowrap;
 }
 
 .block {
@@ -21,8 +45,10 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: $mono;
-  font-size: 9px;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -105,7 +131,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 }
 
 .stamp {
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   letter-spacing: 0.04em;
   color: $text-helper;
@@ -162,8 +189,10 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   align-items: center;
   padding: 7px 0;
   border-bottom: 1px solid $border-subtle-01;
-  font-family: $mono;
-  font-size: 10px;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: $text-helper;
@@ -234,9 +263,9 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 }
 
 .date {
-  font-family: $mono;
-  font-size: 12px;
+  font-family: $sans;
   font-variant-numeric: tabular-nums;
+  font-size: 12px;
 }
 
 .dateDone {
@@ -289,7 +318,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 
 .when {
   margin-left: auto;
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   color: $text-helper;
 }
@@ -339,8 +369,9 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   }
 
   em {
-    font-family: $mono;
-    font-size: 10px;
+    font-family: $sans;
+    font-size: 10.5px;
+    font-weight: 600;
     font-style: normal;
     color: $text-helper;
     text-transform: uppercase;

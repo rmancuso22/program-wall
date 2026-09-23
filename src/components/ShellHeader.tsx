@@ -42,6 +42,15 @@ export function ShellHeader({ label, themePref, children, actions }: Props) {
   );
 }
 
+/** The Liftoff mark. The one place rocket imagery is allowed: the header brand. */
+export function BrandMark() {
+  return (
+    <svg className={styles.logo} viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 1c2.2 1.4 3.4 3.8 3.4 6.6v2.1l1.6 1.6V14l-2.6-1.3H5.6L3 14v-2.7l1.6-1.6V7.6C4.6 4.8 5.8 2.4 8 1zm0 4.2a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM6.6 13.6h2.8L8 15.4z" />
+    </svg>
+  );
+}
+
 export function ShellDivider() {
   return <span className={styles.divider} aria-hidden="true" />;
 }

@@ -5,7 +5,8 @@
 Program planning for IBM program teams, replacing Mural. The product was called Program Wall; the
 repo, Vercel project and Supabase project keep the name `program-wall` on purpose (renaming breaks
 links and the CLI link). Use "Liftoff" in all user-facing copy, from `PRODUCT` in
-`src/lib/config.ts`. Text only: no rocket or launch imagery. The roadmap is the front door; a project is
+`src/lib/config.ts`. No "IBM" anywhere in the UI. Text only: no rocket or launch imagery, with one
+exception: the small rocket mark next to "Liftoff" in the header brand (`BrandMark` in ShellHeader). The roadmap is the front door; a project is
 the top-level object, with a workspace of tabs (Overview, Design, Delivery Map, Jira tickets,
 Timeline, Meetings, Documents).
 
@@ -42,8 +43,11 @@ our own components for cards, the filter bar and timelines.
 - Next.js 15 App Router, TypeScript, `src/` dir. No Tailwind.
 - `@carbon/react` + `@carbon/styles` via Sass (`src/app/globals.scss`). Style with Carbon tokens in
   `*.module.scss` (`@use '@carbon/react/scss/theme' as *;`, `spacing`, `type`).
-- IBM Plex Sans and Mono via `next/font/google` (`src/app/fonts.ts`). Carbon's own `@font-face` is
-  off; its font stacks point at `--font-plex-sans` / `--font-plex-mono`.
+- **Fonts:** Inter (400/500/600/700, `--font-sans`) for everything, JetBrains Mono (`--font-mono`,
+  class `.pw-mono`) only for project numbers, Jira keys and code/branch names. Numbers elsewhere are
+  Inter with `font-variant-numeric: tabular-nums`. Small uppercase labels are Inter 600 (`.pw-label`,
+  10.5px). Both via `next/font/google` (`src/app/fonts.ts`); Carbon's own `@font-face` is off and all
+  its font stacks point at these variables, so Carbon components use Inter too. No IBM Plex.
 - Supabase (Postgres, Auth, Realtime), `@supabase/supabase-js` and `@supabase/ssr` pinned to exact
   versions.
 - Zustand holds live nav badge values (`src/stores/nav-badges.ts`).
@@ -68,14 +72,14 @@ src/app/
   projects/[key]/       workspace layout (header, nav, project head) + one route per tab
 src/components/
   ShellHeader           dark Carbon UI Shell header (g100 zone in both themes)
-  roadmap/              RoadmapView (filters, lanes), ProjectCard, ProjectPanel (read + edit)
+  roadmap/              RoadmapView (filter bar, dropdowns, lanes), ProjectCard, QuickLook
   project/              ProjectBits (status light, callout, risks, dates, phase ladder), PeopleList
   workspace/            WorkspaceHeader (back, prev/next), WorkspaceNav, placeholders
   design/               ReviewDoc (banner, tiles, reviewer queue), ApproversTable, MarkdownDoc
 src/lib/
   domain.ts             phases, status lights, roles, key dates, UTC date helpers
   filters.ts            roadmap filters and sort <-> URL query
-                        (?status=&quarter=&team=&phase=&search=&sort=)
+                        (?status=&quarter=&team=&phase=&owner=&search=&sort=)
   reviews.ts            review derivations (SLA states, doc display state, tiles)
   projects.ts           server data loading and normalisation
   config.ts             program name, review SLA, review roles, GitHub host
@@ -135,7 +139,8 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
   case-insensitively. Contact buttons (Slack, email, Nudge) show only when the value exists; never
   invent handles.
 - `project_people`: one row per role per project (exec, pm, om, devmgr, arch, devlead) → person_id.
-- `project_risks`: ordered text rows.
+- `project_risks`: ordered text rows with `updated_at`, owned by a trigger: set on insert and when
+  the text actually changes (a no-op save keeps the date; clients can't set it).
 - `review_docs`: one per project per kind (srb, api). Stores only `state` (draft | open | merged),
   repo, pr_number, branch, opened_at, target_at, merged_at, `expected_open_at` (drafts, set by the
   PM) and `body_md`. **In review / Changes requested / Approved and the SLA colours are derived at
@@ -148,12 +153,28 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
   `TimezoneSync`), `localToday()` in the browser.
 - Review SLA: `NEXT_PUBLIC_REVIEW_SLA_BUSINESS_DAYS`, default 3 business days. Pending over the SLA is
   "Over SLA"; over twice the SLA is "Stale". Queue lengths are shown in calendar days.
-- Side panel edits go through `rpc('save_project_details', ...)`: one transaction, runs as the
-  caller so RLS applies. Names are free text for now: each resolves to a `people` row by
-  case-insensitive exact match, or creates one. It never clears anyone's contact details.
+- The quick look saves **one field at a time** from the browser (RLS decides): `projects` columns
+  (status text and light bump `status_updated_at` via trigger), `project_risks` rows,
+  `project_people` (directory picker; a typed name creates a `people` row) and
+  `project_teams.lead_person_id`. There is no whole-record save.
 - Dependencies between stickies: **a dependency is an edge, not a card**, and one pair gets one
   edge in either direction (unique index on least/greatest; the app also says "Those two are
   already linked").
+
+## Roadmap filters and quick look
+
+- One filter row: search, then Status, Quarter, Teams, Phase and Owner dropdown checklists with
+  counts (Owner = the project's PM, by person id). Active selections turn the button blue with a
+  count and show as removable chips with "Clear all". Escape or an outside click closes a dropdown.
+  "Sort: <choice>" menu and a gear menu for Card size (`localStorage` `pw.density`).
+- A single click opens the quick look (centered, max 940px); the click waits ~220ms so a double
+  click enters the project instead. Arrow keys step through the visible cards in filter and sort
+  order; Escape or a backdrop click closes. Every field edits in place (hover outline + pencil):
+  Enter saves, Shift+Enter adds a line in text areas, Escape cancels without closing, blur saves.
+  Viewers get the same card with no pencils, outlines or pickers. Team leads live in the quick
+  look's right column (not in the mock; they feed the Meetings roster).
+- Risks show their age ("5d ago", then "12 Sep") on the quick look and Overview, with
+  "Updated <latest>" on the Key risks header; ages use the viewer's time zone (`getViewerTz`).
 
 ## Roadmap sort
 
@@ -230,7 +251,7 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
 - Outlook later: `source` (liftoff | outlook), `outlook_series_id`, `outlook_event_id`. Until then
   the button is "Connect Outlook" (popover only), labels say "Created in Liftoff", minutes say
   "N attended" (not "sent to"), and nothing is emailed.
-- Team leads: `project_teams.lead_person_id`, set from the side panel's Teams section.
+- Team leads: `project_teams.lead_person_id`, set from the quick look's Team leads rows.
 - Times are shown in the viewer's zone (`pw-tz` cookie); the week grid is 8 AM–6 PM local.
 - Writes to one occurrence are queued client-side so they land in order.
 - Rules: `src/lib/meetings.ts`; rows: `src/lib/meetings-rows.ts`; UI: `src/components/meetings/`.

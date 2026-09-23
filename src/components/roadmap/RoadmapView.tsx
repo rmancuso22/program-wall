@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search } from "@carbon/react";
 import { Download } from "@carbon/icons-react";
-import { PHASES, RAGS, phaseColor, phaseIndex } from "@/lib/domain";
+import { PHASES, RAGS, initials, phaseColor, phaseIndex } from "@/lib/domain";
 import {
   NO_FILTERS,
   SORTS,
@@ -22,11 +21,10 @@ import {
 import type { Person, ProjectView, Quarter } from "@/lib/projects";
 import { PRODUCT, PROGRAM } from "@/lib/config";
 import type { ThemePref } from "@/lib/theme";
-import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
+import { BrandMark, ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
 import { useToast } from "@/components/Toast";
 import { ProjectCard } from "./ProjectCard";
-import { ProjectPanel } from "./ProjectPanel";
-import { SegmentedControl } from "./SegmentedControl";
+import { QuickLook } from "./QuickLook";
 import styles from "./roadmap.module.scss";
 
 type Props = {
@@ -36,28 +34,44 @@ type Props = {
   directory: Person[];
   canEdit: boolean;
   today: string;
+  tz: string;
   themePref: ThemePref;
 };
 
 type Density = "comfortable" | "compact";
 const DENSITY_KEY = "pw.density";
-const DENSITIES = [
-  { key: "comfortable", label: "Comfortable" },
-  { key: "compact", label: "Compact" },
-] as const;
 
-export function RoadmapView({ quarters, teams, projects, directory, canEdit, today, themePref }: Props) {
+type ListKey = "status" | "quarter" | "team" | "phase" | "owner";
+type Item = { key: string; label: string; n: number; color?: string; avatar?: boolean };
+
+const RAG_COLOR = { green: "var(--pw-ok)", yellow: "var(--pw-risk)", red: "var(--pw-block)" } as const;
+
+const CHEV = (
+  <svg className="chev" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z" />
+  </svg>
+);
+
+export function RoadmapView({ quarters, teams, projects: initialProjects, directory: initialDirectory, canEdit, today, tz, themePref }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const filters = useMemo(() => parseFilters(new URLSearchParams(searchParams.toString())), [searchParams]);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [density, setDensity] = useState<Density>("comfortable");
-  const searchRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
-  // Density is a per-viewer convenience; storage may be unavailable.
+  // Local copies so quick-look saves show on the cards immediately.
+  const [projects, setProjects] = useState(initialProjects);
+  useEffect(() => setProjects(initialProjects), [initialProjects]);
+  const [directory, setDirectory] = useState(initialDirectory);
+  useEffect(() => setDirectory(initialDirectory), [initialDirectory]);
+
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [openDd, setOpenDd] = useState<string | null>(null);
+  const [density, setDensity] = useState<Density>("comfortable");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+
+  // Card size is a per-viewer convenience; storage may be unavailable.
   useEffect(() => {
     try {
       if (localStorage.getItem(DENSITY_KEY) === "compact") setDensity("compact");
@@ -65,12 +79,14 @@ export function RoadmapView({ quarters, teams, projects, directory, canEdit, tod
   }, []);
   const chooseDensity = (d: Density) => {
     setDensity(d);
+    setOpenDd(null);
     try {
       localStorage.setItem(DENSITY_KEY, d);
     } catch {}
   };
 
-  // Filters live in the URL (shallow update, no server round trip).
+  // Filters live in the URL (shallow update, no server round trip), so a
+  // filtered view can be shared.
   const setFilters = useCallback(
     (next: Filters) => window.history.replaceState(null, "", `${pathname}${filtersToQuery(next)}`),
     [pathname],
@@ -81,6 +97,7 @@ export function RoadmapView({ quarters, teams, projects, directory, canEdit, tod
   // sort picks up the remembered one.
   const chooseSort = (sort: SortKey) => {
     setFilters({ ...filters, sort });
+    setOpenDd(null);
     try {
       localStorage.setItem(SORT_STORAGE_KEY, sort);
     } catch {}
@@ -97,57 +114,111 @@ export function RoadmapView({ quarters, teams, projects, directory, canEdit, tod
   }, []);
 
   const visible = useMemo(() => projects.filter((p) => matchesFilters(p, filters)), [projects, filters]);
-  const visibleKeys = useMemo(() => new Set(visible.map((p) => p.key)), [visible]);
-  const selected = selectedKey ? projects.find((p) => p.key === selectedKey) ?? null : null;
   const query = filtersToQuery(filters);
-
   const enter = useCallback((key: string) => router.push(`/projects/${key}${query}`), [router, query]);
 
-  const select = (key: string) => {
-    if (editing && key !== selectedKey) setEditing(false);
-    setSelectedKey((cur) => (cur === key && !editing ? null : key));
-  };
+  // Lanes in quarter order, cards sorted within each: the quick look steps
+  // through exactly this order.
+  const lanes = useMemo(
+    () =>
+      quarters
+        .filter((q) => !filters.quarter.length || filters.quarter.includes(q.id))
+        .map((q) => ({ q, cards: visible.filter((p) => p.quarterId === q.id).sort(compareProjects(filters.sort)) })),
+    [quarters, visible, filters.quarter, filters.sort],
+  );
+  const order = useMemo(() => lanes.flatMap((l) => l.cards.map((p) => p.key)), [lanes]);
+  const selected = selectedKey ? projects.find((p) => p.key === selectedKey) ?? null : null;
 
-  const closePanel = () => {
-    setEditing(false);
-    setSelectedKey(null);
-  };
+  const select = (key: string) => setSelectedKey((cur) => (cur === key ? null : key));
+  const step = useCallback(
+    (dir: 1 | -1) => {
+      setSelectedKey((cur) => {
+        const i = cur ? order.indexOf(cur) : -1;
+        if (i < 0 || !order.length) return cur;
+        const next = order[(i + dir + order.length) % order.length];
+        document.querySelector(`.card[data-key="${next}"]`)?.scrollIntoView({ block: "nearest" });
+        return next;
+      });
+    },
+    [order],
+  );
+  const closeQuickLook = useCallback(() => setSelectedKey(null), []);
 
-  // Escape backs out one level; "/" jumps to search.
+  // Dropdowns close on Escape or a click outside. With nothing open, Escape
+  // clears the filters; "/" jumps to search. The quick look handles its own keys.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || selectedKey) return;
       const typing = e.target instanceof HTMLElement && e.target.closest("input, textarea, [contenteditable]");
       if (e.key === "Escape") {
-        if (editing) setEditing(false);
-        else if (selectedKey) setSelectedKey(null);
+        if (openDd) setOpenDd(null);
         else if (hasFilters(filters)) clearFilters();
       } else if (e.key === "/" && !typing) {
         e.preventDefault();
         searchRef.current?.focus();
       }
     };
+    const onDown = (e: MouseEvent) => {
+      if (openDd && !(e.target as HTMLElement).closest?.(".dd")) setOpenDd(null);
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [editing, selectedKey, filters, clearFilters]);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [openDd, selectedKey, filters, clearFilters]);
 
-  const counts = useMemo(() => {
-    const by = <K extends string>(fn: (p: ProjectView) => K | K[]) => {
-      const m = new Map<string, number>();
-      for (const p of projects) for (const k of [fn(p)].flat()) m.set(k, (m.get(k) ?? 0) + 1);
-      return m;
+  // Checklist items with counts across all projects.
+  const items = useMemo(() => {
+    const count = (fn: (p: ProjectView) => boolean) => projects.filter(fn).length;
+    const pms = new Map<string, { person: Person; n: number }>();
+    for (const p of projects) {
+      const pm = p.people.pm;
+      if (pm) pms.set(pm.id, { person: pm, n: (pms.get(pm.id)?.n ?? 0) + 1 });
+    }
+    const out: Record<ListKey, Item[]> = {
+      status: RAGS.map((r) => ({ key: r.key, label: r.label, n: count((p) => p.rag === r.key), color: RAG_COLOR[r.key] })),
+      quarter: quarters.map((q) => ({ key: q.id, label: q.label, n: count((p) => p.quarterId === q.id) })),
+      team: teams.map((t) => ({ key: t, label: t, n: count((p) => p.teams.includes(t)) })),
+      phase: PHASES.map((ph, i) => ({ key: ph.key, label: ph.name, n: count((p) => p.phase === ph.key), color: phaseColor(i) })),
+      owner: [...pms.values()]
+        .sort((a, b) => a.person.name.localeCompare(b.person.name))
+        .map(({ person, n }) => ({ key: person.id, label: person.name, n, avatar: true })),
     };
-    return {
-      rag: by((p) => p.rag),
-      quarter: by((p) => p.quarterId),
-      team: by((p) => p.teams),
-      phase: by((p) => p.phase),
-    };
-  }, [projects]);
+    return out;
+  }, [projects, quarters, teams]);
+
+  const DROPDOWNS: { key: ListKey; label: string; chip: string; head?: string }[] = [
+    { key: "status", label: "Status", chip: "Status" },
+    { key: "quarter", label: "Quarter", chip: "Quarter" },
+    { key: "team", label: "Teams", chip: "Team" },
+    { key: "phase", label: "Phase", chip: "Phase" },
+    { key: "owner", label: "Owner", chip: "Owner", head: "Program manager" },
+  ];
+  const toggleValue = (key: ListKey, value: string) =>
+    setFilters({ ...filters, [key]: toggle(filters[key] as string[], value) } as Filters);
+
+  const chips = DROPDOWNS.flatMap((d) =>
+    (filters[d.key] as string[]).map((v) => {
+      const it = items[d.key].find((x) => x.key === v);
+      return { d, v, label: it?.label ?? v, color: it?.color };
+    }),
+  );
+
+  const dd = (key: string) => ({
+    className: `dd${openDd === key ? " open" : ""}`,
+  });
+  const ddButton = (key: string) => ({
+    "aria-expanded": openDd === key,
+    "aria-haspopup": "true" as const,
+    onClick: () => setOpenDd((cur) => (cur === key ? null : key)),
+  });
 
   return (
     <>
       <ShellHeader
-        label={`IBM ${PRODUCT.name}: ${PROGRAM.roadmapTitle}`}
+        label={`${PRODUCT.name}: ${PROGRAM.roadmapTitle}`}
         themePref={themePref}
         actions={
           <ShellButton onClick={() => toast("Export isn't available yet.")}>
@@ -157,8 +228,8 @@ export function RoadmapView({ quarters, teams, projects, directory, canEdit, tod
         }
       >
         <a className={shellStyles.brand} href="/roadmap">
-          <b>IBM</b>
-          <span>{PRODUCT.name}</span>
+          <BrandMark />
+          <b>{PRODUCT.name}</b>
         </a>
         <ShellDivider />
         <div className={shellStyles.scope}>
@@ -167,206 +238,179 @@ export function RoadmapView({ quarters, teams, projects, directory, canEdit, tod
         </div>
       </ShellHeader>
 
-      <div className={`${styles.page} ${density === "compact" ? styles.compact : ""}`}>
-        <section className={styles.filters} aria-label="Filters">
-          <div className={`${styles.frow} ${styles.dual}`}>
-            <div className={styles.group}>
-              <span className={styles.rowLabel} id="f-status">Status</span>
-              <div className={styles.bubbles} role="group" aria-labelledby="f-status">
-                {RAGS.map((r) => (
-                  <Bubble
-                    key={r.key}
-                    label={r.label}
-                    count={counts.rag.get(r.key) ?? 0}
-                    color={r.color}
-                    pressed={filters.status.includes(r.key)}
-                    onClick={() => setFilters({ ...filters, status: toggle(filters.status, r.key) })}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className={styles.group}>
-              <span className={styles.rowLabel} id="f-quarter">Quarter</span>
-              <div className={styles.bubbles} role="group" aria-labelledby="f-quarter">
-                {quarters.map((q) => (
-                  <Bubble
-                    key={q.id}
-                    label={q.label}
-                    count={counts.quarter.get(q.id) ?? 0}
-                    mono
-                    pressed={filters.quarter.includes(q.id)}
-                    onClick={() => setFilters({ ...filters, quarter: toggle(filters.quarter, q.id) })}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className={styles.frow}>
-            <span className={styles.rowLabel} id="f-teams">Teams</span>
-            <div className={styles.bubbles} role="group" aria-labelledby="f-teams">
-              {teams.map((t) => (
-                <Bubble
-                  key={t}
-                  label={t}
-                  count={counts.team.get(t) ?? 0}
-                  pressed={filters.team.includes(t)}
-                  onClick={() => setFilters({ ...filters, team: toggle(filters.team, t) })}
-                />
-              ))}
-            </div>
-          </div>
-          <div className={styles.frow}>
-            <span className={styles.rowLabel} id="f-phase">Phase</span>
-            <div className={styles.bubbles} role="group" aria-labelledby="f-phase">
-              {PHASES.map((ph, i) => (
-                <Bubble
-                  key={ph.key}
-                  label={ph.name}
-                  count={counts.phase.get(ph.key) ?? 0}
-                  color={phaseColor(i)}
-                  pressed={filters.phase.includes(ph.key)}
-                  onClick={() => setFilters({ ...filters, phase: toggle(filters.phase, ph.key) })}
-                />
-              ))}
-            </div>
-          </div>
-          <div className={styles.toolrow}>
-            <div className={styles.search}>
-              <Search
+      <div className={`${styles.root}${density === "compact" ? " compact" : ""}`}>
+        <section className="filters" aria-label="Filters" ref={barRef}>
+          <div className="toolrow">
+            <label className="search">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M10.4 9.3a5 5 0 10-1.1 1.1l3.6 3.6.8-.8-3.3-3.9zM6.5 10a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" />
+              </svg>
+              <input
                 ref={searchRef}
-                size="sm"
-                labelText="Search projects"
+                type="search"
                 placeholder="Search project or number"
+                aria-label="Search projects"
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                closeButtonLabelText="Clear search"
               />
+            </label>
+            <div className="fgroup">
+              {DROPDOWNS.map((d) => {
+                const on = (filters[d.key] as string[]).length;
+                return (
+                  <div key={d.key} {...dd(d.key)}>
+                    <button type="button" className={`fbtn${on ? " on" : ""}`} {...ddButton(d.key)}>
+                      {d.label}
+                      <span className="fc">{on || ""}</span>
+                      {CHEV}
+                    </button>
+                    {openDd === d.key && (
+                      <div className="fdrop" role="group" aria-label={d.label}>
+                        {d.head && <div className="fdrop-h">{d.head}</div>}
+                        <div className="bubbles">
+                          {items[d.key].map((it) => (
+                            <button
+                              key={it.key}
+                              type="button"
+                              className="bub"
+                              aria-pressed={(filters[d.key] as string[]).includes(it.key)}
+                              onClick={() => toggleValue(d.key, it.key)}
+                            >
+                              {it.color && <i className="dot" style={{ background: it.color }} />}
+                              {it.avatar && <span className="av">{initials(it.label)}</span>}
+                              {it.label}
+                              <span className="n">{it.n}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-            <span className={styles.shown} aria-live="polite">
-              <b>{visible.length}</b> of {projects.length} projects
-            </span>
             {hasFilters(filters) && (
-              <button
-                type="button"
-                className="cds--link"
-                style={{ background: "none", border: 0, cursor: "pointer", fontSize: 12 }}
-                onClick={clearFilters}
-              >
-                Clear filters
+              <button type="button" className="linkbtn" onClick={clearFilters}>
+                Clear all
               </button>
             )}
-            <span className={styles.spacer} />
-            <span className={styles.hint}>Click a card for detail · double-click to enter</span>
-            <span className={styles.sortLabel} aria-hidden="true">
-              Sort
+            <div className="sp" />
+            <span className="count" aria-live="polite">
+              <b>{visible.length}</b> of {projects.length} projects
             </span>
-            <SegmentedControl label="Sort within quarter" options={SORTS} value={filters.sort} onChange={chooseSort} />
-            <SegmentedControl label="Card density" options={DENSITIES} value={density} onChange={chooseDensity} />
+            <div {...dd("sort")}>
+              <button type="button" className="fbtn ghost" {...ddButton("sort")}>
+                <span className="k">Sort</span>
+                <span>{SORTS.find((s) => s.key === filters.sort)?.label}</span>
+                {CHEV}
+              </button>
+              {openDd === "sort" && (
+                <div className="fdrop right menu" role="group" aria-label="Sort within quarter">
+                  {SORTS.map((s) => (
+                    <button key={s.key} type="button" aria-pressed={filters.sort === s.key} onClick={() => chooseSort(s.key)}>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div {...dd("view")}>
+              <button type="button" className="fbtn icon-only" aria-label="View settings" title="View settings" {...ddButton("view")}>
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M13.5 8.7V7.3l-1.6-.3a4 4 0 00-.4-1l.9-1.3-1-1-1.3.9a4 4 0 00-1-.4L8.7 2.5H7.3L7 4.1a4 4 0 00-1 .4l-1.3-.9-1 1 .9 1.3a4 4 0 00-.4 1l-1.6.3v1.4l1.6.3a4 4 0 00.4 1l-.9 1.3 1 1 1.3-.9a4 4 0 001 .4l.3 1.6h1.4l.3-1.6a4 4 0 001-.4l1.3.9 1-1-.9-1.3a4 4 0 00.4-1zM8 10a2 2 0 110-4 2 2 0 010 4z" />
+                </svg>
+              </button>
+              {openDd === "view" && (
+                <div className="fdrop right menu" role="group" aria-label="Card size">
+                  <div className="fdrop-h">Card size</div>
+                  <button type="button" aria-pressed={density === "comfortable"} onClick={() => chooseDensity("comfortable")}>
+                    Comfortable
+                  </button>
+                  <button type="button" aria-pressed={density === "compact"} onClick={() => chooseDensity("compact")}>
+                    Compact
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
+          {/* Always rendered: the empty row keeps the mock's spacing under the toolbar. */}
+          {(
+            <div className="chips">
+              {chips.map(({ d, v, label, color }) => (
+                <span key={`${d.key}:${v}`} className="chip">
+                  <em>{d.chip}</em>
+                  {color && <i className="dot" style={{ background: color }} />}
+                  {label}
+                  <button type="button" aria-label={`Remove filter ${d.chip} ${label}`} onClick={() => toggleValue(d.key, v)}>
+                    <svg viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M12 4.7L11.3 4 8 7.3 4.7 4 4 4.7 7.3 8 4 11.3l.7.7L8 8.7l3.3 3.3.7-.7L8.7 8z" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </section>
 
-        <div className={styles.scroll}>
-          {quarters.map((q) => {
-            if (filters.quarter.length && !filters.quarter.includes(q.id)) return null;
-            const inLane = projects
-              .filter((p) => p.quarterId === q.id && visibleKeys.has(p.key))
-              .sort(compareProjects(filters.sort));
-            return (
-              <section key={q.id} className={`${styles.lane} ${q.isBacklog ? styles.backlog : ""}`}>
-                <div className={styles.laneHead}>
-                  <h2 className={styles.laneLabel}>{q.label}</h2>
-                  <span className={styles.laneSub}>{q.subtitle}</span>
-                  <PhaseMix projects={inLane} />
-                  <span className={styles.tally}>
-                    {inLane.length} {inLane.length === 1 ? "project" : "projects"}
-                  </span>
-                </div>
-                <ul className={styles.grid}>
-                  {inLane.map((p) => (
-                    <li key={p.key}>
-                      <ProjectCard
-                        project={p}
-                        quarterLabel={q.label}
-                        selected={p.key === selectedKey}
-                        onSelect={() => select(p.key)}
-                        onEnter={() => enter(p.key)}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
+        <div className="scroll">
+          {lanes.map(({ q, cards }) => (
+            <section key={q.id} className={`lane${q.isBacklog ? " backlog" : ""}`} aria-label={q.label}>
+              <div className="lane-head">
+                <span className="q">{q.label}</span>
+                <span className="sub">{q.subtitle}</span>
+                <PhaseMix projects={cards} />
+                <span className="tally">
+                  {cards.length} {cards.length === 1 ? "project" : "projects"}
+                </span>
+              </div>
+              <div className="grid">
+                {cards.map((p) => (
+                  <ProjectCard
+                    key={p.key}
+                    project={p}
+                    quarterLabel={q.label}
+                    selected={p.key === selectedKey}
+                    onSelect={() => select(p.key)}
+                    onEnter={() => enter(p.key)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
           {visible.length === 0 && (
-            <div className={styles.empty}>
+            <div className="empty">
               <b>No projects match</b>
               Clear a filter or widen the search.
             </div>
           )}
         </div>
+
+        {selected && (
+          <QuickLook
+            project={selected}
+            quarter={quarters.find((q) => q.id === selected.quarterId)}
+            directory={directory}
+            canEdit={canEdit}
+            today={today}
+            tz={tz}
+            onUpdate={(next) => setProjects((list) => list.map((p) => (p.id === next.id ? next : p)))}
+            onDirectoryAdd={(person) => setDirectory((d) => [...d, person].sort((a, b) => a.name.localeCompare(b.name)))}
+            onStep={step}
+            onEnter={() => enter(selected.key)}
+            onClose={closeQuickLook}
+          />
+        )}
       </div>
-
-      {selected && (
-        <ProjectPanel
-          key={selected.key}
-          project={selected}
-          directory={directory}
-          quarter={quarters.find((q) => q.id === selected.quarterId)}
-          today={today}
-          canEdit={canEdit}
-          editing={editing}
-          onEdit={() => setEditing(true)}
-          onCancelEdit={() => setEditing(false)}
-          onSaved={() => {
-            setEditing(false);
-            router.refresh();
-          }}
-          onClose={closePanel}
-          onEnter={() => enter(selected.key)}
-        />
-      )}
     </>
-  );
-}
-
-function Bubble({
-  label,
-  count,
-  pressed,
-  onClick,
-  color,
-  mono,
-}: {
-  label: string;
-  count: number;
-  pressed: boolean;
-  onClick: () => void;
-  color?: string;
-  mono?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      className={`${styles.bubble} ${mono ? styles.quarterBubble : ""}`}
-      aria-pressed={pressed}
-      onClick={onClick}
-    >
-      {color && <i className={styles.dot} style={{ background: color }} aria-hidden="true" />}
-      {label}
-      <span className={styles.count}>{count}</span>
-    </button>
   );
 }
 
 /** Thin bar in the lane header showing the phase mix of the visible cards. */
 function PhaseMix({ projects }: { projects: ProjectView[] }) {
-  if (projects.length === 0) return <span className={styles.laneBar} style={{ visibility: "hidden" }} />;
   const counts = PHASES.map((ph) => projects.filter((p) => phaseIndex(p.phase) === phaseIndex(ph.key)).length);
   return (
-    <span className={styles.laneBar} aria-hidden="true">
-      {counts.map((n, i) =>
-        n ? <i key={i} style={{ background: phaseColor(i), width: `${(n / projects.length) * 100}%` }} /> : null,
-      )}
+    <span className="bar" aria-hidden="true" style={{ visibility: projects.length ? "visible" : "hidden" }}>
+      {counts.map((n, i) => (n ? <i key={i} style={{ background: phaseColor(i), width: `${(n / projects.length) * 100}%` }} /> : null))}
     </span>
   );
 }
