@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProject, getRoadmap } from "@/lib/projects";
+import { getLifecycleTemplate, getProject, getProjectLifecycle, getRoadmap } from "@/lib/projects";
+import { Timeline, anchorDate } from "@/lib/lifecycle";
+import { getToday } from "@/lib/today";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
 import { pendingReviewCount } from "@/lib/reviews";
 import { PRODUCT, PROGRAM } from "@/lib/config";
@@ -20,12 +22,23 @@ export async function generateMetadata({ params }: Omit<Props, "children">) {
 
 export default async function ProjectLayout({ children, params }: Props) {
   const { key } = await params;
-  const [data, roadmap, themePref] = await Promise.all([
+  const [data, roadmap, themePref, template, today] = await Promise.all([
     getProject(decodeURIComponent(key)),
     getRoadmap(),
     getThemePref(),
+    getLifecycleTemplate(),
+    getToday(),
   ]);
   if (!data) notFound();
+  const lifecycle = await getProjectLifecycle(data.project.id);
+  const tlStats = new Timeline(
+    template.items,
+    template.stages,
+    new Map(lifecycle.rows.map((r) => [r.itemId, r])),
+    lifecycle.scopes,
+    anchorDate(data.project.dates.release, today),
+    today,
+  ).stats();
 
   const { project, reviews } = data;
   const quarter = roadmap.quarters.find((q) => q.id === project.quarterId);
@@ -48,6 +61,7 @@ export default async function ProjectLayout({ children, params }: Props) {
             projectKey={project.key}
             pendingReviews={pendingReviewCount(reviews)}
             designMerged={designMerged}
+            timelineProgress={`${tlStats.done}/${tlStats.total}`}
           />
         </Suspense>
         <WorkspaceMain>

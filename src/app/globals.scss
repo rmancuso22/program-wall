@@ -50,8 +50,20 @@
   --pw-ok: #{c.$green-60};
   --pw-risk: #{c.$yellow-50};
   --pw-block: #{c.$red-60};
-  --pw-track-empty: #{c.$gray-20};
-  --pw-grid: #{c.$gray-10};
+  // Values below are the mock's where Carbon has no exact token.
+  --pw-track-empty: #dcdcdc;
+  --pw-grid: #e6e6e6;
+  --pw-surface-2: #{c.$gray-10};
+  --pw-surface-3: #e8e8e8;
+  --pw-accent-soft: #{c.$blue-10};
+  // Lifecycle tracks
+  --pw-tk-arch: #e8845c;
+  --pw-tk-om: #{c.$yellow-50};
+  --pw-tk-ux: #{c.$purple-60};
+  --pw-tk-eng: #{c.$blue-60};
+  --pw-tk-test: #{c.$green-60};
+  --pw-tk-pgm: #{c.$gray-60};
+  --pw-date-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23393939'%3E%3Cpath d='M13 2h-2V1h-1v1H6V1H5v1H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm0 11H3V6h10zm0-8H3V3h2v1h1V3h4v1h1V3h2z'/%3E%3C/svg%3E");
   --pw-shadow: 0 1px 0 rgb(22 22 22 / 6%), 0 2px 6px rgb(22 22 22 / 6%);
   --pw-shadow-lift: 0 2px 0 rgb(22 22 22 / 10%), 0 10px 24px rgb(22 22 22 / 14%);
 }
@@ -69,8 +81,18 @@
   --pw-ok: #{c.$green-40};
   --pw-risk: #{c.$yellow-30};
   --pw-block: #{c.$red-50};
-  --pw-track-empty: #{c.$gray-80};
-  --pw-grid: #{c.$gray-90};
+  --pw-track-empty: #4a4a4a;
+  --pw-grid: #2c2c2c;
+  --pw-surface-2: #333333;
+  --pw-surface-3: #{c.$gray-80};
+  --pw-accent-soft: #1b2a4a;
+  --pw-tk-arch: #ff9d6e;
+  --pw-tk-om: #d2a106;
+  --pw-tk-ux: #a56eff;
+  --pw-tk-eng: #{c.$blue-50};
+  --pw-tk-test: #{c.$green-40};
+  --pw-tk-pgm: #{c.$gray-40};
+  --pw-date-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e0e0e0'%3E%3Cpath d='M13 2h-2V1h-1v1H6V1H5v1H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm0 11H3V6h10zm0-8H3V3h2v1h1V3h4v1h1V3h2z'/%3E%3C/svg%3E");
   --pw-shadow: 0 1px 0 rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 35%);
   --pw-shadow-lift: 0 2px 0 rgb(0 0 0 / 50%), 0 12px 28px rgb(0 0 0 / 50%);
 }
@@ -96,4 +118,24 @@ body {
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: theme.$text-helper;
+}
+
+// Date inputs: our own calendar icon, drawn for the app theme. The native one
+// follows the OS theme and disappears on white when the Mac is in dark mode.
+// The native indicator stays clickable, invisible, over our icon.
+input[type='date'] {
+  background-image: var(--pw-date-icon);
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  padding-right: 32px !important;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  width: 24px;
+  height: 24px;
+  margin-right: -26px;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
 }

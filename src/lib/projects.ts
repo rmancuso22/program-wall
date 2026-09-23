@@ -3,6 +3,7 @@ import { cache } from "react";
 import { createClient } from "./supabase/server";
 import type { DateField } from "./domain";
 import type { ReviewDocView } from "./reviews";
+import { scopesFromRow, toItemRow, type Stage, type TemplateItem } from "./lifecycle";
 import type { ProfileRole, ProjectPhase, ProjectRag, ProjectRole, ReviewKind } from "./supabase/types";
 
 export type Person = {
@@ -225,4 +226,65 @@ export const getProject = cache(async (key: string) => {
     }));
 
   return { project: toProject(row), reviews };
+});
+
+// ---------------------------------------------------------------------------
+// Lifecycle timeline
+// ---------------------------------------------------------------------------
+
+/** The lifecycle template: stages and items, in order. */
+export const getLifecycleTemplate = cache(async () => {
+  const supabase = await createClient();
+  const [stages, items] = await Promise.all([
+    supabase.from("lifecycle_stages").select("*").order("position"),
+    supabase.from("lifecycle_items").select("*").order("position"),
+  ]);
+  const error = stages.error ?? items.error;
+  if (error || !stages.data || !items.data) throw new Error(`Could not load the lifecycle template: ${error?.message}`);
+  return {
+    stages: stages.data.map(
+      (s): Stage => ({
+        position: s.position,
+        name: s.name,
+        durationLabel: s.duration_label,
+        startWeek: Number(s.start_week),
+        endWeek: Number(s.end_week),
+      }),
+    ),
+    items: items.data.map(
+      (i): TemplateItem => ({
+        id: i.id,
+        name: i.name,
+        track: i.track as TemplateItem["track"],
+        type: i.type,
+        startWeek: Number(i.start_week),
+        endWeek: Number(i.end_week),
+        scope: (i.scope as TemplateItem["scope"]) ?? null,
+        position: i.position,
+      }),
+    ),
+  };
+});
+
+/** A project's lifecycle state: scopes and touched items. */
+export const getProjectLifecycle = cache(async (projectId: string) => {
+  const supabase = await createClient();
+  const [scope, rows] = await Promise.all([
+    supabase.from("project_lifecycle").select("scope_api, scope_ux, scope_commercial, scope_external").eq("project_id", projectId).maybeSingle(),
+    supabase
+      .from("project_lifecycle_items")
+      .select("item_id, status, start_date, end_date, done_on, owner_person_id, owner_set")
+      .eq("project_id", projectId),
+  ]);
+  const error = scope.error ?? rows.error;
+  if (error) throw new Error(`Could not load the timeline: ${error.message}`);
+  return { scopes: scopesFromRow(scope.data), rows: (rows.data ?? []).map(toItemRow) };
+});
+
+/** Everyone in the people directory, for owner pickers. */
+export const getPeopleDirectory = cache(async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("people").select(PERSON).order("display_name");
+  if (error) throw new Error(`Could not load people: ${error.message}`);
+  return (data as unknown as PersonRow[]).map(toPerson);
 });

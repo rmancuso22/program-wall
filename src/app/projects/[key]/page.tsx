@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProject, getRoadmap } from "@/lib/projects";
-import { PHASES, phaseColor, phaseIndex, todayISO } from "@/lib/domain";
+import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
+import { getToday } from "@/lib/today";
 import { deriveDoc, pendingReviewCount } from "@/lib/reviews";
 import { REVIEW_SLA_BUSINESS_DAYS } from "@/lib/config";
 import {
@@ -22,7 +23,7 @@ export default async function OverviewPage({ params }: Props) {
   if (!data) notFound();
 
   const { project, reviews } = data;
-  const today = todayISO();
+  const today = await getToday();
   const quarter = roadmap.quarters.find((q) => q.id === project.quarterId);
   const current = phaseIndex(project.phase);
 

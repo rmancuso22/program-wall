@@ -99,10 +99,13 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
   `can_edit_projects()` (admin or member) and `is_admin()`. Every signed-in user reads everything.
   Admins and members write project data and add/edit people. Only admins delete projects or people
   and change quarters and teams. `anon` has no access.
-- Realtime: none yet. When the mural needs it, use Broadcast on a private per-project channel, fed
-  by triggers that call `realtime.broadcast_changes`, with an RLS policy on `realtime.messages`. Do
-  not use Postgres Changes: with RLS it can't filter deletes and it re-checks RLS per subscriber.
-  Don't set `replica identity full`; it doesn't help with RLS on.
+- Realtime: Broadcast on a private per-project channel, topic `project:<project id>`. Triggers
+  call `public.broadcast_project_change()` (→ `realtime.broadcast_changes`) on
+  `project_lifecycle` and `project_lifecycle_items`; add the same trigger to any new per-project
+  table that should sync live. Clients subscribe with `{ config: { private: true } }` after
+  `supabase.realtime.setAuth()`. An RLS policy on `realtime.messages` lets every signed-in user
+  listen on `project:%`. Do not use Postgres Changes: with RLS it can't filter deletes and it
+  re-checks RLS per subscriber. Don't set `replica identity full`.
 
 ## Data model
 
@@ -131,8 +134,9 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
 - `review_approvals`: per doc, `role` (plain text; the UI offers `REVIEW_ROLES` in config),
   person_id, state (pending | approved | changes_requested | not_requested), requested_at,
   responded_at. Checks keep `responded_at >= requested_at` and `merged_at >= opened_at`.
-- Dates: plans (`date`) vs events (`timestamptz`). Compare as UTC calendar days; compute "today" on
-  the server and pass it down.
+- Dates: plans (`date`) vs events (`timestamptz`). **"Today" is the viewer's local date, never
+  UTC**: `getToday()` on the server (browser time zone from the `pw-tz` cookie, set by
+  `TimezoneSync`), `localToday()` in the browser.
 - Review SLA: `NEXT_PUBLIC_REVIEW_SLA_BUSINESS_DAYS`, default 3 business days. Pending over the SLA is
   "Over SLA"; over twice the SLA is "Stale". Queue lengths are shown in calendar days.
 - Side panel edits go through `rpc('save_project_details', ...)`: one transaction, runs as the
@@ -150,6 +154,25 @@ Number (project key), Phase (requirements first; ties red, yellow, green, then k
 quarter order. The sort is in the URL with the filters and remembered in the browser
 (`localStorage` `pw.sort`, like density); a URL without `sort` picks up the remembered one.
 Previous/next in a project walk the same filtered, sorted list (`sortWithinQuarters`).
+
+## Lifecycle timeline (Timeline tab)
+
+- Template in the DB: `lifecycle_stages` (9) and `lifecycle_items` (73; ids are the mock's). Admins
+  edit the template; seeded from the mock by `scripts/seed/generate-lifecycle-seed.mjs`.
+- Per project: `project_lifecycle` (scope_api/ux/commercial/external, default on) and sparse
+  `project_lifecycle_items` rows (no row = open, template dates, default owner). New projects get
+  their row and "Change control (if needed)" as N/A from a trigger.
+- Rules are in `src/lib/lifecycle.ts` (a port of the mock's tl* functions): anchor = release − 29
+  weeks (no release: today + 6 weeks); item date = anchor + week × 7 unless overridden; late = open
+  and end before today; scope off = "<scope> off", excluded from counts, can't be ticked; default
+  owner by track (arch → Architect, om → OM, eng → Dev Lead, test → Dev Manager, ux/pgm → PM;
+  gates res, dcp, gng → Owning Exec).
+- Writes go from the browser through supabase-js (RLS decides). An existing row is updated with
+  only the changed fields; a first touch inserts the whole row. **Never upsert a partial row**:
+  Postgres checks constraints on the would-be insert before detecting the conflict.
+- Per-viewer prefs (Hide N/A, collapsed lanes) are in `localStorage` `pw.tlui`.
+- Styles: `src/components/timeline/timeline.module.scss` is the mock's CSS with the mock's class
+  names, scoped under `.root`, colours mapped to Carbon or `--pw-*` tokens.
 
 ## Seed
 
@@ -188,5 +211,9 @@ fictional: `first.last@ibm.com`, with a Slack handle on half of them.
   secret key (`auth.admin.createUser`), sign in with supabase-js, and send its session as the
   `sb-jicsbnhiqcsjvagzhwha-auth-token` cookie (`base64-` + base64url JSON). Put back any rows you
   change, delete the test users afterwards, and never type passwords into a browser.
+- Visual checks: Playwright (`@playwright/test`, Chromium installed). Screenshot the mock (serve
+  `design/roadmap-mock.html` from a scratch copy with `<meta charset="utf-8">` prepended) and the
+  app at the same viewport, in both themes, and compare. Seed the mock's localStorage to the same
+  state as the database first.
 - A background Chrome tab reports `visibilityState: hidden` and the app never hydrates, so clicks
   do nothing. Ask the user to bring the localhost tab to the front before interactive checks.

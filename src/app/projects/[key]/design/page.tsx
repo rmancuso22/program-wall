@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProject } from "@/lib/projects";
-import { todayISO } from "@/lib/domain";
+import { getToday } from "@/lib/today";
 import { ReviewDoc } from "@/components/design/ReviewDoc";
 import styles from "@/components/workspace/workspace.module.scss";
 import designStyles from "@/components/design/design.module.scss";
@@ -11,7 +11,7 @@ export default async function DesignPage({ params }: Props) {
   const { key } = await params;
   const data = await getProject(decodeURIComponent(key));
   if (!data) notFound();
-  const today = todayISO();
+  const today = await getToday();
 
   return (
     <section className={styles.section} aria-labelledby="design-heading">

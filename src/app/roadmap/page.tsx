@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getRoadmap, getViewer } from "@/lib/projects";
-import { todayISO } from "@/lib/domain";
+import { getToday } from "@/lib/today";
 import { getThemePref } from "@/lib/theme-server";
 import { PRODUCT } from "@/lib/config";
 import { ToastProvider } from "@/components/Toast";
@@ -9,10 +9,11 @@ import { RoadmapView } from "@/components/roadmap/RoadmapView";
 export const metadata = { title: PRODUCT.name };
 
 export default async function RoadmapPage() {
-  const [{ quarters, teams, projects }, viewer, themePref] = await Promise.all([
+  const [{ quarters, teams, projects }, viewer, themePref, today] = await Promise.all([
     getRoadmap(),
     getViewer(),
     getThemePref(),
+    getToday(),
   ]);
 
   return (
@@ -24,7 +25,7 @@ export default async function RoadmapPage() {
           teams={teams}
           projects={projects}
           canEdit={viewer.canEdit}
-          today={todayISO()}
+          today={today}
           themePref={themePref}
         />
       </Suspense>

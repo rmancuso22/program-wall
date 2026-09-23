@@ -8,6 +8,7 @@ import { filtersToQuery, matchesFilters, parseFilters, sortWithinQuarters, type 
 import type { ThemePref } from "@/lib/theme";
 import { ShellButton, ShellDivider, ShellHeader, shellStyles } from "@/components/ShellHeader";
 import { useCopy } from "@/components/Toast";
+import { useTimelineBadge } from "@/stores/timeline-badge";
 import styles from "./workspace.module.scss";
 
 function useFilterQuery() {
@@ -110,10 +111,13 @@ type NavProps = {
   /** Approvals waiting on reviewers; replaced by a check once both docs merge. */
   pendingReviews: number;
   designMerged: boolean;
+  /** "done/total" for the Timeline badge; the Timeline tab keeps it live. */
+  timelineProgress: string;
 };
 
-export function WorkspaceNav({ projectKey, pendingReviews, designMerged }: NavProps) {
+export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelineProgress }: NavProps) {
   const pathname = usePathname();
+  const liveProgress = useTimelineBadge((s) => s.byProject[projectKey]);
   const { query } = useFilterQuery();
   const current = pathname.split("/")[3] ?? "";
 
@@ -139,6 +143,11 @@ export function WorkspaceNav({ projectKey, pendingReviews, designMerged }: NavPr
                 {pendingReviews}
               </span>
             ) : null)}
+          {tab === "timeline" && (
+            <span className={styles.navCount} title="Lifecycle items done">
+              {liveProgress ?? timelineProgress}
+            </span>
+          )}
         </NextLink>
       ))}
     </nav>

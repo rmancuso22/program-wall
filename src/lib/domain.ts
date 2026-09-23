@@ -60,15 +60,12 @@ export function initials(name: string) {
 }
 
 // ---------------------------------------------------------------------------
-// Dates. Everything is compared as UTC calendar dates (YYYY-MM-DD) so server
-// and client agree; "today" is computed on the server and passed down.
+// Dates. Calendar dates (YYYY-MM-DD) are compared as plain dates. "Today" is
+// the viewer's local date: getToday() on the server (from the pw-tz cookie),
+// localToday() in the browser. Never the UTC date.
 // ---------------------------------------------------------------------------
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-export function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 /** YYYY-MM-DD for a date or timestamp string. */
 export function isoDate(value: string) {
