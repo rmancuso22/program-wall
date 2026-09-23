@@ -957,6 +957,65 @@
   .mt-from{font-family:"Inter",sans-serif;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--text-3);white-space:nowrap}
   .mt-carry .mt-act{background:color-mix(in srgb,var(--surface-2) 50%,transparent)}
   @media (max-width:1100px){ .mt-grid{grid-template-columns:1fr} .mt-act{grid-template-columns:28px minmax(0,1fr) 150px 140px 28px} .mt-from{display:none} }
+  /* overview */
+  .ov{position:relative;display:flex;flex-direction:column;gap:16px;max-width:1240px}
+  .ov-saved{position:absolute;right:0;top:-24px}
+  .ov-about{max-width:900px;margin:-4px 0 2px}
+  .qv-norisk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2);padding:6px 0}
+  .qv-norisk svg{width:14px;height:14px;fill:var(--ok);flex:0 0 auto}
+  .ov-strip{margin:auto 0 !important}
+  .ov-about .ef{margin:0 -8px}
+  .ov-about .qv-desc{font-size:14.5px;color:var(--text-2)}
+  .ov-row{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;align-items:stretch}
+  .ov-card{background:var(--surface);border:1px solid var(--line);padding:16px 20px 18px;min-width:0;display:flex;flex-direction:column}
+  .ov-ch{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px}
+  .ov-health{border-top:3px solid var(--ok)}
+  .ov-health.yellow{border-top-color:var(--flag-risk)} .ov-health.red{border-top-color:var(--flag-block)}
+  .ov-health .qv-rag{margin-bottom:8px}
+  .ov-health .qv-status{font-size:17px;line-height:1.5}
+  .ov-sub{display:flex;align-items:baseline;gap:6px;margin:16px 0 8px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+  .ov-sub .n{color:var(--text-2)}
+  .ov-sub .upd{margin-left:auto;font-weight:400;letter-spacing:0;text-transform:none;font-size:12px}
+  .ov-health .qv-risk{background:color-mix(in srgb,var(--flag-risk) 8%,var(--surface))}
+  .ov-upnext{padding:16px 8px 8px}
+  .ov-upnext .ov-ch{padding:0 12px;margin-bottom:4px}
+  .ov-next{display:grid;grid-template-columns:96px minmax(0,1fr) auto 14px;align-items:center;gap:10px;width:100%;padding:12px 12px;text-align:left;border-top:1px solid var(--line);flex:1 1 auto}
+  .ov-upnext .ov-ch + .ov-next{border-top:0}
+  .ov-next:hover{background:var(--surface-2)}
+  .ov-next .k{font-size:12px;color:var(--text-3)}
+  .ov-next .v{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ov-next .s{font-size:12.5px;color:var(--text-2);white-space:nowrap}
+  .ov-next .s .late{color:var(--flag-block);font-weight:500}
+  .ov-next svg{width:13px;height:13px;fill:var(--text-3)}
+  /* key dates strip */
+  .ov-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative;margin-top:4px}
+  .ov-strip::before{content:"";position:absolute;left:10%;right:10%;top:17px;height:2px;background:var(--track-empty)}
+  .ef.ms{margin:0;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px}
+  .ef.ms .ef-v{flex-direction:column;align-items:center;gap:3px}
+  .ef.ms .ef-pen{top:2px;right:2px;transform:none}
+  .ms-dot{width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid var(--line-strong);display:grid;place-items:center;position:relative;z-index:1;margin-bottom:4px}
+  .ms-dot svg{width:13px;height:13px;fill:#fff}
+  .ef.ms.done .ms-dot{background:var(--ok);border-color:var(--ok)}
+  .ef.ms.next .ms-dot{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+  .ms-l{font-size:11.5px;color:var(--text-3);line-height:1.25}
+  .ms-d{font-size:14px;font-weight:600;color:var(--text)}
+  .ef.ms.done .ms-d{color:var(--ok);font-weight:500}
+  .ms-d.late{color:var(--flag-block)}
+  .ms-s{font-size:11.5px;color:var(--accent);font-weight:500}
+  .ef.ms.editing{padding:6px 4px;align-items:stretch;gap:6px}
+  .ef.ms.editing .ef-in{font-size:12.5px;padding:5px 6px}
+  /* team grid */
+  .ov-team{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px}
+  .ef.tm{margin:0;padding:7px 28px 7px 6px}
+  .ef.tm .ef-v{gap:10px}
+  .ef.tm .av{width:30px;height:30px;font-size:10px;border-radius:50%}
+  .tm-t{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+  .tm-t b{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tm-t em{font-style:normal;font-size:11.5px;color:var(--text-3)}
+  .ef.tm.editing{padding:4px 6px;display:flex;flex-direction:column;gap:4px}
+  .tm-role{font-style:normal;font-size:11.5px;color:var(--text-3)}
+  .ef.tm.editing .ef-in{font-size:13px;padding:5px 8px}
+  @media (max-width:1080px){ .ov-row{grid-template-columns:1fr} }
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:80;
     background:var(--text);color:var(--ground);padding:10px 14px;font-size:12.5px;
@@ -1612,19 +1671,19 @@
   /* ---------- quick look: centered project card, edit any field in place ---------- */
   var PENCIL = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.7 2.3l1 1c.4.4.4 1 0 1.4L6 12.4 2 13.5l1.1-4L10.8 2c.4-.4 1-.4 1.4 0l.5.3zM4 10.3l-.5 2 2-.5 6.3-6.3-1.5-1.5L4 10.3z"/></svg>';
   var XS = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 4.7L11.3 4 8 7.3 4.7 4 4 4.7 7.3 8 4 11.3l.7.7L8 8.7l3.3 3.3.7-.7L8.7 8z"/></svg>';
-  var qvEdit = null;   // which field is open: "desc" | "status" | "risk:new" | "p:pm" | "d:srb"
+  var qvEdit = null, qvRerender = null, qvRoot = null;   // which field is open: "desc" | "status" | "risk:new" | "p:pm" | "d:srb"
   function ago(iso){ if(!iso) return ""; var d = daysBetween(iso, TODAY); return d <= 0 ? "Updated today" : d === 1 ? "Updated yesterday" : d < 7 ? "Updated "+d+"d ago" : "Updated "+shortDate(iso); }
   function qvData(p){ var r = record(p); return { description:r.description, status:r.status, rag:r.rag, risks:r.risks.slice(), riskDates:r.riskDates.slice(), people:JSON.parse(JSON.stringify(r.people)), dates:JSON.parse(JSON.stringify(r.dates)) }; }
   function qvSave(p, fn, what){
-    var d = qvData(p); fn(d); saveRecord(p.id, d); qvEdit = null; refreshCard(p); select(p.id, "stay");
-    var s = $("qvSaved"); if(s){ s.textContent = "Saved " + what; s.classList.add("on"); setTimeout(function(){ s.classList.remove("on"); }, 1600); }
+    var d = qvData(p); fn(d); saveRecord(p.id, d); qvEdit = null; refreshCard(p); qvRerender();
+    var s = qvRoot && qvRoot.querySelector(".qv-saved"); if(s){ s.textContent = "Saved " + what; s.classList.add("on"); setTimeout(function(){ s.classList.remove("on"); }, 1600); }
   }
   function qvField(key, label, inner, editor, extraCls){
     var on = qvEdit === key;
     return '<div class="ef'+(on?' editing':'')+(extraCls?' '+extraCls:'')+'" data-ef="'+key+'">'+(label?'<span class="ef-l">'+label+'</span>':'')+
       (on ? editor : '<div class="ef-v">'+inner+'</div><button type="button" class="ef-pen" data-efgo="'+key+'" aria-label="Edit '+esc(label||key)+'">'+PENCIL+'</button>')+'</div>';
   }
-  function qvHTML(p){
+  function qvHTML(p, wantParts){
     var rec = record(p), q = QUARTERS[p.q];
     var stepper = '<div class="qv-steps">'+PHASES.map(function(ph, i){ return '<span class="'+(i < p.phase ? 'done' : i === p.phase ? 'now' : '')+'"><i></i>'+esc(ph.short)+'</span>'; }).join("")+'</div>';
     var ragBtn = '<div class="qv-rag"><button type="button" class="rag-pick '+rec.rag+'" id="qvRag" aria-haspopup="true"><i></i>'+RAG[rec.rag].label+'<svg viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg></button>'+
@@ -1635,7 +1694,7 @@
     var desc = qvField("desc", "", '<p class="qv-desc">'+(rec.description ? esc(rec.description) : '<span class="ph">Add a description</span>')+'</p>',
       '<textarea class="ef-in" rows="3">'+esc(rec.description)+'</textarea><div class="ef-hint">Enter to save · Esc to cancel</div>', "big");
     var warn = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5L15 14H1L8 1.5zM7.5 6v4h1V6h-1zm0 5v1h1v-1h-1z"/></svg>';
-    var risks = '<div class="qv-risks">'+rec.risks.map(function(r, i){
+    var risks = '<div class="qv-risks">'+(rec.risks.length || qvEdit === "risk:new" ? '' : '<div class="qv-norisk">'+CHECK+'No open risks</div>')+rec.risks.map(function(r, i){
         return qvEdit === "risk:"+i ? '<div class="qv-risk editing"><input class="ef-in" data-risk="'+i+'" value="'+esc(r)+'"></div>'
           : '<div class="qv-risk">'+warn+'<span data-efgo="risk:'+i+'">'+esc(r)+'</span><em class="rdate" title="Last updated '+esc(fmtDate(rec.riskDates[i]))+'">'+esc(ago(rec.riskDates[i]).replace("Updated ",""))+'</em><button type="button" class="ef-x" data-delrisk="'+i+'" aria-label="Remove risk">'+XS+'</button></div>';
       }).join("")+
@@ -1655,6 +1714,8 @@
       var inner = !iso ? '<span class="ph">TBD</span>' : done ? '<span class="ok">'+CHECK+fmtDate(iso)+'</span>' : '<span>'+fmtDate(iso)+'</span>';
       return qvField("d:"+d[0], esc(d[1].replace(" Date","")), inner, '<input class="ef-in" type="date" value="'+esc(iso||"")+'">', "row");
     }).join("");
+    if(wantParts) return {ragBtn:ragBtn, status:status, desc:desc, risks:risks, people:people, dates:dates, stepper:stepper, rec:rec,
+      names:'<datalist id="qvNames">'+names.map(function(n){ return '<option value="'+esc(n)+'">'; }).join("")+'</datalist>'};
     return '<div class="qv-head">'+
         '<div class="qv-meta"><span class="qv-id">'+esc(p.id)+'</span><span>'+esc(q.label)+'</span>'+p.teams.map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join("")+'</div>'+
         '<div class="qv-nav"><span class="qv-saved" id="qvSaved"></span>'+
@@ -1691,21 +1752,24 @@
     panel.style.setProperty("--pc", pc(p.phase));
     panel.innerHTML = '<div class="qv-dialog" role="dialog" aria-modal="true" aria-label="'+esc(p.name)+'"><div class="qv-scroll">'+qvHTML(p)+'</div></div>';
     panel.hidden = false; document.body.classList.add("qv-open");
+    qvRoot = panel; qvRerender = function(){ select(p.id, "stay"); };
     if(mode === "stay"){ panel.querySelector(".qv-scroll").scrollTop = y; }
     wireQuickLook(p);
   }
   function wireQuickLook(p){
-    var panel = $("panel");
-    panel.onclick = function(e){ if(e.target === panel) closePanel(); };
-    $("closePanel").addEventListener("click", closePanel);
-    $("enterBtn").addEventListener("click", function(){ enterProject(p.id); });
+    var panel = qvRoot, rr = qvRerender;
+    if(panel === $("panel")){
+      panel.onclick = function(e){ if(e.target === panel) closePanel(); };
+      $("closePanel").addEventListener("click", closePanel);
+      $("enterBtn").addEventListener("click", function(){ enterProject(p.id); });
+    }
     wireContacts(panel);
     panel.querySelectorAll("[data-qvstep]").forEach(function(b){ b.addEventListener("click", function(){ qvStep(+this.dataset.qvstep); }); });
     // open a field for editing
-    panel.querySelectorAll("[data-efgo]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); qvEdit = this.dataset.efgo; select(p.id, "stay"); }); });
-    panel.querySelectorAll(".ef:not(.editing)").forEach(function(f){ f.addEventListener("click", function(e){ if(e.target.closest("a,.cbtn")) return; qvEdit = this.dataset.ef; select(p.id, "stay"); }); });
+    panel.querySelectorAll("[data-efgo]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); qvEdit = this.dataset.efgo; rr(); }); });
+    panel.querySelectorAll(".ef:not(.editing)").forEach(function(f){ f.addEventListener("click", function(e){ if(e.target.closest("a,.cbtn")) return; qvEdit = this.dataset.ef; rr(); }); });
     // rag picker
-    var rb = $("qvRag"), rm = $("qvRagMenu");
+    var rb = panel.querySelector("#qvRag"), rm = panel.querySelector("#qvRagMenu");
     rb.addEventListener("click", function(e){ e.stopPropagation(); rm.hidden = !rm.hidden; });
     rm.querySelectorAll("[data-setrag]").forEach(function(b){ b.addEventListener("click", function(){ var k = this.dataset.setrag; qvSave(p, function(d){ d.rag = k; }, "status light"); }); });
     panel.querySelectorAll("[data-delrisk]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); var i = +this.dataset.delrisk; qvSave(p, function(d){ d.risks.splice(i, 1); d.riskDates.splice(i, 1); }, "risks"); }); });
@@ -1718,12 +1782,12 @@
       var v = inp.value.trim();
       if(key === "status") qvSave(p, function(d){ d.status = v; }, "status");
       else if(key === "desc") qvSave(p, function(d){ d.description = v; }, "description");
-      else if(key.indexOf("risk:") === 0){ var r = key.slice(5); if(!v && r === "new"){ qvEdit = null; select(p.id, "stay"); return; }
+      else if(key.indexOf("risk:") === 0){ var r = key.slice(5); if(!v && r === "new"){ qvEdit = null; rr(); return; }
         qvSave(p, function(d){ if(r === "new"){ d.risks.push(v); d.riskDates.push(TODAY); } else if(v){ if(d.risks[+r] !== v){ d.risks[+r] = v; d.riskDates[+r] = TODAY; } } else { d.risks.splice(+r, 1); d.riskDates.splice(+r, 1); } }, "risks"); }
       else if(key.indexOf("p:") === 0) qvSave(p, function(d){ d.people[key.slice(2)] = v; }, ROLES.filter(function(x){ return x[0] === key.slice(2); })[0][1]);
       else if(key.indexOf("d:") === 0) qvSave(p, function(d){ d.dates[key.slice(2)] = inp.value; }, "date");
     };
-    var cancel = function(){ done = true; qvEdit = null; select(p.id, "stay"); };
+    var cancel = function(){ done = true; qvEdit = null; rr(); };
     inp.addEventListener("keydown", function(e){
       if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); cancel(); }
       else if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); commit(); }
@@ -1731,13 +1795,69 @@
     inp.addEventListener("blur", function(){ commit(); });
     if(inp.type === "date") inp.addEventListener("change", commit);
   }
+  /* ---------- overview: the project at a glance, edited in place ---------- */
+  function ovUpNext(p){
+    var rows = [];
+    var ng = tlNextGate(p);
+    if(ng){ var d = daysBetween(TODAY, tlE(p, ng)); rows.push(['timeline', 'Next gate', esc(ng.name), d >= 0 ? (d === 0 ? 'today' : 'in '+d+' days') : '<b class="late">'+(-d)+' days late</b>', shortDate(tlE(p, ng))]); }
+    else rows.push(['timeline', 'Next gate', 'All gates passed', '', '']);
+    var nm = mtList(p, TODAY, shiftDate(TODAY, 14)).filter(function(o){ return !mtPast(o); })[0];
+    if(nm){ var dd = daysBetween(TODAY, nm.date); rows.push(['meetings', 'Next meeting', esc(nm.title), dd === 0 ? 'today, '+fmtT(nm.start) : (dd === 1 ? 'tomorrow, ' : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dow(nm.date)]+', ')+(dd === 0 ? '' : fmtT(nm.start)), '']); }
+    var open = 0, over = 0, data = mtOf(p); Object.keys(data.occ).forEach(function(k){ (data.occ[k].actions || []).forEach(function(a){ if(!a.done){ open++; if(a.due && a.due < TODAY) over++; } }); });
+    rows.push(['meetings', 'Open actions', open ? open+' open' : 'None open', over ? '<b class="late">'+over+' overdue</b>' : '', '']);
+    var t = kbTickets(p), k = kbOf(p), cur = t.filter(function(c){ return c.sprint === "current"; }).length, dn = t.filter(function(c){ return c.sprint === "done" && c.doneIn === k.sprint; }).length;
+    rows.push(['tickets', 'Sprint '+k.sprint, (cur+dn) ? dn+' of '+(cur+dn)+' done' : 'Nothing planned', '', '']);
+    return rows.map(function(r){ return '<button type="button" class="ov-next" data-opentab="'+r[0]+'"><span class="k">'+r[1]+'</span><span class="v">'+r[2]+'</span><span class="s">'+r[3]+'</span><svg viewBox="0 0 16 16"><path d="M5.5 3.5L10 8l-4.5 4.5.7.7L11.4 8 6.2 2.8z"/></svg></button>'; }).join("");
+  }
+  function overviewHTML(p){
+    var q = qvHTML(p, true), rec = q.rec;
+    // key dates as a milestone strip, each date editable in place
+    var nextIdx = -1;
+    DATES.forEach(function(d, i){ var iso = rec.dates[d[0]]; if(nextIdx < 0 && iso && !(p.phase >= d[2] && iso <= TODAY)) nextIdx = i; });
+    var strip = DATES.map(function(d, i){
+      var iso = rec.dates[d[0]], done = p.phase >= d[2] && iso && iso <= TODAY, late = !done && iso && iso < TODAY;
+      var cls = done ? "done" : i === nextIdx ? "next" : "";
+      var inner = '<i class="ms-dot">'+(done ? CHECK : '')+'</i><span class="ms-l">'+esc(d[1].replace(" Date",""))+'</span>'+
+        '<span class="ms-d'+(late?' late':'')+'">'+(iso ? fmtDate(iso).replace(/ \d{4}$/,"") : 'TBD')+'</span>'+
+        (i === nextIdx && iso ? '<span class="ms-s">'+(late ? (-daysBetween(TODAY, iso))+'d late' : 'in '+daysBetween(TODAY, iso)+'d')+'</span>' : '');
+      return qvField("d:"+d[0], "", inner, '<span class="ms-l">'+esc(d[1].replace(" Date",""))+'</span><input class="ef-in" type="date" value="'+esc(iso||"")+'">', "ms "+cls);
+    }).join("");
+    var team = ROLES.map(function(r){
+      var v = rec.people[r[0]] || "";
+      var inner = '<span class="av">'+(v ? esc(initials(v)) : '?')+'</span><span class="tm-t"><b>'+(v ? esc(v) : '<span class="ph">Unassigned</span>')+'</b><em>'+esc(r[1])+'</em></span>';
+      return qvField("p:"+r[0], "", inner, '<em class="tm-role">'+esc(r[1])+'</em><input class="ef-in" list="qvNames" value="'+esc(v)+'" placeholder="Type a name">', "tm");
+    }).join("");
+    return '<div class="ov" id="ovRoot" style="--pc:'+pc(p.phase)+'"><span class="qv-saved ov-saved"></span>'+
+      '<div class="ov-about">'+q.desc+'</div>'+
+      '<div class="ov-row">'+
+        '<section class="ov-card ov-health '+rec.rag+'">'+
+          '<div class="ov-ch">Where it stands</div>'+q.ragBtn+q.status+
+          '<div class="ov-sub">Key risks'+(rec.risks.length ? ' <span class="n">'+rec.risks.length+'</span><span class="upd">'+esc(ago(rec.riskDates.slice().sort().pop()))+'</span>' : '')+'</div>'+q.risks+
+        '</section>'+
+        '<section class="ov-card ov-upnext"><div class="ov-ch">Up next</div>'+ovUpNext(p)+'</section>'+
+      '</div>'+
+      '<div class="ov-row">'+
+        '<section class="ov-card"><div class="ov-ch">Key dates</div><div class="ov-strip">'+strip+'</div></section>'+
+        '<section class="ov-card"><div class="ov-ch">Team</div><div class="ov-team">'+team+'</div></section>'+
+      '</div>'+q.names+
+    '</div>';
+  }
+  function renderOverview(p){
+    var sec = document.querySelector('[data-sec="overview"]'); if(!sec) return;
+    var y = $("wsMain").scrollTop;
+    sec.innerHTML = overviewHTML(p);
+    $("wsMain").scrollTop = y;
+    qvRoot = $("ovRoot"); qvRerender = function(){ renderOverview(p); var hp = document.querySelector(".ws-head .meta .rag"); if(hp){ var r = record(p); hp.className = "rag "+r.rag; hp.innerHTML = "<i></i>"+RAG[r.rag].label; } };
+    wireQuickLook(p);
+    sec.querySelectorAll("[data-opentab]").forEach(function(b){ b.addEventListener("click", function(){ setTab(this.dataset.opentab); }); });
+  }
   function qvStep(dir){
     var ids = qvVisibleOrder(), i = ids.indexOf(state.sel); if(i < 0) return;
     var n = ids[(i + dir + ids.length) % ids.length]; qvEdit = null; select(n, "stay");
     var c = cardEls[n]; if(c) c.scrollIntoView({block:"nearest"});
   }
   function closePanel(){
-    state.sel = null; qvEdit = null; $("panel").hidden = true; document.body.classList.remove("qv-open");
+    state.sel = null; qvEdit = null; $("panel").hidden = true; $("panel").innerHTML = ""; document.body.classList.remove("qv-open");
     Object.keys(cardEls).forEach(function(k){ cardEls[k].setAttribute("aria-pressed","false"); });
   }
 
@@ -3352,29 +3472,7 @@
           p.teams.map(function(t){ return '<span class="pill">'+esc(t)+'</span>'; }).join("")+
         '</div>'+
       '</div>'+
-      '<section class="ws-sec" data-sec="overview">'+
-        '<div class="tiles">'+
-          '<div class="tile"><div class="k lbl">Phase</div><div class="v" style="color:'+pc(p.phase)+'">'+esc(ph.name)+'</div><div class="s">'+(p.phase+1)+' of 6</div></div>'+
-          '<div class="tile"><div class="k lbl">Target</div><div class="v mono">'+esc(q.label)+'</div><div class="s">'+esc(q.sub)+'</div></div>'+
-          '<div class="tile"><div class="k lbl">Stickies on Delivery Map</div><div class="v">'+mu.cards.length+'</div><div class="s">'+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</div></div>'+
-          '<div class="tile"><div class="k lbl">Open tickets</div><div class="v">'+Math.max(0, 8-(p.phase+1))+'</div><div class="s">of 8 in Jira</div></div>'+
-        '</div>'+
-        '<div class="two">'+
-          '<div style="display:flex;flex-direction:column;gap:18px;--pc:'+pc(p.phase)+'">'+
-            '<div class="pblock"><span class="lbl">Description</span><p class="desc">'+esc(rec.description)+'</p></div>'+
-            '<div class="pblock"><span class="lbl">Current status</span>'+statusHTML(p, rec)+'</div>'+
-            '<div class="pblock"><span class="lbl">Key risks</span>'+risksHTML(rec)+'</div>'+
-            '<div class="sec-head"><h2>Phase</h2><span class="sub">Where this project is in the delivery flow</span></div>'+
-            '<div class="steps">'+stepsHTML(p)+'</div>'+
-          '</div>'+
-          '<div style="display:flex;flex-direction:column;gap:18px">'+
-            '<div class="pblock"><span class="lbl">People</span>'+peopleHTML(rec)+'</div>'+
-            '<div class="pblock"><span class="lbl">Key dates</span>'+datesHTML(p, rec)+'</div>'+
-          '</div>'+
-        '</div>'+
-        '<div class="sec-head"><h2>Delivery Map</h2><span class="sub">'+mu.cards.length+' stickies across '+mu.lanes.length+' teams, '+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</span></div>'+
-        '<button type="button" class="btn sec" style="width:auto" data-opentab="mural">Open the Delivery Map<svg class="icon" viewBox="0 0 16 16"><path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z"/></svg></button>'+
-      '</section>'+
+      '<section class="ws-sec" data-sec="overview"></section>'+
       '<section class="ws-sec" data-sec="design">'+designHTML(p, rec)+'</section>'+
       '<section class="ws-sec" data-sec="mural">'+
         '<div class="sec-head"><h2>Delivery Map</h2><span class="sub">The project\'s working wall. A row per team, a column per work area, stickies become Jira tickets when they are ready.</span><span class="stat"></span></div>'+
@@ -3396,6 +3494,7 @@
         '<div class="sec-head"><h2>Documents and decisions</h2><span class="sub">Linked, not copied</span></div>'+
         docsHTML(p)+
       '</section>';
+    qvEdit = null; renderOverview(p);
     wireContacts($("wsMain"));
     wireDesign($("wsMain"));
     wireMural(p);
