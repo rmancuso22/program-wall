@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      jira_key_sequences: {
+        Row: {
+          last_num: number
+          prefix: string
+        }
+        Insert: {
+          last_num: number
+          prefix: string
+        }
+        Update: {
+          last_num?: number
+          prefix?: string
+        }
+        Relationships: []
+      }
       lifecycle_items: {
         Row: {
           end_week: number
@@ -602,6 +617,35 @@ export type Database = {
           },
         ]
       }
+      project_sprints: {
+        Row: {
+          current_sprint: number
+          current_start: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          current_sprint: number
+          current_start: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          current_sprint?: number
+          current_start?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_sprints_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_teams: {
         Row: {
           lead_person_id: string | null
@@ -847,6 +891,198 @@ export type Database = {
           },
         ]
       }
+      stickies: {
+        Row: {
+          assignee_person_id: string | null
+          board_rank: number
+          bucket: Database["public"]["Enums"]["board_bucket"] | null
+          color: Database["public"]["Enums"]["sticky_color"]
+          column_id: string
+          created_at: string
+          description: string
+          done_sprint: number | null
+          id: string
+          jira_key: string | null
+          jira_project: string
+          lane_id: string
+          project_id: string
+          status: Database["public"]["Enums"]["sticky_status"]
+          title: string
+          updated_at: string
+          wall_rank: number
+        }
+        Insert: {
+          assignee_person_id?: string | null
+          board_rank?: number
+          bucket?: Database["public"]["Enums"]["board_bucket"] | null
+          color?: Database["public"]["Enums"]["sticky_color"]
+          column_id: string
+          created_at?: string
+          description?: string
+          done_sprint?: number | null
+          id?: string
+          jira_key?: string | null
+          jira_project?: string
+          lane_id: string
+          project_id: string
+          status?: Database["public"]["Enums"]["sticky_status"]
+          title?: string
+          updated_at?: string
+          wall_rank?: number
+        }
+        Update: {
+          assignee_person_id?: string | null
+          board_rank?: number
+          bucket?: Database["public"]["Enums"]["board_bucket"] | null
+          color?: Database["public"]["Enums"]["sticky_color"]
+          column_id?: string
+          created_at?: string
+          description?: string
+          done_sprint?: number | null
+          id?: string
+          jira_key?: string | null
+          jira_project?: string
+          lane_id?: string
+          project_id?: string
+          status?: Database["public"]["Enums"]["sticky_status"]
+          title?: string
+          updated_at?: string
+          wall_rank?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stickies_assignee_person_id_fkey"
+            columns: ["assignee_person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stickies_column_id_project_id_fkey"
+            columns: ["column_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "sticky_columns"
+            referencedColumns: ["id", "project_id"]
+          },
+          {
+            foreignKeyName: "stickies_lane_id_project_id_fkey"
+            columns: ["lane_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "sticky_lanes"
+            referencedColumns: ["id", "project_id"]
+          },
+          {
+            foreignKeyName: "stickies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sticky_columns: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          position: number
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          position: number
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          position?: number
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sticky_columns_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sticky_lanes: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          position: number
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          position: number
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          position?: number
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sticky_lanes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sticky_links: {
+        Row: {
+          created_at: string
+          from_sticky_id: string
+          id: string
+          project_id: string
+          to_sticky_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_sticky_id: string
+          id?: string
+          project_id: string
+          to_sticky_id: string
+        }
+        Update: {
+          created_at?: string
+          from_sticky_id?: string
+          id?: string
+          project_id?: string
+          to_sticky_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sticky_links_from_sticky_id_project_id_fkey"
+            columns: ["from_sticky_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "stickies"
+            referencedColumns: ["id", "project_id"]
+          },
+          {
+            foreignKeyName: "sticky_links_to_sticky_id_project_id_fkey"
+            columns: ["to_sticky_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "stickies"
+            referencedColumns: ["id", "project_id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string
@@ -874,6 +1110,43 @@ export type Database = {
     }
     Functions: {
       can_edit_projects: { Args: never; Returns: boolean }
+      complete_sprint: {
+        Args: { p_project_id: string }
+        Returns: {
+          carried: number
+          pulled: number
+          sprint: number
+          starts_on: string
+        }[]
+      }
+      convert_stickies: {
+        Args: { p_lane_id?: string; p_sticky_id?: string }
+        Returns: {
+          assignee_person_id: string | null
+          board_rank: number
+          bucket: Database["public"]["Enums"]["board_bucket"] | null
+          color: Database["public"]["Enums"]["sticky_color"]
+          column_id: string
+          created_at: string
+          description: string
+          done_sprint: number | null
+          id: string
+          jira_key: string | null
+          jira_project: string
+          lane_id: string
+          project_id: string
+          status: Database["public"]["Enums"]["sticky_status"]
+          title: string
+          updated_at: string
+          wall_rank: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "stickies"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       ensure_meeting_occurrence: {
         Args: { p_occurs_on: string; p_series_id: string }
         Returns: {
@@ -912,6 +1185,24 @@ export type Database = {
         }
         Returns: boolean
       }
+      move_sticky: {
+        Args: {
+          p_before_id?: string
+          p_column_id: string
+          p_lane_id: string
+          p_sticky_id: string
+        }
+        Returns: undefined
+      }
+      move_ticket: {
+        Args: {
+          p_before_id?: string
+          p_bucket: Database["public"]["Enums"]["board_bucket"]
+          p_lane_id: string
+          p_sticky_id: string
+        }
+        Returns: undefined
+      }
       save_project_details: {
         Args: {
           p_api_spec_merge: string
@@ -932,6 +1223,10 @@ export type Database = {
         Args: { p_project_id: string }
         Returns: undefined
       }
+      seed_project_stickies: {
+        Args: { p_project_id: string; p_today: string }
+        Returns: undefined
+      }
     }
     Enums: {
       approval_state:
@@ -939,6 +1234,7 @@ export type Database = {
         | "approved"
         | "changes_requested"
         | "not_requested"
+      board_bucket: "backlog" | "current" | "next" | "done"
       lifecycle_item_status: "open" | "done" | "na"
       lifecycle_item_type: "gate" | "milestone" | "task" | "weekly"
       meeting_source: "liftoff" | "outlook"
@@ -954,6 +1250,8 @@ export type Database = {
       project_role: "exec" | "pm" | "om" | "devmgr" | "arch" | "devlead"
       review_doc_state: "draft" | "open" | "merged"
       review_kind: "srb" | "api"
+      sticky_color: "yellow" | "blue" | "green" | "pink" | "purple" | "orange"
+      sticky_status: "open" | "progress" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1087,6 +1385,7 @@ export const Constants = {
         "changes_requested",
         "not_requested",
       ],
+      board_bucket: ["backlog", "current", "next", "done"],
       lifecycle_item_status: ["open", "done", "na"],
       lifecycle_item_type: ["gate", "milestone", "task", "weekly"],
       meeting_source: ["liftoff", "outlook"],
@@ -1103,6 +1402,8 @@ export const Constants = {
       project_role: ["exec", "pm", "om", "devmgr", "arch", "devlead"],
       review_doc_state: ["draft", "open", "merged"],
       review_kind: ["srb", "api"],
+      sticky_color: ["yellow", "blue", "green", "pink", "purple", "orange"],
+      sticky_status: ["open", "progress", "closed"],
     },
   },
 } as const
