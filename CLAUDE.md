@@ -73,7 +73,9 @@ src/app/
 src/components/
   ShellHeader           dark Carbon UI Shell header (g100 zone in both themes)
   roadmap/              RoadmapView (filter bar, dropdowns, lanes), ProjectCard, QuickLook
-  project/              ProjectBits (status light, callout, risks, dates, phase ladder), PeopleList
+  project/              ProjectEditing (useProjectEditing: in-place fields shared by the quick
+                        look and Overview), Overview, ProjectBits (header status light),
+                        ContactButtons
   workspace/            WorkspaceHeader (back, prev/next), WorkspaceNav, placeholders
   design/               ReviewDoc (banner, tiles, reviewer queue), ApproversTable, MarkdownDoc
 src/lib/
@@ -175,6 +177,21 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
   look's right column (not in the mock; they feed the Meetings roster).
 - Risks show their age ("5d ago", then "12 Sep") on the quick look and Overview, with
   "Updated <latest>" on the Key risks header; ages use the viewer's time zone (`getViewerTz`).
+
+## Project Overview
+
+- The mock's card grid (`src/components/project/Overview.tsx`): description line, then "Where it
+  stands" (status light, status text, key risks) beside "Up next", then "Key dates" (milestone
+  strip) beside "Team" (six role tiles, then one row per project team lead). No tiles, phase list
+  or Delivery Map section.
+- Every field edits in place through `useProjectEditing` (the same hook and markup as the quick
+  look; styles are the `kit` class in `roadmap.module.scss`). A status light change calls
+  `router.refresh()` so the server-rendered header pill updates.
+- "Up next" is computed on the server (`src/lib/overview.ts`): next open gate from the Timeline
+  ("in N days" / "N days late"), next meeting in 14 days (viewer's zone), open meeting actions with
+  overdue count, and "Sprint N: done of planned". Each row links to its tab.
+- Key dates: a date is done once passed and the phase reached its threshold; the first not-done
+  date is "next" (blue ring, "in Nd" or "Nd late"); past-due not-done dates are red.
 
 ## Roadmap sort
 
