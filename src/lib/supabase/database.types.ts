@@ -71,6 +71,299 @@ export type Database = {
         }
         Relationships: []
       }
+      meeting_actions: {
+        Row: {
+          assignee_guest_name: string | null
+          assignee_person_id: string | null
+          body: string
+          created_at: string
+          done: boolean
+          done_on: string | null
+          due_on: string | null
+          id: string
+          occurrence_id: string
+          position: number
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_guest_name?: string | null
+          assignee_person_id?: string | null
+          body?: string
+          created_at?: string
+          done?: boolean
+          done_on?: string | null
+          due_on?: string | null
+          id?: string
+          occurrence_id: string
+          position?: number
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_guest_name?: string | null
+          assignee_person_id?: string | null
+          body?: string
+          created_at?: string
+          done?: boolean
+          done_on?: string | null
+          due_on?: string | null
+          id?: string
+          occurrence_id?: string
+          position?: number
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_actions_assignee_person_id_fkey"
+            columns: ["assignee_person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_actions_occurrence_id_project_id_fkey"
+            columns: ["occurrence_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_occurrences"
+            referencedColumns: ["id", "project_id"]
+          },
+        ]
+      }
+      meeting_agenda_items: {
+        Row: {
+          body: string
+          created_at: string
+          done: boolean
+          id: string
+          occurrence_id: string
+          position: number
+          project_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          done?: boolean
+          id?: string
+          occurrence_id: string
+          position?: number
+          project_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          done?: boolean
+          id?: string
+          occurrence_id?: string
+          position?: number
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_agenda_items_occurrence_id_project_id_fkey"
+            columns: ["occurrence_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_occurrences"
+            referencedColumns: ["id", "project_id"]
+          },
+        ]
+      }
+      meeting_attendance: {
+        Row: {
+          created_at: string
+          guest_name: string | null
+          id: string
+          occurrence_id: string
+          person_id: string | null
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          guest_name?: string | null
+          id?: string
+          occurrence_id: string
+          person_id?: string | null
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          guest_name?: string | null
+          id?: string
+          occurrence_id?: string
+          person_id?: string | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_attendance_occurrence_id_project_id_fkey"
+            columns: ["occurrence_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_occurrences"
+            referencedColumns: ["id", "project_id"]
+          },
+          {
+            foreignKeyName: "meeting_attendance_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meeting_occurrences: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          invited_person_ids: string[]
+          join_url: string | null
+          notes: string
+          occurs_on: string
+          outlook_event_id: string | null
+          posted_at: string | null
+          posted_by: string | null
+          project_id: string
+          series_id: string | null
+          source: Database["public"]["Enums"]["meeting_source"]
+          starts_at: string
+          timezone: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          invited_person_ids?: string[]
+          join_url?: string | null
+          notes?: string
+          occurs_on: string
+          outlook_event_id?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          project_id: string
+          series_id?: string | null
+          source?: Database["public"]["Enums"]["meeting_source"]
+          starts_at: string
+          timezone?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          invited_person_ids?: string[]
+          join_url?: string | null
+          notes?: string
+          occurs_on?: string
+          outlook_event_id?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          project_id?: string
+          series_id?: string | null
+          source?: Database["public"]["Enums"]["meeting_source"]
+          starts_at?: string
+          timezone?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_occurrences_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_occurrences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_occurrences_series_id_project_id_fkey"
+            columns: ["series_id", "project_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_series"
+            referencedColumns: ["id", "project_id"]
+          },
+        ]
+      }
+      meeting_series: {
+        Row: {
+          agenda_template: string[]
+          color_track: string
+          created_at: string
+          duration_minutes: number
+          ends_on: string | null
+          id: string
+          invited_roles: string[]
+          join_url: string | null
+          outlook_series_id: string | null
+          project_id: string
+          recurrence: string
+          slug: string
+          source: Database["public"]["Enums"]["meeting_source"]
+          start_time: string
+          starts_on: string
+          timezone: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agenda_template?: string[]
+          color_track?: string
+          created_at?: string
+          duration_minutes: number
+          ends_on?: string | null
+          id?: string
+          invited_roles?: string[]
+          join_url?: string | null
+          outlook_series_id?: string | null
+          project_id: string
+          recurrence: string
+          slug: string
+          source?: Database["public"]["Enums"]["meeting_source"]
+          start_time: string
+          starts_on: string
+          timezone?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agenda_template?: string[]
+          color_track?: string
+          created_at?: string
+          duration_minutes?: number
+          ends_on?: string | null
+          id?: string
+          invited_roles?: string[]
+          join_url?: string | null
+          outlook_series_id?: string | null
+          project_id?: string
+          recurrence?: string
+          slug?: string
+          source?: Database["public"]["Enums"]["meeting_source"]
+          start_time?: string
+          starts_on?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_series_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       people: {
         Row: {
           created_at: string
@@ -311,21 +604,31 @@ export type Database = {
       }
       project_teams: {
         Row: {
+          lead_person_id: string | null
           position: number
           project_id: string
           team_id: string
         }
         Insert: {
+          lead_person_id?: string | null
           position?: number
           project_id: string
           team_id: string
         }
         Update: {
+          lead_person_id?: string | null
           position?: number
           project_id?: string
           team_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "project_teams_lead_person_id_fkey"
+            columns: ["lead_person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "project_teams_project_id_fkey"
             columns: ["project_id"]
@@ -571,7 +874,44 @@ export type Database = {
     }
     Functions: {
       can_edit_projects: { Args: never; Returns: boolean }
+      ensure_meeting_occurrence: {
+        Args: { p_occurs_on: string; p_series_id: string }
+        Returns: {
+          created_at: string
+          ends_at: string
+          id: string
+          invited_person_ids: string[]
+          join_url: string | null
+          notes: string
+          occurs_on: string
+          outlook_event_id: string | null
+          posted_at: string | null
+          posted_by: string | null
+          project_id: string
+          series_id: string | null
+          source: Database["public"]["Enums"]["meeting_source"]
+          starts_at: string
+          timezone: string
+          title: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "meeting_occurrences"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       is_admin: { Args: never; Returns: boolean }
+      meeting_rule_hits: {
+        Args: {
+          p_date: string
+          p_ends_on: string
+          p_rule: string
+          p_starts_on: string
+        }
+        Returns: boolean
+      }
       save_project_details: {
         Args: {
           p_api_spec_merge: string
@@ -588,6 +928,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      seed_project_meetings: {
+        Args: { p_project_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       approval_state:
@@ -597,6 +941,7 @@ export type Database = {
         | "not_requested"
       lifecycle_item_status: "open" | "done" | "na"
       lifecycle_item_type: "gate" | "milestone" | "task" | "weekly"
+      meeting_source: "liftoff" | "outlook"
       profile_role: "admin" | "member" | "viewer"
       project_phase:
         | "requirements"
@@ -744,6 +1089,7 @@ export const Constants = {
       ],
       lifecycle_item_status: ["open", "done", "na"],
       lifecycle_item_type: ["gate", "milestone", "task", "weekly"],
+      meeting_source: ["liftoff", "outlook"],
       profile_role: ["admin", "member", "viewer"],
       project_phase: [
         "requirements",
