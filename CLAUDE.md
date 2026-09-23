@@ -289,6 +289,12 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
   "N attended" (not "sent to"), and nothing is emailed.
 - Team leads: `project_teams.lead_person_id`, set from the quick look's Team leads rows.
 - Times are shown in the viewer's zone (`pw-tz` cookie); the week grid is 8 AM–6 PM local.
+- Views: Week, Month and List, remembered per viewer (`localStorage` `pw.mtview`). List is two
+  columns: a sticky 380px list (last 8 weeks and next 2; "Coming up" soonest first, then "Past"
+  newest first) with type chips (series + One-off), and the selected meeting's detail beside it.
+  List opens on the most recent past meeting; Up/Down and j/k step when focus isn't in a field or
+  popup. Row tags are derived from stored rows, so a never-opened meeting shows "No minutes" and 0
+  attended; listing never creates occurrences.
 - Writes to one occurrence are queued client-side so they land in order.
 - Rules: `src/lib/meetings.ts`; rows: `src/lib/meetings-rows.ts`; UI: `src/components/meetings/`.
 

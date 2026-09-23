@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { addDays, formatDate, formatShortDate, initials } from "@/lib/domain";
+import { addDays, daysBetween, formatDate, formatShortDate, initials } from "@/lib/domain";
 import {
   buildMeeting,
   formatTime,
@@ -55,6 +55,16 @@ const H1 = 18;
 const PX = 46;
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const DOWS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** Type chips follow the mock's series order (MT_SERIES); others come after, by title. */
+const SERIES_ORDER = ["dev", "pgm", "plan", "srb", "retro", "exec"];
+/** List view: the last 8 weeks and the next 2. */
+const LIST_BACK = 56;
+const LIST_AHEAD = 14;
+const VIEW_KEY = "pw.mtview";
+
+type View = "week" | "month" | "list";
+
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const CHECK = (
@@ -72,6 +82,22 @@ type Pop =
   | { kind: "assignee"; actionId: string; anchor: HTMLElement }
   | { kind: "outlook"; anchor: HTMLElement }
   | null;
+
+/** People invited to a meeting: the series' roles, or a one-off's invite list. */
+function invitedOf(m: Meeting, occ: OccurrenceRow | null, roster: RosterPerson[], directoryById: Map<string, Person>): RosterPerson[] {
+  if (m.series) return roster.filter((r) => m.series!.invitedRoles.includes(r.key === "team" ? "team" : r.key));
+  return (occ?.invitedPersonIds ?? []).flatMap((id) => {
+    const r = roster.find((x) => x.id === id);
+    if (r) return [r];
+    const d = directoryById.get(id);
+    return d ? [{ id: d.id, name: d.name, role: "", key: "guest" as const }] : [];
+  });
+}
+
+/** List view's default: the most recent past meeting, else the next one. */
+function listDefault(l: { up: Meeting[]; past: Meeting[] }) {
+  return (l.past[0] ?? l.up[0])?.key ?? null;
+}
 
 function upsertById<T extends { id: string }>(list: T[], row: T) {
   const i = list.findIndex((x) => x.id === row.id);
@@ -93,7 +119,9 @@ export function MeetingsView(props: Props) {
   const [agenda, setAgenda] = useState(props.agenda);
   const [att, setAtt] = useState(props.attendance);
   const [actions, setActions] = useState(props.actions);
-  const [view, setView] = useState<"week" | "month">("week");
+  const [view, setView] = useState<View>("week");
+  /** List view type filter: a series id, "adhoc" for one-offs, or null for all. */
+  const [type, setType] = useState<string | null>(null);
   const [focus, setFocus] = useState<string | null>(null);
   const [sel, setSel] = useState<string | null>(null);
   const [editingMinutes, setEditingMinutes] = useState(false);
@@ -140,14 +168,53 @@ export function MeetingsView(props: Props) {
   );
   const isPast = useCallback((m: Meeting) => (now ? m.endsAt.getTime() <= now.getTime() : m.date < today), [now, today]);
 
+  // List view: coming up (soonest first), then past (newest first).
+  const listed = useMemo(() => {
+    const all = listMeetings(series, occs, addDays(today, -LIST_BACK), addDays(today, LIST_AHEAD), viewerTz).filter(
+      (m) => !type || (m.series ? m.series.id : "adhoc") === type,
+    );
+    const up = all.filter((m) => !isPast(m));
+    const past = all.filter(isPast).reverse();
+    return { up, past, flat: [...up, ...past] };
+  }, [series, occs, today, viewerTz, type, isPast]);
+
   // Default selection: most recent past meeting in view, else the next one.
   useEffect(() => {
     if (sel) return;
+    if (view === "list") {
+      const pick = listDefault(listed);
+      if (pick) setSel(pick);
+      return;
+    }
     const past = inView.filter(isPast);
     const next = inView.find((m) => !isPast(m));
     const pick = past.length ? past[past.length - 1] : next ?? inView[0];
     if (pick) setSel(pick.key);
-  }, [sel, inView, isPast]);
+  }, [sel, inView, isPast, view, listed]);
+
+  // The chosen view is remembered per viewer. Restored after the default
+  // selection effect, so a remembered List picks the list's default.
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(VIEW_KEY);
+      if (v === "month" || v === "list") {
+        setView(v);
+        setSel(null);
+      }
+    } catch {}
+  }, []);
+  const chooseView = (v: View) => {
+    setView(v);
+    if (v === "list") setSel(null);
+    try {
+      localStorage.setItem(VIEW_KEY, v);
+    } catch {}
+  };
+  const chooseType = (t: string | null) => {
+    setType(t);
+    setSel(null);
+    setEditingMinutes(false);
+  };
 
   const findMeeting = useCallback(
     (key: string): Meeting | null => {
@@ -260,8 +327,39 @@ export function MeetingsView(props: Props) {
   const select = (key: string) => {
     setSel(key);
     setEditingMinutes(false);
-    requestAnimationFrame(() => detailRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    // The list keeps the detail beside it; the calendar scrolls down to it.
+    if (view !== "list") requestAnimationFrame(() => detailRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
   };
+
+  // List view: Up/Down (and j/k) step one meeting, unless typing or in a popup.
+  const stepRef = useRef<(dir: number) => void>(() => {});
+  stepRef.current = (dir: number) => {
+    const keys = listed.flat.map((m) => m.key);
+    const i = sel ? keys.indexOf(sel) : -1;
+    const n = keys[Math.max(0, Math.min(keys.length - 1, i < 0 ? 0 : i + dir))];
+    if (!n || n === sel) return;
+    setSel(n);
+    setEditingMinutes(false);
+    requestAnimationFrame(() => document.querySelector(".ml-row.sel")?.scrollIntoView({ block: "nearest" }));
+  };
+  const popOpen = pop !== null;
+  useEffect(() => {
+    if (view !== "list") return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || popOpen) return;
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable)) return;
+      if (e.key === "ArrowDown" || e.key === "j") {
+        e.preventDefault();
+        stepRef.current(1);
+      } else if (e.key === "ArrowUp" || e.key === "k") {
+        e.preventDefault();
+        stepRef.current(-1);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [view, popOpen]);
 
   const newMeeting = async () => {
     const d = view === "week" ? (today >= range.from && today <= range.to ? today : range.from) : today;
@@ -313,8 +411,104 @@ export function MeetingsView(props: Props) {
     </button>
   );
 
+  const listRow = (m: Meeting) => {
+    const past = isPast(m);
+    const occ = m.occurrence;
+    let badges: React.ReactNode;
+    if (past) {
+      const attended = occ ? att.filter((a) => a.occurrenceId === occ.id).length : 0;
+      const invited = invitedOf(m, occ, roster, directoryById).length;
+      const open = occ ? actions.filter((a) => a.occurrenceId === occ.id && !a.done) : [];
+      const over = open.filter((a) => a.dueOn && a.dueOn < today).length;
+      badges = (
+        <>
+          {occ?.postedAt ? (
+            <span className="ml-b ok">{CHECK}Minutes</span>
+          ) : (
+            <span className="ml-b warn">No minutes</span>
+          )}
+          <span className="ml-b" title="Attended of invited">
+            {attended}/{invited} attended
+          </span>
+          {open.length > 0 && (
+            <span className={`ml-b${over ? " late" : ""}`}>
+              {open.length} open{over ? `, ${over} overdue` : ""}
+            </span>
+          )}
+        </>
+      );
+    } else {
+      const n = daysBetween(today, m.date);
+      const items = occ ? agenda.filter((a) => a.occurrenceId === occ.id).length : m.series?.agendaTemplate.length ?? 0;
+      badges = (
+        <>
+          <span className="ml-b up">{n <= 0 ? "Today" : n === 1 ? "Tomorrow" : `In ${n} days`}</span>
+          {items > 0 && <span className="ml-b">{items} agenda items</span>}
+        </>
+      );
+    }
+    return (
+      <button
+        key={m.key}
+        type="button"
+        className={`ml-row${m.key === sel ? " sel" : ""}${past ? "" : " future"}`}
+        style={{ ["--tc" as string]: `var(--pw-tk-${m.track})` }}
+        onClick={() => select(m.key)}
+      >
+        <i className="bar" />
+        <span className="ml-when">
+          <b>
+            {DOWS[isoWeekday(m.date) - 1]} {Number(m.date.slice(8, 10))}
+          </b>
+          <em>{MON3[Number(m.date.slice(5, 7)) - 1]}</em>
+        </span>
+        <span className="ml-main">
+          <span className="ml-t">
+            {m.title}
+            <span className="ml-time">{formatTime(m.start)}</span>
+          </span>
+          <span className="ml-bs">{badges}</span>
+        </span>
+      </button>
+    );
+  };
+
+  const types = [
+    ...[...series].sort((a, b) => {
+      const ia = SERIES_ORDER.indexOf(a.slug);
+      const ib = SERIES_ORDER.indexOf(b.slug);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.title.localeCompare(b.title);
+    }).map((s) => ({ id: s.id, label: s.title, track: s.track as string })),
+    { id: "adhoc", label: "One-off", track: "pgm" },
+  ];
+
   let body: React.ReactNode;
-  if (view === "week") {
+  if (view === "list") {
+    body = listed.flat.length ? (
+      <>
+        <div className="ml-list">
+          {listed.up.length > 0 && (
+            <>
+              <div className="ml-h">Coming up</div>
+              {listed.up.map(listRow)}
+            </>
+          )}
+          {listed.past.length > 0 && (
+            <>
+              <div className="ml-h">Past</div>
+              {listed.past.map(listRow)}
+            </>
+          )}
+        </div>
+        <div className="ml-foot">
+          <kbd>↑</kbd>
+          <kbd>↓</kbd> to move between meetings
+        </div>
+      </>
+    ) : (
+      <div className="ml-empty">No meetings of this type in the last 8 weeks or the next 2.</div>
+    );
+  } else if (view === "week") {
     const hours = [];
     for (let h = H0; h < H1; h++)
       hours.push(
@@ -395,17 +589,45 @@ export function MeetingsView(props: Props) {
   }
 
   return (
-    <div className={`${styles.root} mtRoot`}>
+    <div className={styles.root}>
+      <div className="sec-head">
+        <h2>Meetings</h2>
+        <span className="sub">Every project call in one place. Pick one to see its agenda, who attended, minutes and actions.</span>
+      </div>
+      <div className={`mtRoot${view === "list" ? " mt-split" : ""}`}>
       <div className="mt-cal">
         <div className="mt-bar">
           <div className="seg" role="group" aria-label="Calendar view">
-            <button type="button" aria-pressed={view === "week"} onClick={() => setView("week")}>
+            <button type="button" aria-pressed={view === "week"} onClick={() => chooseView("week")}>
               Week
             </button>
-            <button type="button" aria-pressed={view === "month"} onClick={() => setView("month")}>
+            <button type="button" aria-pressed={view === "month"} onClick={() => chooseView("month")}>
               Month
             </button>
+            <button type="button" aria-pressed={view === "list"} onClick={() => chooseView("list")}>
+              List
+            </button>
           </div>
+          {view === "list" ? (
+            <div className="mt-types" role="group" aria-label="Meeting type">
+              <button type="button" className={`mt-tc${type ? "" : " on"}`} aria-pressed={!type} onClick={() => chooseType(null)}>
+                All types
+              </button>
+              {types.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`mt-tc${type === t.id ? " on" : ""}`}
+                  aria-pressed={type === t.id}
+                  style={{ ["--tc" as string]: `var(--pw-tk-${t.track})` }}
+                  onClick={() => chooseType(t.id)}
+                >
+                  <i />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          ) : (
           <div className="mt-nav">
             <button type="button" className="ic" aria-label="Previous" onClick={() => step(-1)}>
               <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -422,6 +644,7 @@ export function MeetingsView(props: Props) {
             </button>
             <b>{label}</b>
           </div>
+          )}
           <div className="mt-right">
             <button
               type="button"
@@ -440,7 +663,7 @@ export function MeetingsView(props: Props) {
         {body}
       </div>
 
-      <div ref={detailRef} style={{ scrollMarginTop: 16 }}>
+      <div ref={detailRef} className="mtDet" style={{ scrollMarginTop: 16, minWidth: 0 }}>
         {selected ? (
           <Detail
             key={selected.key}
@@ -475,7 +698,7 @@ export function MeetingsView(props: Props) {
             series={series}
           />
         ) : (
-          <div className="mt-empty">Select a meeting on the calendar to see its agenda, attendees, minutes and actions.</div>
+          <div className="mt-empty">Select a meeting {view === "list" ? "in the list" : "on the calendar"} to see its agenda, attendees, minutes and actions.</div>
         )}
       </div>
 
@@ -514,6 +737,7 @@ export function MeetingsView(props: Props) {
             />
           );
         })()}
+      </div>
     </div>
   );
 }
@@ -560,14 +784,7 @@ function Detail(p: DetailProps) {
     : (m.series?.agendaTemplate ?? []).map((body, i) => ({ id: null, body, done: false, position: i + 1 }));
 
   // Invited people.
-  const invited: RosterPerson[] = m.series
-    ? roster.filter((r) => m.series!.invitedRoles.includes(r.key === "team" ? "team" : r.key))
-    : (occ?.invitedPersonIds ?? []).flatMap((id) => {
-        const r = roster.find((x) => x.id === id);
-        if (r) return [r];
-        const d = directoryById.get(id);
-        return d ? [{ id: d.id, name: d.name, role: "", key: "guest" as const }] : [];
-      });
+  const invited = invitedOf(m, occ, roster, directoryById);
   const invitedIds = new Set(invited.map((r) => r.id));
 
   const attended = occ ? p.att.filter((a) => a.occurrenceId === occ.id) : [];
