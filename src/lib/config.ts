@@ -37,5 +37,15 @@ export function reviewRoleLabel(role: string) {
   return REVIEW_ROLES.find((r) => r.key === role)?.label ?? role.replace(/_/g, " ");
 }
 
+// Jira projects a sticky can be converted into. PLACEHOLDER until the Jira
+// integration exists: keys are issued by convert_stickies() from
+// jira_key_sequences, and nothing is created in Jira.
+export const JIRA_PROJECTS = [
+  { key: "CW", name: "Compute Workloads" },
+  { key: "CWINFRA", name: "Compute Infrastructure" },
+  { key: "CWSEC", name: "Compute Security" },
+  { key: "CWUX", name: "Compute Experience" },
+] as const;
+
 // GitHub Enterprise host for review PR links, until the GitHub sync lands.
 export const GITHUB_BASE_URL = (process.env.NEXT_PUBLIC_GITHUB_BASE_URL ?? "https://github.ibm.com").replace(/\/$/, "");

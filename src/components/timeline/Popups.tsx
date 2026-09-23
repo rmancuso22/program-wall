@@ -17,11 +17,14 @@ import styles from "./timeline.module.scss";
 export function Popup({
   anchor,
   width,
+  className,
   onClose,
   children,
 }: {
   anchor: HTMLElement;
   width?: number;
+  /** Extra class on the popup root, for tab-specific content styles. */
+  className?: string;
   onClose: () => void;
   children: React.ReactNode;
 }) {
@@ -63,7 +66,7 @@ export function Popup({
   }, [onClose]);
 
   return createPortal(
-    <div className={styles.root}>
+    <div className={className ? `${styles.root} ${className}` : styles.root}>
       <div
         ref={ref}
         className="tl-pop"

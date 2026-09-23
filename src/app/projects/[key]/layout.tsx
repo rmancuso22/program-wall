@@ -1,6 +1,13 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getLifecycleTemplate, getOpenActionCount, getProject, getProjectLifecycle, getRoadmap } from "@/lib/projects";
+import {
+  getLifecycleTemplate,
+  getOpenActionCount,
+  getProject,
+  getProjectLifecycle,
+  getRoadmap,
+  getStickyCounts,
+} from "@/lib/projects";
 import { Timeline, anchorDate } from "@/lib/lifecycle";
 import { getToday } from "@/lib/today";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
@@ -30,9 +37,10 @@ export default async function ProjectLayout({ children, params }: Props) {
     getToday(),
   ]);
   if (!data) notFound();
-  const [lifecycle, openActions] = await Promise.all([
+  const [lifecycle, openActions, stickyCounts] = await Promise.all([
     getProjectLifecycle(data.project.id),
     getOpenActionCount(data.project.id),
+    getStickyCounts(data.project.id),
   ]);
   const tlStats = new Timeline(
     template.items,
@@ -66,6 +74,8 @@ export default async function ProjectLayout({ children, params }: Props) {
             designMerged={designMerged}
             timelineProgress={`${tlStats.done}/${tlStats.total}`}
             openActions={openActions}
+            stickyCount={stickyCounts.stickies}
+            ticketCount={stickyCounts.tickets}
           />
         </Suspense>
         <WorkspaceMain>

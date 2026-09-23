@@ -1,5 +1,6 @@
+import NextLink from "next/link";
 import { notFound } from "next/navigation";
-import { getProject, getRoadmap } from "@/lib/projects";
+import { getProject, getRoadmap, getStickyCounts } from "@/lib/projects";
 import { PHASES, phaseColor, phaseIndex } from "@/lib/domain";
 import { getToday } from "@/lib/today";
 import { deriveDoc, pendingReviewCount } from "@/lib/reviews";
@@ -23,7 +24,7 @@ export default async function OverviewPage({ params }: Props) {
   if (!data) notFound();
 
   const { project, reviews } = data;
-  const today = await getToday();
+  const [today, counts] = await Promise.all([getToday(), getStickyCounts(project.id)]);
   const quarter = roadmap.quarters.find((q) => q.id === project.quarterId);
   const current = phaseIndex(project.phase);
 
@@ -82,6 +83,19 @@ export default async function OverviewPage({ params }: Props) {
           </Block>
         </div>
       </div>
+
+      <div className={styles.secHead}>
+        <h2>Delivery Map</h2>
+        <span className={styles.secSub}>
+          {counts.stickies} stickies across {counts.lanes} teams, {counts.tickets} converted to Jira
+        </span>
+      </div>
+      <NextLink href={`/projects/${project.key}/map`} className={styles.secBtn}>
+        Open the Delivery Map
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z" />
+        </svg>
+      </NextLink>
     </section>
   );
 }

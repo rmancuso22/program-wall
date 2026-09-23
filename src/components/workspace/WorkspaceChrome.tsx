@@ -54,6 +54,7 @@ export function WorkspaceHeader({ projectKey, projectName, projects, themePref }
   backRef.current = back;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented) return;
       if (e.target instanceof HTMLElement && e.target.closest("input, textarea, [contenteditable]")) return;
       if (e.key === "Escape") backRef.current();
       else if (e.key === "[") stepRef.current(-1);
@@ -100,7 +101,7 @@ export function WorkspaceHeader({ projectKey, projectName, projects, themePref }
 const NAV = [
   { tab: "", label: "Overview", Icon: Dashboard },
   { tab: "design", label: "Design", Icon: Pen },
-  { tab: "mural", label: "Mural", Icon: Grid },
+  { tab: "map", label: "Delivery Map", Icon: Grid },
   { tab: "tickets", label: "Jira tickets", Icon: List },
   { tab: "timeline", label: "Timeline", Icon: Timeline },
   { tab: "meetings", label: "Meetings", Icon: Calendar },
@@ -116,13 +117,18 @@ type NavProps = {
   timelineProgress: string;
   /** Open meeting actions; the Meetings tab keeps it live. */
   openActions: number;
+  /** Stickies on the Delivery Map and Jira tickets; those tabs keep them live. */
+  stickyCount: number;
+  ticketCount: number;
 };
 
-export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelineProgress, openActions }: NavProps) {
+export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelineProgress, openActions, stickyCount, ticketCount }: NavProps) {
   const pathname = usePathname();
   const liveProgress = useNavBadges((s) => s.values[`${projectKey}:timeline`]);
   const liveActions = useNavBadges((s) => s.values[`${projectKey}:meetings`]);
   const actions = liveActions ?? String(openActions);
+  const stickies = useNavBadges((s) => s.values[`${projectKey}:map`]) ?? String(stickyCount);
+  const tickets = useNavBadges((s) => s.values[`${projectKey}:tickets`]) ?? String(ticketCount);
   const { query } = useFilterQuery();
   const current = pathname.split("/")[3] ?? "";
 
@@ -148,6 +154,16 @@ export function WorkspaceNav({ projectKey, pendingReviews, designMerged, timelin
                 {pendingReviews}
               </span>
             ) : null)}
+          {tab === "map" && (
+            <span className={styles.navCount} title="Stickies on the Delivery Map">
+              {stickies}
+            </span>
+          )}
+          {tab === "tickets" && (
+            <span className={styles.navCount} title="Jira tickets">
+              {tickets}
+            </span>
+          )}
           {tab === "meetings" && actions !== "0" && (
             <span className={styles.navCount} title="Open meeting actions">
               {actions}

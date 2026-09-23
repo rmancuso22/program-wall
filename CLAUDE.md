@@ -6,8 +6,12 @@ Program planning for IBM program teams, replacing Mural. The product was called 
 repo, Vercel project and Supabase project keep the name `program-wall` on purpose (renaming breaks
 links and the CLI link). Use "Liftoff" in all user-facing copy, from `PRODUCT` in
 `src/lib/config.ts`. Text only: no rocket or launch imagery. The roadmap is the front door; a project is
-the top-level object, with a workspace of tabs (Overview, Design, Mural, Jira tickets, Timeline,
-Documents).
+the top-level object, with a workspace of tabs (Overview, Design, Delivery Map, Jira tickets,
+Timeline, Meetings, Documents).
+
+**Naming:** the sticky wall is the **Delivery Map** in all user-facing copy (URL `/projects/<key>/map`;
+`/mural` redirects). The mock may still say Mural; that's the old name, as is "Launchpad". Database
+names stay neutral, never branded: `stickies`, `sticky_*`, `project_sprints`, `jira_key_sequences`.
 
 **Design of record: `design/roadmap-mock.html`.** Open it in a browser and click through it before
 building UI. Match it, using Carbon components for inputs, buttons, tags, tables and the shell, and
@@ -42,7 +46,9 @@ our own components for cards, the filter bar and timelines.
   off; its font stacks point at `--font-plex-sans` / `--font-plex-mono`.
 - Supabase (Postgres, Auth, Realtime), `@supabase/supabase-js` and `@supabase/ssr` pinned to exact
   versions.
-- Zustand is installed for the mural's client state (not used yet).
+- Zustand holds live nav badge values (`src/stores/nav-badges.ts`).
+- `@dnd-kit/core` for the Jira board's drag and drop (pointer and keyboard). The Delivery Map uses
+  its own pointer handling, as in the mock.
 - `react-markdown` + `remark-gfm` render review documents (raw HTML is not rendered).
 - Server-render by default. Anything importing `@carbon/react` must be a `"use client"` component,
   since Carbon uses hooks and context. Fetch data in the server page and pass it down.
@@ -145,10 +151,9 @@ scripts/seed/           generate-roadmap-seed.mjs: builds the seed migration fro
 - Side panel edits go through `rpc('save_project_details', ...)`: one transaction, runs as the
   caller so RLS applies. Names are free text for now: each resolves to a `people` row by
   case-insensitive exact match, or creates one. It never clears anyone's contact details.
-- No board, lane, card or link tables exist. The mural gets its own tables when it is built, and
-  they will not look like the old board schema. When it is:
-  - **A dependency is an edge, not a card**, and one pair of items gets one edge.
-  - Refuse a new edge when its reverse already exists (the app must enforce this).
+- Dependencies between stickies: **a dependency is an edge, not a card**, and one pair gets one
+  edge in either direction (unique index on least/greatest; the app also says "Those two are
+  already linked").
 
 ## Roadmap sort
 
@@ -176,6 +181,35 @@ Previous/next in a project walk the same filtered, sorted list (`sortWithinQuart
 - Per-viewer prefs (Hide N/A, collapsed lanes) are in `localStorage` `pw.tlui`.
 - Styles: `src/components/timeline/timeline.module.scss` is the mock's CSS with the mock's class
   names, scoped under `.root`, colours mapped to Carbon or `--pw-*` tokens.
+
+## Delivery Map and Jira board
+
+- One data model. A sticky is a `stickies` row; the Delivery Map shows all of them, the Jira board
+  shows those with a `jira_key`. Rows on both are `sticky_lanes` (teams); Delivery Map columns are
+  `sticky_columns` (work areas); board columns are `bucket` (backlog | current | next | done).
+  `wall_rank` orders a map cell, `board_rank` orders a board cell. Child rows carry `project_id` with
+  composite FKs, so nothing points across projects. A lane or column with stickies can't be deleted.
+  New projects get the mock's 8 lanes and 3 columns and an empty wall (`seed_project_stickies()`).
+- **Status and bucket are kept in step by the `sticky_sync` trigger** (one source of truth):
+  into done → closed + `done_sprint` = current sprint; out of done → progress if current, else open;
+  backlog/next drop progress to open; closed on the map → done; reopened while done → current;
+  progress in backlog/next → current. `applyMove`/`applyStatus` in `src/lib/stickies.ts` mirror it
+  for optimistic UI only.
+- Clients can't write bucket, ranks, keys or sprints directly (column grants). Use the RPCs:
+  `move_ticket(sticky, bucket, lane, before)`, `move_sticky(sticky, lane, column, before)`,
+  `convert_stickies(sticky | lane)` and `complete_sprint(project)`. Each checks
+  `can_edit_projects()` and renumbers the target cell 1..n.
+- **Jira is a placeholder.** `convert_stickies()` issues keys from `jira_key_sequences`, one global
+  counter per prefix (CW-24 is unique across Liftoff, like real Jira). Projects are `JIRA_PROJECTS`
+  in config. "Open in Jira" is inert and nothing syncs until the integration exists.
+- Sprints: two weeks, sprint 1 = 2026-01-05 (the Meetings anchor). `project_sprints` holds the
+  current number and start; it only advances on Complete sprint (carry-over is a decision). Past the
+  end, the board shows "Sprint N ended D Mon. Complete it to start Sprint N+1." and the header says
+  "Ended Nd ago" in the risk colour.
+- Per-viewer board prefs (hidden team rows) are in `localStorage` `pw.kbui`.
+- State, realtime and writes: `src/components/stickies/useStickyData.ts` (typed text is debounced
+  and queued per sticky; realtime echoes never overwrite fields still being saved). Styles:
+  `stickies.module.scss`, the mock's CSS scoped under `.root`.
 
 ## Meetings (Meetings tab)
 

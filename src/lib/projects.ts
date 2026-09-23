@@ -5,6 +5,7 @@ import type { DateField } from "./domain";
 import type { ReviewDocView } from "./reviews";
 import { scopesFromRow, toItemRow, type Stage, type TemplateItem } from "./lifecycle";
 import { toAction, toAgenda, toAttendance, toOccurrence, toSeries } from "./meetings-rows";
+import { byPosition, toColumn, toLane, toLink, toSprint, toSticky } from "./stickies";
 import type { ProfileRole, ProjectPhase, ProjectRag, ProjectRole, ReviewKind } from "./supabase/types";
 
 export type Person = {
@@ -328,4 +329,43 @@ export const getOpenActionCount = cache(async (projectId: string) => {
     .eq("project_id", projectId)
     .eq("done", false);
   return count ?? 0;
+});
+
+// ---------------------------------------------------------------------------
+// Delivery Map and Jira board
+// ---------------------------------------------------------------------------
+
+export const getProjectStickies = cache(async (projectId: string) => {
+  const supabase = await createClient();
+  const [lanes, cols, stickies, links, sprint] = await Promise.all([
+    supabase.from("sticky_lanes").select("*").eq("project_id", projectId),
+    supabase.from("sticky_columns").select("*").eq("project_id", projectId),
+    supabase.from("stickies").select("*").eq("project_id", projectId),
+    supabase.from("sticky_links").select("*").eq("project_id", projectId),
+    supabase.from("project_sprints").select("*").eq("project_id", projectId).maybeSingle(),
+  ]);
+  const error = lanes.error ?? cols.error ?? stickies.error ?? links.error ?? sprint.error;
+  if (error) throw new Error(`Could not load the Delivery Map: ${error.message}`);
+  return {
+    lanes: (lanes.data ?? []).map(toLane).sort(byPosition),
+    columns: (cols.data ?? []).map(toColumn).sort(byPosition),
+    stickies: (stickies.data ?? []).map(toSticky),
+    links: (links.data ?? []).map(toLink),
+    sprint: sprint.data ? toSprint(sprint.data) : null,
+  };
+});
+
+/** Sticky, ticket and team counts, for the nav badges and the Overview. */
+export const getStickyCounts = cache(async (projectId: string) => {
+  const supabase = await createClient();
+  const [all, tickets, lanes] = await Promise.all([
+    supabase.from("stickies").select("id", { count: "exact", head: true }).eq("project_id", projectId),
+    supabase
+      .from("stickies")
+      .select("id", { count: "exact", head: true })
+      .eq("project_id", projectId)
+      .not("jira_key", "is", null),
+    supabase.from("sticky_lanes").select("id", { count: "exact", head: true }).eq("project_id", projectId),
+  ]);
+  return { stickies: all.count ?? 0, tickets: tickets.count ?? 0, lanes: lanes.count ?? 0 };
 });

@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/boards", destination: "/roadmap", permanent: false },
       { source: "/boards/:path*", destination: "/roadmap", permanent: false },
+      // The Mural tab is now the Delivery Map.
+      { source: "/projects/:key/mural", destination: "/projects/:key/map", permanent: false },
     ];
   },
 };
