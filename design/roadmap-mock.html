@@ -644,8 +644,8 @@
   .tl-pop .tp-person em{margin-left:auto;font-style:normal;font-size:11px;color:var(--text-3)}
   .tl-pop .tp-f{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line)}
   .tl-pop .tp-note{font-size:11px;color:var(--text-3)}
-  .tl-pop .tp-link,.tl-top .tp-link{font-size:11.5px;color:var(--accent)}
-  .tl-pop .tp-link:hover{text-decoration:underline}
+  .tl-pop .tp-link,.tl-top .tp-link,#mtRoot .tp-link{font-size:11.5px;color:var(--accent)}
+  .tl-pop .tp-link:hover,#mtRoot .tp-link:hover{text-decoration:underline}
   .nabtn{height:24px;padding:0 9px;border:1px solid var(--line);font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;color:var(--text-3)}
   .nabtn:hover{border-color:var(--text-2);color:var(--text)}
   .cl-item.na .nabtn{background:var(--text);color:var(--ground);border-color:var(--text)}
@@ -713,6 +713,127 @@
   .kb-meta{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-2)}
   .kb-meta b{color:var(--text);font-weight:500}
   .tl-pop select.ctrl{height:32px;font-size:12.5px;text-transform:none;letter-spacing:0;font-family:"IBM Plex Sans",sans-serif;color:var(--text)}
+  /* meetings */
+  #mtRoot{display:flex;flex-direction:column;gap:18px}
+  .mt-cal{border:1px solid var(--line);background:var(--surface)}
+  .mt-bar{display:flex;align-items:center;gap:16px;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .mt-nav{display:flex;align-items:center;gap:4px}
+  .mt-nav .ic{width:32px;height:32px;display:grid;place-items:center}
+  .mt-nav .ic:hover,.mt-today:hover{background:var(--surface-2)}
+  .mt-nav .ic svg{width:16px;height:16px;fill:var(--text)}
+  .mt-today{height:32px;padding:0 12px;border:1px solid var(--line);font-size:12.5px;margin:0 8px 0 4px}
+  .mt-nav b{font-size:15px;font-weight:600}
+  .mt-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .mt-sync{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;font-size:12.5px;color:var(--text)}
+  .mt-sync.on{border:1px solid var(--line)}
+  .mt-sync.on:hover{background:var(--surface-2)}
+  .mt-sync svg{width:14px;height:14px;fill:var(--ok)}
+  .mt-sync span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--text-3)}
+  .mt-new{height:32px;width:auto}
+  .mt-week{display:grid;grid-template-columns:64px repeat(5,1fr)}
+  .mt-dh{height:48px;display:flex;flex-direction:column;justify-content:center;padding:0 10px;border-bottom:1px solid var(--line)}
+  .mt-dh span{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+  .mt-dh b{font-size:18px;font-weight:500;line-height:1.1}
+  .mt-day.today .mt-dh b{color:var(--accent)}
+  .mt-day.today .mt-dh{box-shadow:inset 0 -2px 0 var(--accent)}
+  .mt-day{border-left:1px solid var(--line);min-width:0}
+  .mt-hrs{position:relative}
+  .mt-hr{position:absolute;left:0;right:0}
+  .mt-hr span{position:absolute;top:-7px;right:8px;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--text-3);background:var(--surface);padding:0 2px}
+  .mt-hr:first-child span{top:2px}
+  .mt-dcol{position:relative;background-image:linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:100% 46px}
+  .mt-day.today .mt-dcol{background-color:color-mix(in srgb,var(--accent) 3%,transparent)}
+  .mt-now{position:absolute;left:0;right:0;border-top:2px solid var(--flag-block);z-index:3}
+  .mt-now::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--flag-block)}
+  .mt-ev{position:relative;text-align:left;display:flex;flex-direction:column;gap:1px;padding:4px 8px;border-left:3px solid var(--tc);background:color-mix(in srgb,var(--tc) 14%,var(--surface));color:var(--text);font-size:11.5px;overflow:hidden;min-width:0}
+  .mt-ev b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mt-ev span{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--text-2);white-space:nowrap}
+  .mt-ev.blk{position:absolute;left:4px;right:4px}
+  .mt-ev.past{background:color-mix(in srgb,var(--tc) 7%,var(--surface));color:var(--text-2)}
+  .mt-ev:hover{background:color-mix(in srgb,var(--tc) 24%,var(--surface))}
+  .mt-ev.sel{outline:2px solid var(--accent);outline-offset:-1px;z-index:2}
+  .mt-ev.short{flex-direction:row;align-items:center;gap:8px;padding:0 8px}
+  .mt-ev.short span{flex:0 0 auto}
+  .mt-ok{position:absolute;right:5px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--ok);display:grid;place-items:center}
+  .mt-ok svg{width:11px;height:11px;fill:#fff}
+  .mt-ev.chip{flex-direction:row;align-items:center;gap:6px;padding:2px 6px;height:22px}
+  .mt-ev.chip span{order:-1}
+  .mt-ev.chip .mt-ok{position:static;width:12px;height:12px;margin-left:auto;flex:0 0 auto}
+  .mt-mh{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
+  .mt-mh span{padding:8px 10px;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+  .mt-mg{display:grid;grid-template-columns:repeat(7,1fr)}
+  .mt-mc{min-height:104px;padding:6px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;min-width:0}
+  .mt-mc:nth-child(7n){border-right:0}
+  .mt-mc .dn{font-size:12px;color:var(--text-2);padding:0 2px 2px}
+  .mt-mc.out{background:var(--surface-2)}
+  .mt-mc.out .dn{color:var(--text-3)}
+  .mt-mc.we{background:var(--surface-2)}
+  .mt-mc.today .dn{color:#fff;background:var(--accent);align-self:flex-start;padding:1px 6px;font-weight:600}
+  .mt-more{font-size:11px;color:var(--accent);text-align:left;padding:0 4px}
+  .mt-empty{padding:28px;border:1px dashed var(--line-strong);text-align:center;color:var(--text-3);font-size:13px}
+  .mt-det{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+  .mt-dhead{position:relative;display:flex;align-items:flex-start;gap:16px;padding:14px 16px 14px 20px;border:1px solid var(--line);background:var(--surface)}
+  .mt-dhead .bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tc)}
+  .mt-dhead h3{margin:0 0 6px;font-size:18px;font-weight:600}
+  .mt-dhead .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--text-2)}
+  .mt-dhead .meta .src{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;align-self:center}
+  .mt-dnav{margin-left:auto;display:flex;align-items:center;gap:14px;flex:0 0 auto}
+  .mt-dnav .btn{width:auto}
+  .mt-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px}
+  .mt-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .mt-card{border:1px solid var(--line);background:var(--surface)}
+  .mt-ch{display:flex;align-items:baseline;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .mt-ch b{font-size:13.5px;font-weight:600}
+  .mt-ch .n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--text-3)}
+  .mt-ch.sub{background:var(--surface-2);border-top:1px solid var(--line)}
+  .mt-ch.sub b{font-size:12px;font-weight:500;color:var(--text-2)}
+  .mt-agenda,.mt-acts{display:flex;flex-direction:column}
+  .mt-ag{display:grid;grid-template-columns:28px 1fr 28px;align-items:center;gap:8px;padding:5px 14px;border-bottom:1px solid var(--line)}
+  .mt-ag input,.mt-act .mt-at{border:0;background:none;color:var(--text);font:inherit;font-size:13px;padding:5px 6px;margin-left:-6px;min-width:0}
+  .mt-ag input:hover,.mt-act .mt-at:hover{background:var(--surface-2)}
+  .mt-ag input:focus,.mt-act .mt-at:focus{outline:2px solid var(--accent);outline-offset:-2px;background:var(--surface)}
+  .mt-ag.done input,.mt-act.done .mt-at{color:var(--text-3);text-decoration:line-through}
+  .mt-ag.done .ck,.mt-act.done .ck{background:var(--ok);border-color:var(--ok)}
+  .mt-ag.done .ck svg,.mt-act.done .ck svg{opacity:1}
+  .mt-ag .ck svg,.mt-act .ck svg{width:14px;height:14px;fill:#fff;opacity:0}
+  .mt-x{width:26px;height:26px;display:grid;place-items:center;opacity:0}
+  .mt-x svg{width:14px;height:14px;fill:var(--text-3)}
+  .mt-ag:hover .mt-x,.mt-act:hover .mt-x{opacity:1}
+  .mt-x:hover svg{fill:var(--flag-block)}
+  .mt-add{border:0;background:none;color:var(--text);font:inherit;font-size:12.5px;padding:10px 14px}
+  .mt-add::placeholder{color:var(--text-3)}
+  .mt-add:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .mt-notes{display:block;width:100%;min-height:150px;border:0;border-bottom:1px solid var(--line);background:var(--surface-2);color:var(--text);font:inherit;font-size:13px;line-height:1.55;padding:12px 14px;resize:vertical}
+  .mt-notes:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .mt-min{padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text)}
+  .mt-mf{display:flex;align-items:center;gap:12px;padding:10px 14px}
+  .mt-mf .btn{margin-left:auto;width:auto;height:32px}
+  .mt-posted{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ok)}
+  .mt-posted svg{width:13px;height:13px;fill:currentColor}
+  .mt-people{display:flex;flex-direction:column;padding:6px}
+  .mt-person{display:flex;align-items:center;gap:10px;padding:7px 8px;text-align:left;border:1px solid transparent}
+  .mt-person:hover{background:var(--surface-2)}
+  .mt-person .av{width:26px;height:26px;font-size:9.5px;flex:0 0 auto;opacity:.55}
+  .mt-person .nm{display:flex;flex-direction:column;font-size:13px;color:var(--text-2);min-width:0}
+  .mt-person .nm em{font-style:normal;font-size:11px;color:var(--text-3)}
+  .mt-person .tick{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;flex:0 0 auto}
+  .mt-person .tick svg{width:14px;height:14px;fill:#fff;opacity:0}
+  .mt-person.on .av{opacity:1;background:var(--accent);color:#fff}
+  .mt-person.on .nm{color:var(--text)}
+  .mt-person.on .tick{background:var(--ok);border-color:var(--ok)}
+  .mt-person.on .tick svg{opacity:1}
+  .mt-act{display:grid;grid-template-columns:28px minmax(0,1fr) auto 190px 150px 28px;align-items:center;gap:10px;padding:5px 14px;border-bottom:1px solid var(--line)}
+  .mt-act .own{display:flex;align-items:center;gap:7px;min-width:0;height:30px;padding:0 6px;border:1px solid transparent;text-align:left;font-size:12px;color:var(--text-2)}
+  .mt-act .own:hover{border-color:var(--line);background:var(--surface)}
+  .mt-act .own .av{width:20px;height:20px;font-size:8px;flex:0 0 auto}
+  .mt-act .own .on{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mt-act .own.none .av{background:transparent;border:1px dashed var(--line-strong);color:var(--text-3)}
+  .mt-act .own.none .on{color:var(--text-3)}
+  .mt-due{height:30px;border:0;border-bottom:1px solid var(--line-strong);background-color:var(--surface-2);color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:0 8px}
+  .mt-due.late{color:var(--flag-block);border-bottom-color:var(--flag-block)}
+  .mt-from{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--text-3);white-space:nowrap}
+  .mt-carry .mt-act{background:color-mix(in srgb,var(--surface-2) 50%,transparent)}
+  @media (max-width:1100px){ .mt-grid{grid-template-columns:1fr} .mt-act{grid-template-columns:28px minmax(0,1fr) 150px 140px 28px} .mt-from{display:none} }
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:80;
     background:var(--text);color:var(--ground);padding:10px 14px;font-size:12.5px;
@@ -1431,6 +1552,7 @@
     {key:"mural",    label:"Mural", icon:'<path d="M2 3h12v10H2V3zm1 1v8h10V4H3zm1.5 1.5h3v2h-3v-2zm5 0h3v2h-3v-2zm-5 4h3v2h-3v-2zm5 0h3v2h-3v-2z"/>'},
     {key:"tickets",  label:"Jira tickets", icon:'<path d="M2 3h12v1H2V3zm0 3h12v1H2V6zm0 3h12v1H2V9zm0 3h8v1H2v-1z"/>'},
     {key:"timeline", label:"Timeline",  icon:'<path d="M2 7.5h12v1H2v-1zM4 5h1v5H4V5zm4-1h1v7H8V4zm4 2h1v3h-1V6z"/>'},
+    {key:"meetings", label:"Meetings", icon:'<path d="M5 1h1v2h4V1h1v2h3v11H2V3h3V1zM3 6v7h10V6H3zm0-2v1h10V4H3zm2 4h2v2H5V8zm4 0h2v2H9V8z"/>'},
     {key:"docs",     label:"Documents", icon:'<path d="M4 1h5l4 4v10H4V1zm1 1v12h7V6H8V2H5zm4 0v3h3L9 2z"/>'}
   ];
 
@@ -2704,6 +2826,276 @@
     });
     wireDesign(root);
   }
+  /* ---------- meetings: project calls from Outlook, minutes, attendance, actions ---------- */
+  // series: [id, title, colour track, rule, start, minutes, invited roles, agenda template]
+  var MT_SERIES = [
+    ["dev","Weekly dev sync","eng",{w:[2],every:1},"10:00",30,["devmgr","devlead","arch","pm","team"],["Sprint progress by team","Blockers and dependencies","Environment and pipeline status","Open actions"]],
+    ["pgm","Program status","pgm",{w:[4],every:1},"14:00",45,["pm","om","devmgr","arch","exec"],["Status light and key risks","Timeline: next gate","Decisions needed","Open actions"]],
+    ["plan","Sprint planning","test",{w:[1],every:2,anchor:"2026-01-05"},"13:00",60,["devmgr","devlead","pm","team"],["Review last sprint","Capacity by team","Pull from backlog","Commit sprint goal"]],
+    ["srb","Architecture review","arch",{w:[3],every:2,anchor:"2026-01-07"},"11:00",60,["arch","devlead","devmgr","pm"],["SRB comments walkthrough","API spec open questions","Security and SRE sign-off","Next steps"]],
+    ["retro","Sprint retro","ux",{w:[5],every:2,anchor:"2026-01-16"},"11:00",45,["devmgr","devlead","pm","team"],["What went well","What slowed us down","One change for next sprint"]],
+    ["exec","Exec checkpoint","om",{first:5},"15:00",30,["exec","pm","om","devmgr"],["Health and release confidence","Asks from the team","Funding and staffing"]]
+  ];
+  var MT_NOTES = {
+    dev:"Walked the board team by team. Two tickets slipped into next sprint because the INT environment was down Monday. Agreed to pair on the agent packaging work to unblock RCOS.",
+    pgm:"Status stays green. Launch readiness is the next gate. OM confirmed pricing is out of scope for this release. Raised a risk on test environment capacity in October.",
+    plan:"Capacity is down one engineer for vacation. Pulled six tickets from backlog; left the drift dashboard for next sprint. Sprint goal: agent install path end to end in DEV MZ.",
+    srb:"Went through open SRB comments. Security wants attestation details in the spec before approval. API governance approved the versioning approach.",
+    retro:"Good: faster reviews since reviewers get pinged at 3 days. Slow: flaky pipeline job. Change: one owner for pipeline health each sprint.",
+    exec:"Exec is comfortable with the date. Ask for one more SRE for the rollout window; exec will take it to the staffing review."
+  };
+  var MT_ACTIONS = ["Send updated API spec to reviewers","Book environment time for failure injection","Confirm SRE coverage for rollout window","Update risk register with test capacity","Draft customer notice for ring 2","Close out SRB comments on attestation","Share capacity plan with exec","Fix flaky pipeline job","Schedule playback with UX","Get finance sign-off on out-of-scope pricing"];
+  var MT = {}, mtUI = { view:"week", focus:null, sel:null };
+  function mtKey(id){ return "cwr.mtg."+id; }
+  function mtOf(p){
+    if(MT[p.id]) return MT[p.id];
+    var d = null; try{ d = JSON.parse(localStorage.getItem(mtKey(p.id)) || "null"); }catch(e){}
+    MT[p.id] = d || { occ:{}, outlook:{ on:true, at:null }, seq:1 }; return MT[p.id];
+  }
+  function mtSave(p){ try{ localStorage.setItem(mtKey(p.id), JSON.stringify(MT[p.id])); }catch(e){} }
+  function dow(iso){ return new Date(iso+"T00:00:00Z").getUTCDay(); }
+  function mondayOf(iso){ var w = dow(iso); return shiftDate(iso, w === 0 ? -6 : 1 - w); }
+  function hm(t, add){ var a = t.split(":"), m = (+a[0])*60 + (+a[1]) + (add||0); return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+(m%60)).slice(-2); }
+  function fmtT(t){ var a = t.split(":"), h = +a[0], ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return h + (a[1] !== "00" ? ":"+a[1] : "") + " " + ap; }
+  function nowHM(){ var d = new Date(); return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2); }
+  function mtRoster(p){
+    var rec = record(p), out = [], seen = {};
+    ROLES.forEach(function(r){ var n = rec.people[r[0]]; if(n && !seen[n]){ seen[n] = 1; out.push({name:n, role:r[1], key:r[0]}); } });
+    p.teams.forEach(function(t, i){
+      var pool = POOL.devlead, n = pool[(hash(p.id+t) + i) % pool.length], k = 0;
+      while(seen[n] && k < pool.length){ n = pool[(hash(p.id+t) + i + (++k)) % pool.length]; }
+      seen[n] = 1; out.push({name:n, role:t+" lead", key:"team"});
+    });
+    return out;
+  }
+  function mtInvited(p, s){ return mtRoster(p).filter(function(r){ return s[6].indexOf(r.key) >= 0; }).map(function(r){ return r.name; }); }
+  function mtHits(s, iso){
+    var r = s[3], w = dow(iso);
+    if(r.first != null) return w === r.first && +iso.slice(8,10) <= 7;
+    if(r.w.indexOf(w) < 0) return false;
+    if(r.every === 2) return Math.floor(daysBetween(r.anchor, iso) / 7) % 2 === 0;
+    return true;
+  }
+  function mtList(p, from, to){          // occurrences in [from, to], plus ad-hoc meetings
+    var out = [], d = from, data = mtOf(p);
+    while(d <= to){
+      MT_SERIES.forEach(function(s){ if(mtHits(s, d)) out.push(mtOcc(p, s[0]+"@"+d)); });
+      d = shiftDate(d, 1);
+    }
+    Object.keys(data.occ).forEach(function(k){ var o = data.occ[k]; if(o.adhoc && o.date >= from && o.date <= to) out.push(mtOcc(p, k)); });
+    return out.sort(function(a,b){ return (a.date+a.start).localeCompare(b.date+b.start); });
+  }
+  function mtPast(o){ return o.date < TODAY || (o.date === TODAY && o.end <= nowHM()); }
+  function mtOcc(p, id){
+    var data = mtOf(p), st = data.occ[id];
+    var parts = id.split("@"), s = MT_SERIES.filter(function(x){ return x[0] === parts[0]; })[0];
+    var base;
+    if(s) base = { id:id, series:s[0], title:s[1], trk:s[2], date:parts[1], start:s[4], end:hm(s[4], s[5]), invited:mtInvited(p, s), rule:s[3] };
+    else base = { id:id, series:null, title:st.title, trk:"pgm", date:st.date, start:st.start, end:st.end, invited:st.invited || [] };
+    if(!st){
+      var h = hash(p.id+id), past = mtPast(base);
+      st = { agenda: s[7].map(function(t){ return {t:t, done:past}; }), att: past ? base.invited.filter(function(n, i){ return ((h >>> i) & 3) !== 0; }) : [], notes: past ? MT_NOTES[s[0]] : "", posted: past ? {at: base.date+" "+base.end} : null, actions:[] };
+      if(past){
+        var n = 1 + h % 3;
+        for(var i=0;i<n;i++){
+          var due = shiftDate(base.date, 5 + ((h >>> (i*3)) % 8));
+          st.actions.push({ id:"a"+(data.seq++), t: MT_ACTIONS[hash(p.id+id+"a"+i) % MT_ACTIONS.length], who: base.invited[(h >>> (i*2)) % base.invited.length], due: due, done: due < TODAY && hash(id+"d"+i) % 5 !== 0 });
+        }
+      }
+      data.occ[id] = st;
+    }
+    base.state = st; return base;
+  }
+  function mtOpenActions(p){
+    var n = 0, data = mtOf(p);
+    Object.keys(data.occ).forEach(function(k){ (data.occ[k].actions || []).forEach(function(a){ if(!a.done) n++; }); });
+    return n;
+  }
+  function mtRange(){
+    var f = mtUI.focus || TODAY;
+    if(mtUI.view === "week"){ var m = mondayOf(f); return {from:m, to:shiftDate(m, 4)}; }
+    var first = f.slice(0,8)+"01", gridFrom = mondayOf(first);
+    var nm = new Date(first+"T00:00:00Z"); nm.setUTCMonth(nm.getUTCMonth()+1);
+    var last = shiftDate(nm.toISOString().slice(0,10), -1), gridTo = shiftDate(mondayOf(last), 6);
+    return {from:gridFrom, to:gridTo, first:first, last:last};
+  }
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DOWS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  function mtCalHTML(p){
+    var r = mtRange(), occ = mtList(p, r.from, r.to), label;
+    if(mtUI.view === "week") label = shortDate(r.from)+" – "+shortDate(r.to)+" "+r.to.slice(0,4);
+    else label = MONTHS[+r.first.slice(5,7)-1]+" "+r.first.slice(0,4);
+    var ev = function(o, cls, style){ return '<button type="button" class="mt-ev '+cls+(o.id===mtUI.sel?' sel':'')+(mtPast(o)?' past':'')+'" data-mt="'+esc(o.id)+'" style="--tc:var(--tk-'+o.trk+');'+(style||'')+'"><b>'+esc(o.title)+'</b><span>'+fmtT(o.start)+'</span>'+(o.state.posted?'<i class="mt-ok" title="Minutes posted">'+CHECK+'</i>':'')+'</button>'; };
+    var body;
+    if(mtUI.view === "week"){
+      var H0 = 8, H1 = 18, PX = 46, hours = "";
+      for(var h=H0; h<H1; h++) hours += '<div class="mt-hr" style="top:'+((h-H0)*PX)+'px"><span>'+fmtT(("0"+h).slice(-2)+":00")+'</span></div>';
+      var cols = [0,1,2,3,4].map(function(i){
+        var d = shiftDate(r.from, i), mine = occ.filter(function(o){ return o.date === d; });
+        var items = mine.map(function(o){
+          var a = o.start.split(":"), b = o.end.split(":"), top = ((+a[0]-H0)*60 + (+a[1]))/60*PX, ht = (((+b[0])*60+(+b[1])) - ((+a[0])*60+(+a[1])))/60*PX;
+          return ev(o, "blk"+(ht < 40 ? " short" : ""), 'top:'+top+'px;height:'+Math.max(22, ht-2)+'px');
+        }).join("");
+        var now = d === TODAY ? (function(){ var t = nowHM().split(":"), y = ((+t[0]-H0)*60 + (+t[1]))/60*PX; return (y >= 0 && y <= (H1-H0)*PX) ? '<div class="mt-now" style="top:'+y+'px"></div>' : ''; })() : '';
+        return '<div class="mt-day'+(d===TODAY?' today':'')+'"><div class="mt-dh"><span>'+DOWS[i]+'</span><b>'+(+d.slice(8,10))+'</b></div><div class="mt-dcol" style="height:'+((H1-H0)*PX)+'px">'+items+now+'</div></div>';
+      }).join("");
+      body = '<div class="mt-week"><div class="mt-gut"><div class="mt-dh"></div><div class="mt-hrs" style="height:'+((H1-H0)*PX)+'px">'+hours+'</div></div>'+cols+'</div>';
+    } else {
+      var cells = "", d = r.from;
+      while(d <= r.to){
+        var mine = occ.filter(function(o){ return o.date === d; }), inM = d >= r.first && d <= r.last, we = dow(d) === 0 || dow(d) === 6;
+        cells += '<div class="mt-mc'+(inM?'':' out')+(we?' we':'')+(d===TODAY?' today':'')+'"><span class="dn">'+(+d.slice(8,10))+'</span>'+
+          mine.slice(0,3).map(function(o){ return ev(o, "chip"); }).join("")+(mine.length > 3 ? '<button type="button" class="mt-more" data-mtday="'+d+'">+'+(mine.length-3)+' more</button>' : '')+'</div>';
+        d = shiftDate(d, 1);
+      }
+      body = '<div class="mt-month"><div class="mt-mh">'+DOWS.map(function(x){ return '<span>'+x+'</span>'; }).join("")+'</div><div class="mt-mg">'+cells+'</div></div>';
+    }
+    var ol = mtOf(p).outlook;
+    var olBtn = ol.on ? '<button type="button" class="mt-sync on" id="mtSync" data-tip="Outlook calendar|Shows invites that mention '+esc(p.id)+' or come from its series. Click to sync now."><svg viewBox="0 0 16 16"><path d="M8 2.5a5.5 5.5 0 015.2 3.7l-1 .3A4.5 4.5 0 004 6.3l1.4 1.4H1.5V3.8l1.8 1.8A5.5 5.5 0 018 2.5zm6.5 5.8v3.9l-1.8-1.8A5.5 5.5 0 012.8 9.8l1-.3A4.5 4.5 0 0012 9.7l-1.4-1.4h3.9z"/></svg>Outlook synced <span>'+(ol.at ? 'just now' : '5 min ago')+'</span></button>'
+                    : '<button type="button" class="btn sec mt-sync" id="mtSync">Sync with Outlook</button>';
+    return '<div class="mt-cal">'+
+      '<div class="mt-bar"><div class="seg" role="group" aria-label="Calendar view"><button type="button" data-mtview="week" aria-pressed="'+(mtUI.view==="week")+'">Week</button><button type="button" data-mtview="month" aria-pressed="'+(mtUI.view==="month")+'">Month</button></div>'+
+        '<div class="mt-nav"><button type="button" class="ic" data-mtstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16"><path d="M10.5 3.5L6 8l4.5 4.5-.7.7L4.6 8l5.2-5.2z"/></svg></button><button type="button" class="ic" data-mtstep="1" aria-label="Next"><svg viewBox="0 0 16 16"><path d="M5.5 3.5L10 8l-4.5 4.5.7.7L11.4 8 6.2 2.8z"/></svg></button><button type="button" class="mt-today" data-mttoday>Today</button><b>'+label+'</b></div>'+
+        '<div class="mt-right">'+olBtn+'<button type="button" class="btn pri mt-new" id="mtNew">New meeting</button></div></div>'+
+      body+'</div>';
+  }
+  function mtPeopleChips(p, o){
+    var roster = mtRoster(p), st = o.state, names = roster.map(function(r){ return r.name; });
+    (st.att || []).concat(o.invited).forEach(function(n){ if(names.indexOf(n) < 0){ names.push(n); roster.push({name:n, role:"Guest"}); } });
+    return roster.map(function(r){
+      var on = st.att.indexOf(r.name) >= 0, inv = o.invited.indexOf(r.name) >= 0;
+      return '<button type="button" class="mt-person'+(on?' on':'')+'" data-mtatt="'+esc(r.name)+'" aria-pressed="'+on+'"><span class="av">'+esc(initials(r.name))+'</span><span class="nm">'+esc(r.name)+'<em>'+esc(r.role)+(inv?'':' · not invited')+'</em></span><i class="tick">'+CHECK+'</i></button>';
+    }).join("");
+  }
+  function mtDetailHTML(p){
+    if(!mtUI.sel) return '<div class="mt-empty">Select a meeting on the calendar to see its agenda, attendees, minutes and actions.</div>';
+    var o = mtOcc(p, mtUI.sel), st = o.state, past = mtPast(o);
+    var siblings = o.series ? (function(){ var prev = null, next = null, d = shiftDate(o.date, -1), s = MT_SERIES.filter(function(x){ return x[0] === o.series; })[0];
+      for(var i=0;i<70 && !prev;i++){ if(mtHits(s, d)) prev = d; d = shiftDate(d, -1); }
+      d = shiftDate(o.date, 1); for(var j=0;j<70 && !next;j++){ if(mtHits(s, d)) next = d; d = shiftDate(d, 1); }
+      return {prev:prev, next:next}; })() : {};
+    var rule = o.rule ? (o.rule.first != null ? "Monthly, first Friday" : (o.rule.every === 2 ? "Every other " : "Weekly on ") + ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][o.rule.w[0]]) : "One-off";
+    // open actions carried from earlier meetings in the series
+    var carried = [];
+    if(o.series){ var data = mtOf(p); Object.keys(data.occ).forEach(function(k){ var sp = k.split("@"); if(sp[0] === o.series && sp[1] < o.date) (data.occ[k].actions||[]).forEach(function(a){ if(!a.done) carried.push({a:a, from:sp[1], occ:k}); }); }); }
+    var actRow = function(a, occ, from){
+      return '<div class="mt-act'+(a.done?' done':'')+'" data-mtocc="'+esc(occ)+'" data-mtact="'+a.id+'">'+
+        '<button type="button" class="ck" data-mtackck aria-label="Mark done">'+CHECK+'</button>'+
+        '<input class="mt-at" data-mtat value="'+esc(a.t)+'" placeholder="What needs to happen">'+
+        (from ? '<span class="mt-from">from '+shortDate(from)+'</span>' : '<span></span>')+
+        '<button type="button" class="own'+(a.who?'':' none')+'" data-mtwho>'+(a.who ? '<span class="av">'+esc(initials(a.who))+'</span><span class="on">'+esc(a.who)+'</span>' : '<span class="av">+</span><span class="on">Assign</span>')+'</button>'+
+        '<input type="date" class="mt-due'+(!a.done && a.due && a.due < TODAY ? ' late' : '')+'" data-mtdue value="'+(a.due||"")+'">'+
+        '<button type="button" class="mt-x" data-mtdel aria-label="Delete action"><svg viewBox="0 0 16 16"><path d="M12 3.3L11.3 2.6 8 5.9 4.7 2.6 4 3.3 7.3 6.6 4 9.9l.7.7L8 7.3l3.3 3.3.7-.7-3.3-3.3z"/></svg></button></div>';
+    };
+    var openN = st.actions.filter(function(a){ return !a.done; }).length;
+    return '<div class="mt-det" style="--tc:var(--tk-'+o.trk+')">'+
+      '<div class="mt-dhead"><i class="bar"></i><div class="t"><h3>'+esc(o.title)+'</h3>'+
+        '<div class="meta"><span>'+["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dow(o.date)]+', '+fmtDate(o.date)+'</span><span>'+fmtT(o.start)+' – '+fmtT(o.end)+'</span><span>'+rule+'</span><span class="src">'+(o.series?'From Outlook':'Created in Liftoff')+'</span></div></div>'+
+        '<div class="mt-dnav">'+(siblings.prev?'<button type="button" class="tp-link" data-mtgo="'+o.series+'@'+siblings.prev+'">← '+shortDate(siblings.prev)+'</button>':'')+(siblings.next?'<button type="button" class="tp-link" data-mtgo="'+o.series+'@'+siblings.next+'">'+shortDate(siblings.next)+' →</button>':'')+
+        '<button type="button" class="btn sec" style="height:32px" onclick="return false">Join call</button></div></div>'+
+      '<div class="mt-grid">'+
+        '<div class="mt-col">'+
+          '<div class="mt-card"><div class="mt-ch"><b>Agenda</b><span class="n">'+st.agenda.filter(function(x){return x.done;}).length+' / '+st.agenda.length+' covered</span></div>'+
+            '<div class="mt-agenda">'+st.agenda.map(function(a, i){ return '<div class="mt-ag'+(a.done?' done':'')+'"><button type="button" class="ck" data-mtag="'+i+'">'+CHECK+'</button><input data-mtagt="'+i+'" value="'+esc(a.t)+'"><button type="button" class="mt-x" data-mtagdel="'+i+'" aria-label="Remove"><svg viewBox="0 0 16 16"><path d="M12 3.3L11.3 2.6 8 5.9 4.7 2.6 4 3.3 7.3 6.6 4 9.9l.7.7L8 7.3l3.3 3.3.7-.7-3.3-3.3z"/></svg></button></div>'; }).join("")+
+            '<input class="mt-add" id="mtAgAdd" placeholder="+ Add agenda item and press Enter"></div></div>'+
+          '<div class="mt-card"><div class="mt-ch"><b>Minutes</b>'+(st.posted ? '<span class="mt-posted">'+CHECK+'Posted '+shortDate(st.posted.at.slice(0,10))+' · sent to '+st.att.length+' attendee'+(st.att.length===1?'':'s')+'</span>' : '<span class="n">Draft</span>')+'</div>'+
+            (st.posted && !mtUI.editing ? '<div class="mt-min">'+esc(st.notes).replace(/\n/g,"<br>")+'</div><div class="mt-mf"><button type="button" class="tp-link" id="mtEdit">Edit minutes</button></div>'
+              : '<textarea class="mt-notes" id="mtNotes" placeholder="Decisions, discussion, anything people who missed it need to know">'+esc(st.notes)+'</textarea>'+
+                '<div class="mt-mf"><span class="tp-note">'+(past ? 'Posting emails the minutes and open actions to attendees' : 'You can take notes now and post after the call')+'</span><button type="button" class="btn pri" id="mtPost">'+(st.posted?'Update minutes':'Post minutes')+'</button></div>')+
+          '</div>'+
+        '</div>'+
+        '<div class="mt-col">'+
+          '<div class="mt-card"><div class="mt-ch"><b>Attendees</b><span class="n">'+st.att.length+' of '+o.invited.length+' invited attended</span><button type="button" class="tp-link" id="mtAllAtt" style="margin-left:auto">'+(st.att.length ? 'Clear' : 'All invited')+'</button></div>'+
+            '<div class="mt-people">'+mtPeopleChips(p, o)+'</div></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="mt-card"><div class="mt-ch"><b>Action items</b><span class="n">'+openN+' open</span></div>'+
+        '<div class="mt-acts">'+st.actions.map(function(a){ return actRow(a, o.id, null); }).join("")+
+        '<input class="mt-add" id="mtActAdd" placeholder="+ Add an action and press Enter"></div>'+
+        (carried.length ? '<div class="mt-carry"><div class="mt-ch sub"><b>Still open from earlier meetings in this series</b><span class="n">'+carried.length+'</span></div>'+carried.map(function(c){ return actRow(c.a, c.occ, c.from); }).join("")+'</div>' : '')+
+      '</div>'+
+    '</div>';
+  }
+  function meetingsHTML(p){
+    if(mtUI.pid !== p.id){ mtUI.pid = p.id; mtUI.focus = null; mtUI.sel = null; mtUI.editing = false; }
+    var data = mtOf(p); if(!data.warm){ mtList(p, shiftDate(TODAY, -42), TODAY); data.warm = true; mtSave(p); }
+    return '<div id="mtRoot">'+mtCalHTML(p)+'<div id="mtDet">'+mtDetailHTML(p)+'</div></div>'; }
+  function mtDefaultSel(p){
+    var r = mtRange(), occ = mtList(p, r.from, r.to);
+    var pastOnes = occ.filter(mtPast), next = occ.filter(function(o){ return !mtPast(o); })[0];
+    return (pastOnes.length ? pastOnes[pastOnes.length-1] : next || occ[0] || {}).id || null;
+  }
+  function mtRender(p, onlyDetail){
+    var root = $("mtRoot"); if(!root) return;
+    var y = $("wsMain").scrollTop;
+    if(onlyDetail) $("mtDet").innerHTML = mtDetailHTML(p);
+    else root.outerHTML = meetingsHTML(p);
+    $("wsMain").scrollTop = y;
+    wireMeetings(p);
+    var nb = document.querySelector('[data-tab="meetings"] .n'); if(nb) nb.textContent = mtOpenActions(p) || "";
+  }
+  function personPop(p, anchor, cur, cb){
+    var roster = mtRoster(p), seen = {}; roster.forEach(function(r){ seen[r.name] = 1; });
+    var dir = []; Object.keys(POOL).forEach(function(k){ POOL[k].forEach(function(n){ if(!seen[n]){ seen[n] = 1; dir.push({name:n, role:""}); } }); });
+    var opt = function(x){ return '<button type="button" class="tp-person'+(x.name===cur?' sel':'')+'" data-name="'+esc(x.name)+'"><span class="av">'+esc(initials(x.name))+'</span><span>'+esc(x.name)+'</span><em>'+esc(x.role)+'</em></button>'; };
+    var el = tlPopOpen(anchor, '<input type="text" class="tp-search" placeholder="Search or type a name" autocomplete="off">'+
+      '<div class="tp-list"><div class="tp-grp">On this project</div>'+roster.map(opt).join("")+'<div class="tp-grp">Directory</div>'+dir.map(opt).join("")+'</div>'+
+      '<div class="tp-f"><button type="button" class="tp-link" data-clear>Unassign</button></div>');
+    var q = el.querySelector(".tp-search"); q.focus();
+    var set = function(n){ tlPopClose(); cb(n); };
+    q.addEventListener("input", function(){ var v = this.value.toLowerCase(); el.querySelectorAll(".tp-person").forEach(function(b){ b.style.display = b.dataset.name.toLowerCase().indexOf(v) >= 0 ? "" : "none"; }); });
+    q.addEventListener("keydown", function(e){ if(e.key === "Enter" && this.value.trim()){ var vis = [].filter.call(el.querySelectorAll(".tp-person"), function(b){ return b.style.display !== "none"; }); set(vis.length === 1 ? vis[0].dataset.name : this.value.trim()); } });
+    el.querySelectorAll(".tp-person").forEach(function(b){ b.addEventListener("click", function(){ set(this.dataset.name); }); });
+    el.querySelector("[data-clear]").addEventListener("click", function(){ set(""); });
+  }
+  function wireMeetings(p){
+    var root = $("mtRoot"); if(!root) return;
+    var data = mtOf(p);
+    if(!mtUI.sel){ mtUI.sel = mtDefaultSel(p); if(mtUI.sel){ mtRender(p); return; } }
+    root.querySelectorAll("[data-mtview]").forEach(function(b){ b.onclick = function(){ mtUI.view = this.dataset.mtview; mtRender(p); }; });
+    root.querySelectorAll("[data-mtstep]").forEach(function(b){ b.onclick = function(){
+      var f = mtUI.focus || TODAY, s = +this.dataset.mtstep;
+      if(mtUI.view === "week") mtUI.focus = shiftDate(f, 7*s);
+      else { var d = new Date(f.slice(0,8)+"01T00:00:00Z"); d.setUTCMonth(d.getUTCMonth()+s); mtUI.focus = d.toISOString().slice(0,10); }
+      mtRender(p);
+    }; });
+    var td = root.querySelector("[data-mttoday]"); if(td) td.onclick = function(){ mtUI.focus = null; mtRender(p); };
+    root.querySelectorAll("[data-mtday]").forEach(function(b){ b.onclick = function(){ mtUI.view = "week"; mtUI.focus = this.dataset.mtday; mtRender(p); }; });
+    root.querySelectorAll("[data-mt]").forEach(function(b){ b.onclick = function(){ mtUI.sel = this.dataset.mt; mtUI.editing = false; mtRender(p); var d = $("mtDet"); if(d) d.scrollIntoView({block:"start", behavior:"smooth"}); }; });
+    var sy = $("mtSync"); if(sy) sy.onclick = function(){ data.outlook.on = true; data.outlook.at = Date.now(); mtSave(p); mtRender(p); toast("Synced with Outlook. "+mtList(p, mtRange().from, mtRange().to).length+" project meetings in view."); };
+    var nw = $("mtNew"); if(nw) nw.onclick = function(){
+      var d = mtUI.view === "week" ? (function(){ var r = mtRange(); return TODAY >= r.from && TODAY <= r.to ? TODAY : r.from; })() : TODAY;
+      var id = "x"+(data.seq++)+"@"+d;
+      data.occ[id] = { adhoc:true, title:"New meeting", date:d, start:"15:30", end:"16:00", invited: mtRoster(p).slice(0,4).map(function(r){ return r.name; }), agenda:[], att:[], notes:"", posted:null, actions:[] };
+      mtSave(p); mtUI.sel = id; mtRender(p); toast("Meeting created. It goes out as an Outlook invite once sync is on.");
+    };
+    wireDesign(root);
+    var o = mtUI.sel ? mtOcc(p, mtUI.sel) : null; if(!o) return;
+    var st = o.state, det = $("mtDet");
+    var save = function(full){ mtSave(p); mtRender(p, !full); };
+    det.querySelectorAll("[data-mtgo]").forEach(function(b){ b.onclick = function(){ mtUI.sel = this.dataset.mtgo; mtUI.focus = this.dataset.mtgo.split("@")[1]; mtUI.editing = false; mtRender(p); }; });
+    det.querySelectorAll("[data-mtag]").forEach(function(b){ b.onclick = function(){ var a = st.agenda[+this.dataset.mtag]; a.done = !a.done; save(); }; });
+    det.querySelectorAll("[data-mtagt]").forEach(function(i){ i.onchange = function(){ st.agenda[+this.dataset.mtagt].t = this.value; mtSave(p); }; });
+    det.querySelectorAll("[data-mtagdel]").forEach(function(b){ b.onclick = function(){ st.agenda.splice(+this.dataset.mtagdel, 1); save(); }; });
+    var aa = $("mtAgAdd"); if(aa) aa.onkeydown = function(e){ if(e.key === "Enter" && this.value.trim()){ st.agenda.push({t:this.value.trim(), done:false}); save(); var n = $("mtAgAdd"); if(n) n.focus(); } };
+    det.querySelectorAll("[data-mtatt]").forEach(function(b){ b.onclick = function(){ var n = this.dataset.mtatt, i = st.att.indexOf(n); if(i >= 0) st.att.splice(i, 1); else st.att.push(n); save(true); }; });
+    var all = $("mtAllAtt"); if(all) all.onclick = function(){ st.att = st.att.length ? [] : o.invited.slice(); save(true); };
+    var ed = $("mtEdit"); if(ed) ed.onclick = function(){ mtUI.editing = true; mtRender(p, true); var t = $("mtNotes"); if(t) t.focus(); };
+    var nt = $("mtNotes"); if(nt) nt.oninput = function(){ st.notes = this.value; mtSave(p); };
+    var po = $("mtPost"); if(po) po.onclick = function(){
+      st.notes = $("mtNotes").value; st.posted = {at: TODAY+" "+nowHM()}; mtUI.editing = false; save(true);
+      toast("Minutes posted and emailed to "+st.att.length+" attendee"+(st.att.length===1?"":"s")+" with "+st.actions.filter(function(a){return !a.done;}).length+" open actions");
+    };
+    var ad = $("mtActAdd"); if(ad) ad.onkeydown = function(e){ if(e.key === "Enter" && this.value.trim()){ st.actions.push({id:"a"+(data.seq++), t:this.value.trim(), who:"", due:shiftDate(o.date, 7), done:false}); save(true); var n = $("mtActAdd"); if(n) n.focus(); } };
+    det.querySelectorAll("[data-mtact]").forEach(function(row){
+      var occ = data.occ[row.dataset.mtocc], a = (occ.actions || []).filter(function(x){ return x.id === row.dataset.mtact; })[0]; if(!a) return;
+      row.querySelector("[data-mtackck]").onclick = function(){ a.done = !a.done; save(true); };
+      row.querySelector("[data-mtat]").onchange = function(){ a.t = this.value; mtSave(p); };
+      row.querySelector("[data-mtdue]").onchange = function(){ a.due = this.value; save(true); };
+      row.querySelector("[data-mtdel]").onclick = function(){ occ.actions = occ.actions.filter(function(x){ return x !== a; }); save(true); };
+      row.querySelector("[data-mtwho]").onclick = function(e){ e.stopPropagation(); personPop(p, this, a.who, function(n){ a.who = n; save(true); }); };
+    });
+  }
   function wireTimeline(p){
     var root = $("tlRoot"); if(!root) return;
     var t = tlOf(p);
@@ -2740,7 +3132,7 @@
     }, 0);
     var mu = muralOf(p);
     var designClosed = ["srb","api"].every(function(k){ return reviewDoc(p, recForCounts, k).state === "merged"; });
-    var counts = {design:pendingReviews, mural:mu.cards.length, tickets:kbTickets(p).length, timeline:(function(){ var st = tlStats(p); return st.done+'/'+st.total; })(), docs:4};
+    var counts = {design:pendingReviews, mural:mu.cards.length, tickets:kbTickets(p).length, timeline:(function(){ var st = tlStats(p); return st.done+'/'+st.total; })(), meetings:(function(){ meetingsHTML(p); return mtOpenActions(p); })(), docs:4};
     var check = '<span class="done" title="Both design documents are merged"><svg viewBox="0 0 16 16"><path d="M6.5 11.2L2.8 7.5l.7-.7 3 3 6-6 .7.7z"/></svg></span>';
     $("wsNav").innerHTML = '<div class="grp lbl">Project</div>'+NAV.map(function(n){
       var badge = (n.key === "design" && designClosed) ? check : (counts[n.key] ? '<span class="n">'+counts[n.key]+'</span>' : '');
@@ -2800,6 +3192,10 @@
         '<div class="sec-head"><h2>Timeline</h2><span class="sub">The feature launch process from COMP REQ to PROD release. Week 0 is COMP REQ acceptance.</span></div>'+
         timelineHTML(p)+
       '</section>'+
+      '<section class="ws-sec" data-sec="meetings">'+
+        '<div class="sec-head"><h2>Meetings</h2><span class="sub">Every project call from Outlook in one place. Pick one to see its agenda, who attended, minutes and actions.</span></div>'+
+        meetingsHTML(p)+
+      '</section>'+
       '<section class="ws-sec" data-sec="docs">'+
         '<div class="sec-head"><h2>Documents and decisions</h2><span class="sub">Linked, not copied</span></div>'+
         docsHTML(p)+
@@ -2808,6 +3204,7 @@
     wireDesign($("wsMain"));
     wireMural(p);
     wireBoard(p);
+    wireMeetings(p);
     wireTimeline(p);
     $("wsMain").querySelectorAll("[data-opentab]").forEach(function(b){ b.addEventListener("click", function(){ setTab(this.dataset.opentab); }); });
     setTab(state.tab, true);
