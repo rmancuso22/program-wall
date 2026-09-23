@@ -1549,7 +1549,7 @@
   var NAV = [
     {key:"overview", label:"Overview",  icon:'<path d="M2 2h5v5H2V2zm7 0h5v5H9V2zM2 9h5v5H2V9zm7 0h5v5H9V9z"/>'},
     {key:"design",   label:"Design",    icon:'<path d="M12.7 2.3l1 1c.4.4.4 1 0 1.4L6 12.4 2 13.5l1.1-4L10.8 2c.4-.4 1-.4 1.4 0l.5.3zM4 10.3l-.5 2 2-.5 6.3-6.3-1.5-1.5L4 10.3z"/>'},
-    {key:"mural",    label:"Mural", icon:'<path d="M2 3h12v10H2V3zm1 1v8h10V4H3zm1.5 1.5h3v2h-3v-2zm5 0h3v2h-3v-2zm-5 4h3v2h-3v-2zm5 0h3v2h-3v-2z"/>'},
+    {key:"mural",    label:"Delivery Map", icon:'<path d="M2 3h12v10H2V3zm1 1v8h10V4H3zm1.5 1.5h3v2h-3v-2zm5 0h3v2h-3v-2zm-5 4h3v2h-3v-2zm5 0h3v2h-3v-2z"/>'},
     {key:"tickets",  label:"Jira tickets", icon:'<path d="M2 3h12v1H2V3zm0 3h12v1H2V6zm0 3h12v1H2V9zm0 3h8v1H2v-1z"/>'},
     {key:"timeline", label:"Timeline",  icon:'<path d="M2 7.5h12v1H2v-1zM4 5h1v5H4V5zm4-1h1v7H8V4zm4 2h1v3h-1V6z"/>'},
     {key:"meetings", label:"Meetings", icon:'<path d="M5 1h1v2h4V1h1v2h3v11H2V3h3V1zM3 6v7h10V6H3zm0-2v1h10V4H3zm2 4h2v2H5V8zm4 0h2v2H9V8z"/>'},
@@ -2668,7 +2668,7 @@
     return '<div class="kb-card'+(c.status==="closed"?' done':'')+(kbUI.sel===c.id?' sel':'')+'" draggable="true" data-kb="'+c.id+'" style="--st:'+(KB_STRIPE[c.color]||KB_STRIPE.yellow)+'" tabindex="0">'+
       '<div class="kb-top"><span class="kb-key">'+esc(c.jira)+'</span><i class="kb-dot" style="background:'+st[1]+'" title="'+st[0]+'"></i>'+(c.status==="progress"?'<span class="kb-st">In progress</span>':'')+'</div>'+
       '<div class="kb-t">'+esc(c.title)+'</div>'+
-      '<div class="kb-foot"><span class="kb-area" title="Mural column">'+esc(m.cols[c.col] || "")+'</span>'+
+      '<div class="kb-foot"><span class="kb-area" title="Delivery Map column">'+esc(m.cols[c.col] || "")+'</span>'+
         (bl.length ? '<span class="kb-blk" title="Blocked by '+esc(bl.map(function(b){ return b.jira || b.title; }).join(", "))+'"><svg viewBox="0 0 16 16"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 1a6 6 0 014.7 9.7L4.3 3.3A6 6 0 018 2zM3.3 4.3l8.4 8.4A6 6 0 013.3 4.3z"/></svg>'+esc(bl[0].jira || "sticky")+(bl.length>1?' +'+(bl.length-1):'')+'</span>' : '')+
         (c.assignee ? '<span class="av" title="'+esc(c.assignee)+'">'+esc(initials(c.assignee))+'</span>' : '<span class="av none" title="Unassigned">?</span>')+
       '</div></div>';
@@ -2704,7 +2704,7 @@
       any = any || mine.length > 0;
       html += '<div class="kb-lane" style="--lc:'+LANE_TINTS[li % LANE_TINTS.length]+'"><i class="bar"></i><div><b>'+esc(name)+'</b>'+
         '<span class="cnt">'+mine.length+' ticket'+(mine.length===1?'':'s')+'</span>'+
-        (raw ? '<button type="button" class="kb-conv" data-kbconv="'+li+'" title="Create Jira tickets for this team\'s unconverted stickies. They land in Backlog.">+ '+raw+' from mural</button>' : '')+'</div></div>';
+        (raw ? '<button type="button" class="kb-conv" data-kbconv="'+li+'" title="Create Jira tickets for this team\'s unconverted stickies. They land in Backlog.">+ '+raw+' from Delivery Map</button>' : '')+'</div></div>';
       KB_COLS.forEach(function(col){
         var inCol = mine.filter(function(c){ return c.sprint === col[0]; });
         var cards = inCol.filter(vis).sort(function(a,b){ return a.rank - b.rank; });
@@ -2719,9 +2719,9 @@
       '<div class="kb-bar"><label class="search kb-search"><svg viewBox="0 0 16 16"><path d="M15 14.3l-4.2-4.2A5.5 5.5 0 106.5 12a5.5 5.5 0 003.6-1.3l4.2 4.2.7-.6zM2 6.5a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0z"/></svg><input type="search" id="kbQ" placeholder="Search tickets or people" value="'+esc(kbUI.q)+'"></label>'+
         '<div class="kb-teams"><span class="lbl">Teams</span>'+teams+'</div>'+
         '<button type="button" class="btn sec kb-complete" id="kbComplete" title="Unfinished work carries into the next sprint">Complete sprint '+k.sprint+'</button></div>'+
-      (all.length ? '' : '<div class="kb-empty"><b>No Jira tickets yet.</b> '+rawAll+' stickies on the mural. Convert them from the mural, or use “+ from mural” on a team row.</div>')+
+      (all.length ? '' : '<div class="kb-empty"><b>No Jira tickets yet.</b> '+rawAll+' stickies on the Delivery Map. Convert them there, or use “+ from Delivery Map” on a team row.</div>')+
       '<div class="kb-scroll"><div class="kb">'+html+'</div></div>'+
-      '<p class="mu-hint">Drag tickets between columns to plan sprints, or up and down to reorder. Dropping in another team\'s row moves the sticky to that team on the mural too. Completed means Closed in Jira.</p>'+
+      '<p class="mu-hint">Drag tickets between columns to plan sprints, or up and down to reorder. Dropping in another team\'s row moves the sticky to that team on the Delivery Map too. Completed means Closed in Jira.</p>'+
     '</div>';
   }
   function kbRender(p){
@@ -2762,10 +2762,10 @@
           '<label>Sprint<select class="ctrl" data-kbf="sprint">'+KB_COLS.map(function(s){ return '<option value="'+s[0]+'"'+(c.sprint===s[0]?' selected':'')+'>'+s[1]+'</option>'; }).join("")+'</select></label>'+
           '<label>Assignee<select class="ctrl" data-kbf="assignee"><option value="">Unassigned</option>'+people.map(function(n){ return '<option'+(n===c.assignee?' selected':'')+'>'+esc(n)+'</option>'; }).join("")+'</select></label>'+
         '</div>'+
-        '<div class="kb-meta"><span>Team <b>'+esc(m.lanes[c.lane]||"")+'</b></span><span>Mural column <b>'+esc(m.cols[c.col]||"")+'</b></span>'+
+        '<div class="kb-meta"><span>Team <b>'+esc(m.lanes[c.lane]||"")+'</b></span><span>Map column <b>'+esc(m.cols[c.col]||"")+'</b></span>'+
           (bl.length ? '<span class="kb-blk">Blocked by '+esc(bl.map(function(b){ return b.jira || b.title; }).join(", "))+'</span>' : '')+'</div>'+
       '</div>'+
-      '<div class="tp-f"><button type="button" class="tp-link" data-kbmural>Open on mural</button><span class="tp-note" style="margin-left:auto">Syncs to Jira</span></div>');
+      '<div class="tp-f"><button type="button" class="tp-link" data-kbmural>Open on Delivery Map</button><span class="tp-note" style="margin-left:auto">Syncs to Jira</span></div>');
     pop.style.width = "330px";
     pop.querySelectorAll("[data-kbst]").forEach(function(b){ b.addEventListener("click", function(){
       var s = this.dataset.kbst; tlPopClose();
@@ -2821,7 +2821,7 @@
         var parts = cell.dataset.kbcell.split(":"), c = muCard(p, drag), b = beforeCard(cell, e.clientY);
         var fromLane = c.lane, lane = +parts[0];
         kbMove(p, c, parts[1], lane, b ? b.dataset.kb : null);
-        if(fromLane !== lane) toast(c.jira+" moved to "+muralOf(p).lanes[lane]+" on the mural too");
+        if(fromLane !== lane) toast(c.jira+" moved to "+muralOf(p).lanes[lane]+" on the Delivery Map too");
       });
     });
     wireDesign(root);
@@ -3160,7 +3160,7 @@
         '<div class="tiles">'+
           '<div class="tile"><div class="k lbl">Phase</div><div class="v" style="color:'+pc(p.phase)+'">'+esc(ph.name)+'</div><div class="s">'+(p.phase+1)+' of 6</div></div>'+
           '<div class="tile"><div class="k lbl">Target</div><div class="v mono">'+esc(q.label)+'</div><div class="s">'+esc(q.sub)+'</div></div>'+
-          '<div class="tile"><div class="k lbl">Stickies on mural</div><div class="v">'+mu.cards.length+'</div><div class="s">'+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</div></div>'+
+          '<div class="tile"><div class="k lbl">Stickies on Delivery Map</div><div class="v">'+mu.cards.length+'</div><div class="s">'+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</div></div>'+
           '<div class="tile"><div class="k lbl">Open tickets</div><div class="v">'+Math.max(0, 8-(p.phase+1))+'</div><div class="s">of 8 in Jira</div></div>'+
         '</div>'+
         '<div class="two">'+
@@ -3176,16 +3176,16 @@
             '<div class="pblock"><span class="lbl">Key dates</span>'+datesHTML(p, rec)+'</div>'+
           '</div>'+
         '</div>'+
-        '<div class="sec-head"><h2>Mural</h2><span class="sub">'+mu.cards.length+' stickies across '+mu.lanes.length+' teams, '+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</span></div>'+
-        '<button type="button" class="btn sec" style="width:auto" data-opentab="mural">Open the mural<svg class="icon" viewBox="0 0 16 16"><path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z"/></svg></button>'+
+        '<div class="sec-head"><h2>Delivery Map</h2><span class="sub">'+mu.cards.length+' stickies across '+mu.lanes.length+' teams, '+mu.cards.filter(function(c){ return c.jira; }).length+' converted to Jira</span></div>'+
+        '<button type="button" class="btn sec" style="width:auto" data-opentab="mural">Open the Delivery Map<svg class="icon" viewBox="0 0 16 16"><path d="M9 3l5 5-5 5-.7-.7L12.6 8.5H2v-1h10.6L8.3 3.7z"/></svg></button>'+
       '</section>'+
       '<section class="ws-sec" data-sec="design">'+designHTML(p, rec)+'</section>'+
       '<section class="ws-sec" data-sec="mural">'+
-        '<div class="sec-head"><h2>Mural</h2><span class="sub">The project\'s working wall. A row per team, a column per work area, stickies become Jira tickets when they are ready.</span><span class="stat"></span></div>'+
+        '<div class="sec-head"><h2>Delivery Map</h2><span class="sub">The project\'s working wall. A row per team, a column per work area, stickies become Jira tickets when they are ready.</span><span class="stat"></span></div>'+
         muralHTML(p)+
       '</section>'+
       '<section class="ws-sec" data-sec="tickets">'+
-        '<div class="sec-head"><h2>Jira board</h2><span class="sub">Every ticket here started as a sticky on the mural. One row per team, planned sprint by sprint.</span></div>'+
+        '<div class="sec-head"><h2>Jira board</h2><span class="sub">Every ticket here started as a sticky on the Delivery Map. One row per team, planned sprint by sprint.</span></div>'+
         kbBoardHTML(p)+
       '</section>'+
       '<section class="ws-sec" data-sec="timeline">'+
