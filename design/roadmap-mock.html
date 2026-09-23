@@ -633,7 +633,7 @@
   .gt-inner{position:relative;min-width:max-content}
   .gt-row{display:flex;border-bottom:1px solid var(--line)}
   .gt-row:last-child{border-bottom:0}
-  .gt-lbl{width:190px;flex:0 0 190px;position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--line);padding:0 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+  .gt-lbl{width:300px;flex:0 0 300px;position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--line);padding:0 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
   button.gt-lbl{border:0;border-right:1px solid var(--line);text-align:left;color:var(--text);cursor:pointer;font:inherit;font-size:12px;font-weight:600}
   button.gt-lbl:hover{background:var(--surface-2)}
   .gt-lbl .lchev{width:12px;height:12px;fill:var(--text-3);flex:0 0 auto;margin-left:-4px;transition:transform .12s}
@@ -657,7 +657,7 @@
   .gt-lbl .n{margin-left:auto;white-space:nowrap;padding-left:6px;font-family:"Inter",sans-serif;font-variant-numeric:tabular-nums;font-size:10px;font-weight:400;color:var(--text-3)}
   .gt-area{position:relative;flex:0 0 auto}
   .gt-stages .gt-area{height:34px}
-  .gt-stage{position:absolute;top:0;bottom:0;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;padding:0 8px;overflow:hidden;white-space:nowrap}
+  .gt-stage{position:absolute;top:0;bottom:0;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;padding:0 6px;overflow:hidden;white-space:nowrap}
   .gt-stage b{font-size:11.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis}
   .gt-stage span{font-family:"Inter",sans-serif;font-variant-numeric:tabular-nums;font-size:9.5px;color:var(--text-3)}
   .gt-stage.cur{background:var(--accent-soft)}
@@ -689,6 +689,48 @@
   .glbl{position:absolute;height:18px;line-height:18px;font-size:10.5px;white-space:nowrap;color:var(--text-2);cursor:pointer}
   .glbl.na{color:var(--text-3);text-decoration:line-through}
   .glbl:hover{color:var(--text)}
+  .gt-trackhead{background:color-mix(in srgb,var(--surface-2) 60%,var(--surface))}
+  .gt-trackhead .gt-lbl{background:color-mix(in srgb,var(--surface-2) 60%,var(--surface));font-size:12.5px}
+  .gt-trackhead .gt-lbl .n{font-weight:400}
+  .gt-item{border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+  .gt-item:hover,.gt-item:hover .gt-lbl{background:var(--surface-2)}
+  .gt-item.hl .gt-lbl{background:var(--accent-soft)}
+  button.gt-il{font-weight:400;font-size:12.5px;padding:0 12px 0 34px;gap:8px;color:var(--text)}
+  .gt-il .nm{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gt-item.done .gt-il .nm,.gt-item.na .gt-il .nm{color:var(--text-3)}
+  .gt-item.na .gt-il .nm{text-decoration:line-through}
+  .gi{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line-strong);flex:0 0 auto;display:grid;place-items:center}
+  .gi.done{background:var(--ok);border-color:var(--ok)} .gi.done svg{width:9px;height:9px;fill:#fff}
+  .gi.late{border-color:var(--flag-block);background:color-mix(in srgb,var(--flag-block) 18%,transparent)}
+  .gi.na{border-style:dashed;opacity:.6}
+  .gi.rec{border-style:dotted}
+  .gdt.ok{color:var(--ok)} .gdt.late{color:var(--flag-block);font-weight:500}
+  .gt-il .gow{margin-left:0}
+  .gt-stage.narrow{padding:0;align-items:center;overflow:visible;z-index:1}
+  .gt-stage.narrow b{font-size:10px;letter-spacing:-.02em;overflow:visible}
+  .gt-axis .gt-area{height:40px}
+  .gt-mo{position:relative;height:18px;border-bottom:1px solid var(--line)}
+  .gt-mo .mo{position:absolute;top:0;bottom:0;border-left:1px solid var(--line-strong);padding:2px 0 0 6px;font-size:11px;font-weight:600;color:var(--text-2);white-space:nowrap}
+  .gt-wk{position:relative;height:22px}
+  .gt-wk .tk{position:absolute;top:0;bottom:0;border-left:1px solid var(--grid);font-size:10.5px;color:var(--text-3);padding:4px 0 0 4px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .tl-zoom button{height:28px;padding:0 10px}
+  .gt-il{gap:8px;padding:0 12px 0 30px;font-size:12.5px;font-weight:400;cursor:default}
+  .gt-il .nm{cursor:pointer}
+  .gt-il .nm:hover{text-decoration:underline}
+  button.gi{width:16px;height:16px;border-radius:50%;padding:0;cursor:pointer;background:var(--surface)}
+  button.gi:hover:not([disabled]){border-color:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
+  button.gi[disabled]{cursor:default}
+  button.gi svg{width:11px;height:11px;fill:#fff}
+  .gdt{font-size:11.5px;white-space:nowrap;flex:0 0 auto;color:var(--text-3)}
+  .gt-il .gow{cursor:default}
+  button.gdt{padding:2px 4px;margin:0 -4px;border:1px solid transparent;font:inherit;font-size:11.5px}
+  button.gdt:hover{border-color:var(--line-strong);background:var(--surface);color:var(--text)}
+  button.gdt.ok:hover{color:var(--ok)} button.gdt.late:hover{color:var(--flag-block)}
+  .gbar[data-drag]:not([data-drag=""]){cursor:grab;touch-action:none}
+  .gbar.dragging{cursor:grabbing;opacity:.85;outline:2px solid var(--accent);z-index:3}
+  .gh{position:absolute;right:-1px;top:-1px;bottom:-1px;width:8px;cursor:ew-resize;background:transparent !important;border:0 !important;margin:0 !important;padding:0 !important}
+  .gbar:hover .gh{background:rgba(0,0,0,.18) !important}
+  .gdrag-tip{position:fixed;z-index:80;background:var(--text);color:var(--ground);font-size:12px;padding:4px 8px;pointer-events:none;white-space:nowrap}
   .gt-today{position:absolute;top:0;bottom:0;width:0;border-left:2px solid var(--accent);z-index:5;pointer-events:none}
   .gt-today span{position:absolute;top:40px;left:4px;font-family:"Inter",sans-serif;font-variant-numeric:tabular-nums;font-size:9.5px;color:var(--accent);background:var(--surface);padding:0 3px;letter-spacing:.05em}
   .gt-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-2);padding:10px 12px;border-top:1px solid var(--line)}
@@ -1016,6 +1058,73 @@
   .tm-role{font-style:normal;font-size:11.5px;color:var(--text-3)}
   .ef.tm.editing .ef-in{font-size:13px;padding:5px 8px}
   @media (max-width:1080px){ .ov-row{grid-template-columns:1fr} }
+  .dia.rowdia{top:7px}
+  .dia.rowdia.ms{width:10px;height:10px;top:9px}
+  .gt-item.point .gt-lbl{font-weight:500}
+  .gk{font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line-strong);color:var(--text-2);padding:0 4px;line-height:14px;flex:0 0 auto}
+  .gk.gate{border-color:var(--text);color:var(--text)}
+  .gt-add{border-bottom:1px solid var(--line)}
+  .gt-addbtn{font-size:12px;color:var(--accent);padding:0;background:none}
+  .gt-addbtn:hover{text-decoration:underline}
+  .cl-add{display:block;width:100%;text-align:left;padding:9px 14px 9px 54px;font-size:12.5px;color:var(--accent)}
+  .cl-add:hover{background:var(--surface-2)}
+  .cl-item .nmx{cursor:pointer}
+  .cl-item .nmx:hover{text-decoration:underline}
+  .cl-item .cust{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:0 4px;margin-left:6px;flex:0 0 auto}
+  .tl-pop.tp-wide{width:380px}
+  .tp-body{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+  .tp-full{grid-column:1 / -1;display:flex;flex-direction:column;gap:6px}
+  .tl-pop .tp-lbl{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)}
+  .tl-pop input[type=text]{height:34px;padding:0 10px;border:0;border-bottom:1px solid var(--line-strong);background-color:var(--surface-2);color:var(--text);font:inherit;font-size:13.5px;text-transform:none;letter-spacing:0;font-weight:400}
+  .tl-pop input[type=text]:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .tp-help{font-size:12px;color:var(--text-3);text-transform:none;letter-spacing:0;font-weight:400;line-height:1.4}
+  .tp-own{text-align:left;font-size:12.5px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--text)}
+  .tp-tpl{font-weight:400;font-size:11.5px;color:var(--text-3);margin-left:8px}
+  .tp-save{margin-left:auto;width:auto;height:32px}
+  .tp-del{color:var(--flag-block) !important}
+  .tl-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .tl-top .fbtn .gear{width:16px;height:16px;fill:var(--text-2)}
+  .tl-mi{display:flex !important;flex-direction:column;align-items:flex-start !important;gap:2px;height:auto !important;padding:9px 14px 9px 34px !important;white-space:normal;min-width:280px}
+  .tl-mi b{font-weight:600;font-size:13px}
+  .tl-mi span{font-size:12px;color:var(--text-3);line-height:1.35}
+  .fdrop .tl-mi[aria-pressed="true"]::before{top:18px !important}
+  .fdrop-note{margin:4px 12px 8px;font-size:12px;color:var(--text-3);line-height:1.4;max-width:240px}
+  .fdrop .bub.tl-plain::before{display:none}
+  .fdrop .bub.tl-plain{color:var(--accent)}
+  .tl-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .tl-gate{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border:1px solid var(--line);background:var(--surface);font-size:13px;color:var(--text);max-width:380px}
+  .tl-gate:hover{border-color:var(--line-strong)}
+  .tl-gate .gd{width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--text-2);flex:0 0 auto}
+  .tl-gate .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .tl-gate b{font-weight:600;white-space:nowrap}
+  .tl-gate.late{border-color:color-mix(in srgb,var(--flag-block) 45%,var(--line));background:color-mix(in srgb,var(--flag-block) 7%,var(--surface))}
+  .tl-gate.late b{color:var(--flag-block)} .tl-gate.late .gd{border-color:var(--flag-block)}
+  .tl-gate.done{color:var(--ok)} .tl-gate.done .gd{background:var(--ok);border-color:var(--ok)}
+  .tl-late{font-size:12.5px;font-weight:600;color:var(--flag-block);background:color-mix(in srgb,var(--flag-block) 10%,transparent);padding:4px 9px;border-radius:999px}
+  .tl-prog{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums}
+  .tl-prog b{color:var(--text);font-weight:600}
+  .tl-prog .bar{width:90px;height:6px;background:var(--track-empty);border-radius:3px;overflow:hidden;margin-right:2px}
+  .tl-prog .bar i{display:block;height:100%;background:var(--ok)}
+  /* simple plan */
+  .sp .sp-parent{background:color-mix(in srgb,var(--surface-2) 55%,var(--surface));border-top:1px solid var(--line)}
+  .sp .sp-parent .gt-lbl{background:color-mix(in srgb,var(--surface-2) 55%,var(--surface));padding-left:10px}
+  .sp .sp-parent .sp-pn{font-weight:600;font-size:13.5px;cursor:pointer;color:var(--text)}
+  .sp .sp-parent.done .sp-pn{color:var(--text)}
+  .sp-tog{width:18px;height:18px;display:grid;place-items:center;margin-right:-4px;flex:0 0 auto}
+  .sp-tog svg{width:12px;height:12px;fill:var(--text-3);transition:transform .12s}
+  .sp-tog[aria-expanded="false"] svg{transform:rotate(-90deg)}
+  .sp-kc{font-size:11.5px;color:var(--text-3);flex:0 0 auto}
+  .sp .sp-parent .gdt{margin-left:auto;font-weight:600;color:var(--text-2)}
+  .sp .sp-parent .gdt.ok{color:var(--ok)} .sp .sp-parent .gdt.late{color:var(--flag-block)}
+  .sp .sp-parent .gi{margin-left:2px}
+  .sp-span{position:absolute;top:16px;height:4px;background:color-mix(in srgb,var(--tc) 35%,transparent);border-radius:2px}
+  .dia.sp-dia{top:10px;width:15px;height:15px;border-color:var(--tc);background:var(--surface)}
+  .dia.sp-dia.done{background:var(--tc);border-color:var(--tc)}
+  .dia.sp-dia.late{border-color:var(--flag-block)}
+  .sp .sp-child .gt-il{padding-left:52px}
+  .sp .sp-add .gt-il{padding-left:52px}
+  .sp-in{flex:1 1 auto;height:24px;border:0;border-bottom:2px solid var(--accent);background:var(--surface);color:var(--text);font:inherit;font-size:12.5px;padding:0 6px;outline:none}
+  .tl-simple .gt{margin-top:0}
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:80;
     background:var(--text);color:var(--ground);padding:10px 14px;font-size:12.5px;
@@ -2668,7 +2777,7 @@
     ["wk","Weekly tracking & exec status","pgm","rec",0,29,null]
   ].map(function(r){ return {id:r[0], name:r[1], track:r[2], type:r[3], s:r[4], e:r[5], scope:r[6]}; });
   var TL_PHASE_WEEK = [-1, 8, 16, 21, 24, 30];   // app phase index -> weeks already behind the project
-  var TL_WK = 38;
+  var TL_WK = 28;
 
   function tlKey(p){ return "cwr.tl."+p.id; }
   var TL = {};
@@ -2682,7 +2791,7 @@
       TL_ITEMS.forEach(function(it){ if(it.type !== "rec" && it.e <= pw) t.st[it.id] = "done"; });
       t.st.chg = "na";                        // conditional: only when a change request is raised
     }
-    t.dt = t.dt || {}; t.dn = t.dn || {}; t.own = t.own || {};
+    t.dt = t.dt || {}; t.dn = t.dn || {}; t.own = t.own || {}; t.type = t.type || {}; t.nm = t.nm || {}; t.trk = t.trk || {}; t.custom = t.custom || []; t.seq = t.seq || 1;
     TL[p.id] = t;
     // done items without a recorded completion date get one near their planned end (demo seed)
     TL_ITEMS.forEach(function(it){
@@ -2693,11 +2802,27 @@
     });
     return t;
   }
-  var TLUI = {hideNA:false, shut:{}};
-  try{ var _u = JSON.parse(localStorage.getItem("cwr.tlui") || "null"); if(_u){ TLUI.hideNA = !!_u.hideNA; TLUI.shut = _u.shut || {}; } }catch(e){}
+  var TLUI = {hideNA:false, shut:{}, zoom:"fit"};
+  try{ var _u = JSON.parse(localStorage.getItem("cwr.tlui") || "null"); if(_u){ TLUI.hideNA = !!_u.hideNA; TLUI.shut = _u.shut || {}; TLUI.zoom = _u.zoom || "fit"; } }catch(e){}
   function tlUISave(){ try{ localStorage.setItem("cwr.tlui", JSON.stringify(TLUI)); }catch(e){} }
   function tlHidden(p, it){ if(!TLUI.hideNA) return false; var s = tlState(p, it); return s === "na" || s === "oos"; }
-  function tlSave(p){ try{ localStorage.setItem(tlKey(p), JSON.stringify(TL[p.id])); }catch(e){} }
+  var TL_TYPES = [["task","Task"],["ms","Milestone"],["gate","Gate"]];
+  function tlItems(p){
+    var t = tlOf(p);
+    if((t.mode || "simple") === "simple") return tlSimpleItems(p);
+    var out = TL_ITEMS.map(function(it){
+      var c = {id:it.id, name:t.nm[it.id] || it.name, track:t.trk[it.id] || it.track, type:t.type[it.id] || it.type, s:it.s, e:it.e, scope:it.scope, tpl:it};
+      if(c.type !== it.type && c.type !== "task") c.s = c.e;     // a task turned milestone keeps its end as the due date
+      return c;
+    });
+    t.custom.forEach(function(c){
+      var o = t.dt[c.id] || {}, e = o.e || TODAY, sd = c.type === "task" ? (o.s || e) : e;
+      out.push({id:c.id, name:c.name, track:c.track, type:c.type, s:tlWk(p, sd), e:tlWk(p, e), scope:null, custom:true});
+    });
+    return out;
+  }
+  function tlItem(id){ var p = proj(state.open); return (p ? tlItems(p) : TL_ITEMS).filter(function(i){ return i.id === id; })[0]; }
+  function tlSave(p){ tlSyncParents(p); try{ localStorage.setItem(tlKey(p), JSON.stringify(TL[p.id])); }catch(e){} }
   function tlState(p, it){
     var t = tlOf(p);
     if(it.type === "rec") return "rec";
@@ -2726,38 +2851,47 @@
   function tlStageOf(it){ var w = it.type === "task" || it.type === "rec" ? it.s : it.e; for(var i=TL_STAGES.length-1;i>=0;i--) if(w >= TL_STAGES[i][2]) return i; return 0; }
   function tlStats(p){
     var done = 0, na = 0, open = 0, late = 0;
-    TL_ITEMS.forEach(function(it){ var s = tlState(p, it); if(s==="done") done++; else if(s==="na"||s==="oos") na++; else if(s==="open"){ open++; if(tlLate(p, it)) late++; } });
+    tlItems(p).forEach(function(it){ var s = tlState(p, it); if(s==="done") done++; else if(s==="na"||s==="oos") na++; else if(s==="open"){ open++; if(tlLate(p, it)) late++; } });
     return {done:done, na:na, open:open, late:late, total:done+open};
   }
   function tlNextGate(p){
-    return TL_ITEMS.filter(function(it){ return it.type === "gate" && tlState(p, it) === "open"; }).sort(function(a,b){ return a.e - b.e; })[0];
+    return tlItems(p).filter(function(it){ return it.type === "gate" && tlState(p, it) === "open"; }).sort(function(a,b){ return a.e - b.e; })[0];
   }
   function tlCurStage(p){
-    var g = TL_ITEMS.filter(function(it){ return tlState(p, it) === "open" && it.type !== "rec"; }).sort(function(a,b){ return a.s - b.s; })[0];
+    var g = tlItems(p).filter(function(it){ return tlState(p, it) === "open" && it.type !== "rec"; }).sort(function(a,b){ return a.s - b.s; })[0];
     return g ? tlStageOf(g) : TL_STAGES.length - 1;
   }
   var CHECK = '<svg viewBox="0 0 16 16"><path d="M6.5 11.2L2.8 7.5l.7-.7 3 3 6-6 .7.7z"/></svg>';
 
   function ganttHTML(p){
+    var avail = (($("wsMain") && $("wsMain").clientWidth) || 1240) - 48 - 300 - 2;
+    TL_WK = TLUI.zoom === "wide" ? 64 : TLUI.zoom === "week" ? 42 : Math.max(22, Math.floor(avail / 33));
     var x = function(w){ return (w - (-3)) * TL_WK; };
     var W = x(29) + TL_WK;
     var cur = tlCurStage(p);
-    TL_ITEMS.forEach(function(it){
+    var ITEMS = tlItems(p);
+    ITEMS.forEach(function(it){
       it._ws = Math.max(-3, tlWk(p, tlS(p, it))); it._we = Math.min(29, tlWk(p, tlE(p, it)));
       if(it._we < it._ws) it._we = it._ws;
       var dn = tlOf(p).dn[it.id]; it._wd = (tlState(p,it)==="done" && dn) ? Math.max(-3, Math.min(29, tlWk(p, dn))) : null;
     });
     var tipTail = function(it){ var dn = tlOf(p).dn[it.id], o = tlOwner(p, it); return (tlState(p,it)==="done" && dn ? ' · Done '+shortDate(dn) : ' · '+tlLabel(p,it)) + (o ? ' · '+o : ''); };
     var stages = TL_STAGES.map(function(s, i){
-      return '<div class="gt-stage'+(i===cur?' cur':i<cur?' past':'')+'" style="left:'+x(s[2])+'px;width:'+(x(s[3])-x(s[2]))+'px" title="'+esc(s[0])+' · '+s[1]+'"><b>'+esc(s[0])+'</b><span>'+s[1]+'</span></div>';
+      var sw = x(s[3])-x(s[2]), narrow = sw < s[0].length*6.4 + 14;
+      return '<div class="gt-stage'+(i===cur?' cur':i<cur?' past':'')+(narrow?' narrow':'')+'" style="left:'+x(s[2])+'px;width:'+sw+'px" data-tip="'+esc(s[0])+'|'+s[1]+' · '+shortDate(tlDate(p,s[2]))+' to '+shortDate(tlDate(p,s[3]))+'"><b>'+esc(s[0])+'</b><span>'+(narrow ? '' : s[1])+'</span></div>';
     }).join("");
-    var ticks = ""; for(var w=-3; w<=29; w+=2) ticks += '<span class="tk" style="left:'+x(w)+'px">'+shortDate(tlDate(p, w))+'</span>';
-    var gates = TL_ITEMS.filter(function(it){ return (it.type === "gate" || it.type === "ms") && !tlHidden(p, it); }).map(function(it){
+    var ticks = "", months = "", lastM = -1, MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    for(var w=-3; w<=29; w++){
+      var dI = tlDate(p, w), m = +dI.slice(5,7) - 1, day = +dI.slice(8,10);
+      if(m !== lastM){ months += '<span class="mo" style="left:'+x(w)+'px">'+MN[m]+(m === 0 || lastM < 0 ? ' '+dI.slice(0,4) : '')+'</span>'; lastM = m; }
+      ticks += '<span class="tk'+(TL_WK < 30 && (w+3) % 2 ? ' minor' : '')+'" style="left:'+x(w)+'px;width:'+TL_WK+'px">'+(TL_WK < 30 && (w+3) % 2 ? '' : day)+'</span>';
+    }
+    var gates = ITEMS.filter(function(it){ return (it.type === "gate" || it.type === "ms") && !tlHidden(p, it); }).map(function(it){
       var s = tlState(p, it), cls = s==="done"?"done":(s==="na"||s==="oos")?"na":tlLate(p,it)?"late":"";
       return '<i class="dia '+cls+'" data-tlgo="'+it.id+'" style="left:'+(function(w){ return x(w) + (w>=28.8?-8:0); })(it._wd != null ? it._wd : it._we)+'px'+(it.type==="ms"?';width:9px;height:9px;top:10px':'')+'" data-tip="'+esc(it.name)+'|'+(it.type==="gate"?"Gate":"Milestone")+' · due '+shortDate(tlE(p,it))+esc(tipTail(it))+'"></i>';
     }).join("");
     var lanes = TL_TRACKS.map(function(tk){
-      var all = TL_ITEMS.filter(function(it){ return it.track === tk[0] && it.type !== "gate" && it.type !== "ms"; });
+      var all = ITEMS.filter(function(it){ return it.track === tk[0]; });
       var items = all.filter(function(it){ return !tlHidden(p, it); }).sort(function(a,b){ return a._ws - b._ws || b._we - a._we; });
       var nOpen = all.filter(function(it){ return tlState(p,it)==="open"; }).length, nDone = all.filter(function(it){ return tlState(p,it)==="done"; }).length;
       var chev = '<svg class="lchev" viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg>';
@@ -2769,35 +2903,35 @@
         }).join("");
         return '<div class="gt-row gt-track shut"><button type="button" class="gt-lbl" data-tllane="'+tk[0]+'" title="Expand lane">'+chev+'<i style="background:var(--tk-'+tk[0]+')"></i><span class="tn">'+esc(tk[1])+'</span><span class="n">'+nDone+'/'+(nDone+nOpen)+'</span></button><div class="gt-area" style="width:'+W+'px;height:26px;--wk:'+(TL_WK*2)+'px">'+mini+'</div></div>';
       }
-      var rows = [];
-      items.forEach(function(it){
-        var meta = (tlOwner(p,it)?24:0) + (tlState(p,it)==="done" && tlOf(p).dn[it.id] ? 50 : 0);
-        var bw = Math.max(TL_WK*0.8, x(it._we)-x(it._ws)-2), lw = it.name.length*5.9 + meta + (tlState(p,it)==="done"?30:16);
-        var tw = it.name.length*5.9 + meta + 8;
-        it._short = bw < Math.min(lw, 120);
-        it._left = it._short && x(it._ws) + bw + tw > W;
-        var start = it._left ? it._ws - tw/TL_WK : it._ws;
-        var end = it._short && !it._left ? it._ws + (bw + tw)/TL_WK : it._we;
-        for(var r=0; r<rows.length; r++){ if(rows[r] <= start) break; }
-        if(r === rows.length) rows.push(-99);
-        rows[r] = end + 0.15; it._row = r;
-      });
-      var h = Math.max(1, rows.length) * 24 + 8;
-      var bars = items.map(function(it){
-        var o = tlOwner(p, it), dn = tlOf(p).dn[it.id];
-        var gm = (tlState(p,it)==="done" && dn ? '<span class="gdn">'+shortDate(dn)+'</span>' : '')+(o && it.type!=="rec" && tlState(p,it)!=="na" && tlState(p,it)!=="oos" ? '<span class="gow">'+esc(initials(o))+'</span>' : '');
-        var s = tlState(p, it), cls = s==="done"?"done":(s==="na"||s==="oos")?"na":s==="rec"?"rec":"";
-        if(tlLate(p, it)) cls += " late";
-        return '<div class="gbar '+cls+'" data-tlgo="'+it.id+'" style="--tc:var(--tk-'+tk[0]+');left:'+(x(it._ws)+1)+'px;width:'+Math.max(TL_WK*0.8, x(it._we)-x(it._ws)-2)+'px;top:'+(6+it._row*24)+'px" data-tip="'+esc(it.name)+'|'+shortDate(tlS(p,it))+' to '+shortDate(tlE(p,it))+esc(tipTail(it))+'">'+(it._short?'':'<span class="gnm">'+esc(it.name)+'</span>'+gm)+'</div>'+
-          (it._short?'<span class="glbl'+((s==="na"||s==="oos")?' na':'')+'" data-tlgo="'+it.id+'" style="'+(it._left?'right:'+(W-x(it._ws)+6):'left:'+(x(it._ws)+Math.max(TL_WK*0.8, x(it._we)-x(it._ws)-2)+6))+'px;top:'+(6+it._row*24)+'px">'+esc(it.name)+gm+'</span>':'');
+      // one row per item: the name lives in the left column, the bar stands alone on the timeline
+      var head = '<div class="gt-row gt-track gt-trackhead"><button type="button" class="gt-lbl" data-tllane="'+tk[0]+'" title="Collapse lane">'+chev+'<i style="background:var(--tk-'+tk[0]+')"></i><span class="tn">'+esc(tk[1])+'</span><span class="n">'+nDone+'/'+(nDone+nOpen)+' done</span></button><div class="gt-area" style="width:'+W+'px;height:30px;--wk:'+(TL_WK*2)+'px"></div></div>';
+      var body = items.map(function(it){
+        var s = tlState(p, it), late = tlLate(p, it), o = tlOwner(p, it), dn = tlOf(p).dn[it.id];
+        var cls = s==="done"?"done":(s==="na"||s==="oos")?"na":s==="rec"?"rec":"";
+        if(late) cls += " late";
+        var canCk = !(s==="rec"||s==="oos"||s==="na");
+        var glyph = '<button type="button" class="gi'+(s==="done"?' done':late?' late':(s==="na"||s==="oos")?' na':s==="rec"?' rec':'')+'" data-tlck="'+it.id+'"'+(canCk?'':' disabled')+' aria-label="'+(s==="done"?'Mark not done':'Mark done')+'" data-tip="'+esc(it.name)+'|'+(s==="done"?'Click to reopen':canCk?'Click to mark done':'Not applicable')+'">'+(s==="done"?CHECK:'')+'</button>';
+        var span = it.type==="task"||it.type==="rec";
+        var planned = span ? shortDate(tlS(p,it))+' – '+shortDate(tlE(p,it)) : shortDate(tlE(p,it));
+        var tail = s==="done" && dn ? '<button type="button" class="gdt ok" data-tldt="'+it.id+'" data-tip="Completed '+fmtDate(dn)+'|Planned '+planned+' · click to edit">Done '+shortDate(dn)+'</button>'
+          : late ? '<button type="button" class="gdt late" data-tldt="'+it.id+'" data-tip="Overdue|Was due '+fmtDate(tlE(p,it))+' · click to edit">'+(-Math.round(daysBetween(TODAY, tlE(p,it))))+'d late</button>'
+          : (s==="na"||s==="oos") ? '<span class="gdt">N/A</span>'
+          : s==="rec" ? '<span class="gdt">Weekly</span>'
+          : '<button type="button" class="gdt" data-tldt="'+it.id+'" data-tip="Due '+fmtDate(tlE(p,it))+'|'+(span ? 'Starts '+shortDate(tlS(p,it))+' · ' : '')+'click to edit">Due '+shortDate(tlE(p,it))+'</button>';
+        var ow = o && s!=="na" && s!=="oos" && s!=="rec" ? '<span class="gow" data-tip="'+esc(o)+'|Owner">'+esc(initials(o))+'</span>' : '';
+        var kb = it.type==="gate" ? '<span class="gk gate">Gate</span>' : it.type==="ms" ? '<span class="gk">MS</span>' : '';
+        var row = '<div class="gt-row gt-item '+cls+(span?'':' point')+'"><div class="gt-lbl gt-il">'+glyph+kb+'<span class="nm" data-tledit="'+it.id+'" data-tip="'+esc(it.name)+'|'+(it.type==="gate"?"Gate · ":it.type==="ms"?"Milestone · ":"")+planned+esc(tipTail(it))+' · click to edit">'+esc(it.name)+'</span>'+tail+ow+'</div>'+
+          '<div class="gt-area" style="width:'+W+'px;height:28px;--wk:'+(TL_WK*2)+'px">'+(!span ? '<i class="dia rowdia '+(s==="done"?"done":(s==="na"||s==="oos")?"na":late?"late":"")+(it.type==="ms"?" ms":"")+'" data-tlgo="'+it.id+'" style="left:'+(x(it._wd != null ? it._wd : it._we))+'px" data-tip="'+esc(it.name)+'|'+(it.type==="gate"?"Gate":"Milestone")+' · due '+shortDate(tlE(p,it))+esc(tipTail(it))+'"></i></div></div>' : '')+'<div class="gbar '+cls+'" data-tlgo="'+it.id+'" data-drag="'+(canCk && span ? it.id : '')+'" style="--tc:var(--tk-'+tk[0]+');left:'+(x(it._ws)+1)+'px;width:'+Math.max(TL_WK*0.6, x(it._we)-x(it._ws)-2)+'px;top:6px;height:16px" data-tip="'+esc(it.name)+'|'+planned+esc(tipTail(it))+(canCk && span ? ' · drag to move, drag the end to resize' : '')+'">'+(canCk && span ? '<i class="gh"></i>' : '')+'</div></div></div>';
+        if(!span) row = row.slice(0, row.indexOf('<div class="gbar'));
+        return row;
       }).join("");
-      var n = items.filter(function(it){ return tlState(p,it)==="open"; }).length;
-      return '<div class="gt-row gt-track"><button type="button" class="gt-lbl" data-tllane="'+tk[0]+'" title="Collapse lane">'+chev+'<i style="background:var(--tk-'+tk[0]+')"></i><span class="tn">'+esc(tk[1])+'</span><span class="n">'+(n?n+' open':'')+'</span></button><div class="gt-area" style="width:'+W+'px;height:'+h+'px;--wk:'+(TL_WK*2)+'px">'+bars+'</div></div>';
+      var add = '<div class="gt-row gt-add"><div class="gt-lbl gt-il"><button type="button" class="gt-addbtn" data-tladd="'+tk[0]+'">+ Add task, milestone or gate</button></div><div class="gt-area" style="width:'+W+'px;height:28px;--wk:'+(TL_WK*2)+'px"></div></div>';
+      return head + body + add;
     }).join("");
-    var tw = tlTodayWeek(p), today = (tw >= -3 && tw <= 29.5) ? '<div class="gt-today" style="left:'+(190 + x(tw))+'px"><span>TODAY</span></div>' : '';
+    var tw = tlTodayWeek(p), today = (tw >= -3 && tw <= 29.5) ? '<div class="gt-today" style="left:'+(300 + x(tw))+'px"><span>TODAY</span></div>' : '';
     return '<div class="gt"><div class="gt-inner">'+
       '<div class="gt-row gt-stages"><div class="gt-lbl" style="font-weight:400"><span class="lbl">Stage</span></div><div class="gt-area" style="width:'+W+'px">'+stages+'</div></div>'+
-      '<div class="gt-row gt-axis"><div class="gt-lbl" style="font-weight:400"><span class="lbl">Week of</span></div><div class="gt-area" style="width:'+W+'px">'+ticks+'</div></div>'+
+      '<div class="gt-row gt-axis"><div class="gt-lbl" style="font-weight:400"><span class="lbl">Week starting</span></div><div class="gt-area" style="width:'+W+'px"><div class="gt-mo">'+months+'</div><div class="gt-wk">'+ticks+'</div></div></div>'+
       '<div class="gt-row gt-gates"><div class="gt-lbl">Gates & milestones</div><div class="gt-area" style="width:'+W+'px">'+gates+'</div></div>'+
       lanes + today +
       '</div><div class="gt-legend">'+TL_TRACKS.map(function(tk){ return '<span><i class="sw" style="background:var(--tk-'+tk[0]+')"></i>'+esc(tk[1])+'</span>'; }).join("")+
@@ -2811,10 +2945,116 @@
     if(s === "done") return "Done"; if(s === "na") return "N/A"; if(s === "oos") return "Not in scope"; if(s === "rec") return "Recurring";
     return tlLate(p, it) ? "Late" : "Open";
   }
+  /* ---------- simple plan: five key milestones, each with its own sub-items ---------- */
+  // [id, name, colour track, project key date it mirrors, phase at which it is normally done]
+  var TL_SIMPLE = [["P_srb","SRB complete","arch","srb",2],["P_api","API complete","om","api",2],["P_dev","Dev complete","eng","devc",3],["P_test","Test complete","test",null,5],["P_rel","Release","pgm","release",5]];
+  var TL_SIMPLE_SEED = {
+    P_srb:[["SRB draft","task",-42,-28],["Security & SRE review","task",-28,-10],["SRB approval meeting","ms",-3]],
+    P_api:[["API spec draft","task",-35,-14],["API governance review","task",-14,-3]],
+    P_dev:[["Development sprints","task",-56,-7],["Code complete · merge to INT","ms",-7],["Docs updated","task",-14,0]],
+    P_test:[["Automated tests","task",-35,-7],["Manual testing in DEV MZ","task",-21,-3],["Launch readiness review","ms",0]],
+    P_rel:[["Go / No-go","ms",-7],["PROD deploy","ms",-2]]
+  };
+  function tlParentDate(p, par){
+    var rec = record(p), t = tlOf(p);
+    if(par[3]) return rec.dates[par[3]] || tlDate(p, 29);
+    var o = t.dt[par[0]]; if(o && o.e) return o.e;
+    return shiftDate(rec.dates.release || tlDate(p, 29), -14);
+  }
+  function tlSimpleSeed(p){
+    var t = tlOf(p); if(t.scSeeded) return; t.scSeeded = true; t.sc = t.sc || [];
+    TL_SIMPLE.forEach(function(par){
+      var pd = tlParentDate(p, par);
+      if(p.phase >= par[4] && pd <= TODAY){ t.st[par[0]] = "done"; t.dn[par[0]] = pd; }
+      (TL_SIMPLE_SEED[par[0]] || []).forEach(function(c){
+        var id = "s"+(t.seq++), e = shiftDate(pd, c[3] != null ? c[3] : c[2]), s0 = shiftDate(pd, c[2]);
+        t.sc.push({id:id, name:c[0], type:c[1], parent:par[0]});
+        t.dt[id] = c[1] === "task" ? {s:s0, e:e} : {e:e};
+        if(e <= TODAY && (p.phase >= par[4] || hash(p.id+id) % 4 !== 0)){ t.st[id] = "done"; t.dn[id] = e > TODAY ? TODAY : e; }
+      });
+    });
+    tlSave(p);
+  }
+  function tlSimpleItems(p){
+    var t = tlOf(p); tlSimpleSeed(p);
+    var out = [];
+    TL_SIMPLE.forEach(function(par){
+      var pd = tlParentDate(p, par);
+      out.push({id:par[0], name:par[1], track:par[2], type:"gate", s:tlWk(p, pd), e:tlWk(p, pd), scope:null, simple:true, isParent:true, key:par[3]});
+      t.sc.filter(function(c){ return c.parent === par[0]; }).forEach(function(c){
+        var o = t.dt[c.id] || {}, e = o.e || pd, sd = c.type === "task" ? (o.s || e) : e;
+        out.push({id:c.id, name:c.name, track:par[2], type:c.type, s:tlWk(p, sd), e:tlWk(p, e), scope:null, simple:true, parent:par[0]});
+      });
+    });
+    return out;
+  }
+  // the four mirrored parents keep the project's Key dates as their source of truth
+  function tlSyncParents(p){
+    var t = TL[p.id]; if(!t) return;
+    TL_SIMPLE.forEach(function(par){
+      if(!par[3]) return; var o = t.dt[par[0]]; if(!o || !o.e) return;
+      var d = qvData(p); d.dates[par[3]] = o.e; saveRecord(p.id, d); delete t.dt[par[0]];
+    });
+  }
+  var tlCollapsed = {};
+  function simpleHTML(p){
+    var items = tlSimpleItems(p), t = tlOf(p);
+    var dates = []; items.forEach(function(it){ dates.push(tlS(p, it), tlE(p, it)); });
+    dates.sort();
+    var from = mondayOf(shiftDate(dates[0], -7)), to = shiftDate(dates[dates.length-1], 21), days = daysBetween(from, to);
+    var avail = (($("wsMain") && $("wsMain").clientWidth) || 1240) - 48 - 300 - 2;
+    var ppd = TLUI.zoom === "wide" ? 9 : TLUI.zoom === "week" ? 6 : Math.max(2.4, avail / days);
+    TL_WK = ppd * 7;                                  // drag maths reads this
+    var X = function(iso){ return daysBetween(from, iso) * ppd; }, W = Math.ceil(days * ppd);
+    var ticks = "", lastM = -1, MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], k = 0, mos = [], yearShown = false;
+    for(var d = from; d <= to; d = shiftDate(d, 7), k++){
+      var m = +d.slice(5,7) - 1;
+      if(m !== lastM){
+        var mx = X(d.slice(0,8)+"01" < from ? from : d.slice(0,8)+"01");
+        if(mos.length && mx - mos[mos.length-1].x < 64) mos.pop();       // too close to the last label: keep the newer month
+        mos.push({x:mx, m:m, y:d.slice(0,4)}); lastM = m;
+      }
+      var skip = ppd * 7 < 30 && k % 2;
+      ticks += '<span class="tk" style="left:'+X(d)+'px;width:'+(ppd*7)+'px">'+(skip ? '' : +d.slice(8,10))+'</span>';
+    }
+    var months = mos.map(function(o, i){ return '<span class="mo" style="left:'+o.x+'px">'+MN[o.m]+(i === 0 || o.m === 0 ? ' '+o.y : '')+'</span>'; }).join("");
+    var head = '<div class="gt-row gt-axis"><div class="gt-lbl" style="font-weight:400"><span class="lbl">Week starting</span></div><div class="gt-area" style="width:'+W+'px"><div class="gt-mo">'+months+'</div><div class="gt-wk">'+ticks+'</div></div></div>';
+    var rowFor = function(it, par){
+      var s = tlState(p, it), late = tlLate(p, it), o = tlOwner(p, it), dn = t.dn[it.id], span = it.type === "task";
+      var cls = s === "done" ? "done" : late ? "late" : "";
+      var glyph = '<button type="button" class="gi'+(s==="done"?' done':late?' late':'')+'" data-tlck="'+it.id+'" aria-label="'+(s==="done"?'Mark not done':'Mark done')+'" data-tip="'+esc(it.name)+'|'+(s==="done"?'Click to reopen':'Click to mark done')+'">'+(s==="done"?CHECK:'')+'</button>';
+      var planned = span ? shortDate(tlS(p,it))+' – '+shortDate(tlE(p,it)) : shortDate(tlE(p,it));
+      var tail = s==="done" && dn ? '<button type="button" class="gdt ok" data-tldt="'+it.id+'" data-tip="Completed '+fmtDate(dn)+'|Planned '+planned+' · click to edit">Done '+shortDate(dn)+'</button>'
+        : late ? '<button type="button" class="gdt late" data-tldt="'+it.id+'" data-tip="Overdue|Was due '+fmtDate(tlE(p,it))+' · click to edit">'+(-daysBetween(TODAY, tlE(p,it)))+'d late</button>'
+        : '<button type="button" class="gdt" data-tldt="'+it.id+'" data-tip="Due '+fmtDate(tlE(p,it))+'|'+(span ? 'Starts '+shortDate(tlS(p,it))+' · ' : '')+'click to edit">'+(it.isParent ? '' : 'Due ')+shortDate(tlE(p,it))+'</button>';
+      var mark;
+      if(it.isParent){
+        var kids = items.filter(function(c){ return c.parent === it.id; }), kd = kids.filter(function(c){ return tlState(p, c) === "done"; }).length;
+        var ks = kids.map(function(c){ return tlS(p, c); }).sort()[0];
+        var shut = tlCollapsed[p.id+it.id];
+        var name = '<button type="button" class="sp-tog" data-sptog="'+it.id+'" aria-expanded="'+(!shut)+'"><svg viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg></button><span class="nm sp-pn">'+esc(it.name)+'</span>'+(kids.length ? '<span class="sp-kc">'+kd+'/'+kids.length+'</span>' : '');
+        mark = (ks && ks < tlE(p,it) ? '<i class="sp-span" style="--tc:var(--tk-'+it.track+');left:'+X(ks)+'px;width:'+(X(tlE(p,it)) - X(ks))+'px"></i>' : '')+
+          '<i class="dia rowdia sp-dia '+cls+'" style="--tc:var(--tk-'+it.track+');left:'+X(dn && s==="done" ? dn : tlE(p,it))+'px" data-tip="'+esc(it.name)+'|'+planned+(s==="done" && dn ? ' · done '+shortDate(dn) : '')+'"></i>';
+        return '<div class="gt-row gt-item sp-parent '+cls+'" style="--tc:var(--tk-'+it.track+')"><div class="gt-lbl gt-il">'+glyph+name+tail+'</div><div class="gt-area" style="width:'+W+'px;height:36px">'+mark+'</div></div>';
+      }
+      mark = span ? '<div class="gbar '+cls+'" data-drag="'+it.id+'" style="--tc:var(--tk-'+it.track+');left:'+(X(tlS(p,it))+1)+'px;width:'+Math.max(ppd*3, X(tlE(p,it))-X(tlS(p,it))-2)+'px;top:6px;height:16px" data-tip="'+esc(it.name)+'|'+planned+' · drag to move, drag the end to resize"><i class="gh"></i></div>'
+                  : '<i class="dia rowdia ms '+cls+'" style="left:'+X(dn && s==="done" ? dn : tlE(p,it))+'px" data-tip="'+esc(it.name)+'|Milestone · '+planned+'"></i>';
+      return '<div class="gt-row gt-item sp-child '+cls+'"><div class="gt-lbl gt-il">'+glyph+(it.type==="ms"?'<span class="gk">MS</span>':'')+'<span class="nm" data-tledit="'+it.id+'" data-tip="'+esc(it.name)+'|'+planned+' · click to edit">'+esc(it.name)+'</span>'+tail+(o ? '<span class="gow" data-tip="'+esc(o)+'|Owner">'+esc(initials(o))+'</span>' : '')+'</div><div class="gt-area" style="width:'+W+'px;height:28px">'+mark+'</div></div>';
+    };
+    var body = TL_SIMPLE.map(function(par){
+      var pit = items.filter(function(i){ return i.id === par[0]; })[0];
+      var kids = items.filter(function(i){ return i.parent === par[0]; }).sort(function(a,b){ return tlE(p,a) < tlE(p,b) ? -1 : 1; });
+      var shut = tlCollapsed[p.id+par[0]];
+      return rowFor(pit) + (shut ? '' : kids.map(function(c){ return rowFor(c, pit); }).join("") +
+        '<div class="gt-row gt-add sp-add"><div class="gt-lbl gt-il"><button type="button" class="gt-addbtn" data-spadd="'+par[0]+'">+ Add item</button><input class="sp-in" data-spin="'+par[0]+'" placeholder="Name it and press Enter" hidden></div><div class="gt-area" style="width:'+W+'px;height:28px"></div></div>');
+    }).join("");
+    var today = (TODAY >= from && TODAY <= to) ? '<div class="gt-today" style="left:'+(300 + X(TODAY))+'px"><span>TODAY</span></div>' : '';
+    return '<div class="gt sp"><div class="gt-inner">'+head+body+today+'</div></div>';
+  }
   function checklistHTML(p){
     var cur = tlCurStage(p);
     return '<div class="cl">'+TL_STAGES.map(function(st, si){
-      var items = TL_ITEMS.filter(function(it){ return tlStageOf(it) === si && !tlHidden(p, it); }).sort(function(a,b){ var ga = a.type==="gate"?1:0, gb = b.type==="gate"?1:0; return (a.e - b.e) || (ga - gb) || (a.s - b.s); });
+      var items = tlItems(p).filter(function(it){ return tlStageOf(it) === si && !tlHidden(p, it); }).sort(function(a,b){ var ga = a.type==="gate"?1:0, gb = b.type==="gate"?1:0; return (a.e - b.e) || (ga - gb) || (a.s - b.s); });
       var act = items.filter(function(it){ var s = tlState(p,it); return s==="open"||s==="done"; });
       var done = act.filter(function(it){ return tlState(p,it)==="done"; }).length;
       var shut = si < cur && done === act.length;
@@ -2832,7 +3072,7 @@
         if(s === "oos") kind = '<span class="kind scope" title="Turned off by project scope">'+esc(TL_SCOPES.filter(function(x){return x[0]===it.scope;})[0][1])+' off</span>';
         return '<div class="'+cls+'" data-tlrow="'+it.id+'">'+
           '<button type="button" class="ck" data-tlck="'+it.id+'" aria-label="Mark done"'+((s==="rec"||s==="oos"||s==="na")?' disabled':'')+'>'+CHECK+'</button>'+
-          '<span class="nm"><i style="background:var(--tk-'+trk+')"></i><span>'+esc(it.name)+'</span></span>'+
+          '<span class="nm"><i style="background:var(--tk-'+trk+')"></i><span class="nmx" data-tledit="'+it.id+'" title="Edit">'+esc(it.name)+'</span>'+(it.custom?'<em class="cust">Added</em>':'')+'</span>'+
           kind+
           ownCell+
           '<button type="button" class="dt'+(tlLate(p,it)?' late':'')+(edited?' edited':'')+'" data-tldt="'+it.id+'" title="Edit dates"><span class="pl">'+when+'</span>'+doneLine+'</button>'+
@@ -2843,24 +3083,35 @@
         '<div class="cl-head" data-cltoggle="'+si+'"><span class="num">'+(si+1)+'</span><b>'+esc(st[0])+'</b><span class="when">'+shortDate(tlDate(p,st[2]))+' – '+shortDate(tlDate(p,st[3]))+' · '+st[1]+'</span>'+
           '<span class="prog">'+done+' / '+act.length+'<span class="pbar"><i style="width:'+(act.length?done/act.length*100:100)+'%"></i></span>'+
           '<svg class="chev" viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg></span></div>'+
-        '<div class="cl-items">'+rows+'</div></div>';
+        '<div class="cl-items">'+rows+'<button type="button" class="cl-add" data-tladdstage="'+si+'">+ Add to '+esc(st[0])+'</button></div></div>';
     }).join("")+'</div>';
   }
+  var tlOpenDD = null;
   function timelineHTML(p){
-    var t = tlOf(p), st = tlStats(p), ng = tlNextGate(p);
-    var scope = TL_SCOPES.map(function(s){ return '<button type="button" class="bub" data-tlscope="'+s[0]+'" aria-pressed="'+(t.scope[s[0]]?"true":"false")+'">'+esc(s[1])+'</button>'; }).join("");
-    var next = ng ? 'Next gate <b>'+esc(ng.name)+'</b>, '+(function(){ var d = daysBetween(TODAY, tlE(p, ng)); return d >= 0 ? 'in '+d+' days' : '<span style="color:var(--flag-block)">'+(-d)+' days late</span>'; })() : '<b>All gates passed</b>';
-    return '<div id="tlRoot" style="display:flex;flex-direction:column;gap:16px">'+
-      '<div class="tl-top"><span class="lbl">Scope</span><div class="tl-scope">'+scope+'</div>'+
-        '<label class="tl-cb"><input type="checkbox" data-tlhide'+(TLUI.hideNA?' checked':'')+'><span class="box">'+CHECK+'</span>Hide N/A <span class="c">'+st.na+'</span></label>'+
-        (Object.keys(TLUI.shut).some(function(k){ return TLUI.shut[k]; }) ? '<button type="button" class="tp-link" data-tlexpand>Expand all lanes</button>' : '')+
-        '<div class="tl-sum"><span class="tl-next">'+next+'</span>'+
-          '<span><span class="v">'+st.done+'</span><span class="k">of '+st.total+' done</span></span>'+
-          '<span><span class="v"'+(st.late?' style="color:var(--flag-block)"':'')+'>'+st.late+'</span><span class="k">late</span></span>'+
-          '<span><span class="v" style="color:var(--text-3)">'+st.na+'</span><span class="k">N/A</span></span></div></div>'+
-      ganttHTML(p)+
-      '<div class="sec-head"><h2>Lifecycle checklist</h2><span class="sub">Tick when done, N/A when it does not apply. Scope switches off whole groups.</span></div>'+
-      checklistHTML(p)+
+    var t = tlOf(p), mode = t.mode || "simple", st = tlStats(p), ng = tlNextGate(p);
+    var chev = '<svg class="chev" viewBox="0 0 16 16"><path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3.7.7z"/></svg>';
+    var dd = function(key, btn, menu, right){ return '<div class="dd'+(tlOpenDD===key?' open':'')+'"><button type="button" class="fbtn ghost" data-tldd="'+key+'" aria-expanded="'+(tlOpenDD===key)+'">'+btn+'</button><div class="fdrop menu'+(right?' right':'')+'">'+menu+'</div></div>'; };
+    var planMenu = [["simple","Simple","Five key milestones, with your own items under each"],["complete","Complete","The full launch process: 9 stages, about 70 items"]].map(function(m){
+      return '<button type="button" class="tl-mi" data-tlmode="'+m[0]+'" aria-pressed="'+(mode===m[0])+'"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>'; }).join("");
+    var zoomMenu = [["fit","Fit to screen"],["week","Weeks"],["wide","Wide"]].map(function(z){ return '<button type="button" data-tlzoom="'+z[0]+'" aria-pressed="'+(TLUI.zoom===z[0])+'">'+z[1]+'</button>'; }).join("");
+    var settings = '<div class="fdrop-h">Show</div><div class="bubbles"><button type="button" class="bub" data-tlhidebtn aria-pressed="'+TLUI.hideNA+'">Hide N/A items<span class="n">'+st.na+'</span></button></div>'+
+      (mode === "complete" ? '<div class="fdrop-h">What this project includes</div><div class="bubbles">'+TL_SCOPES.map(function(sc){ return '<button type="button" class="bub" data-tlscope="'+sc[0]+'" aria-pressed="'+(t.scope[sc[0]]?"true":"false")+'">'+esc(sc[1])+'</button>'; }).join("")+'</div><p class="fdrop-note">Untick anything this project doesn\'t have. Its steps drop out as N/A.</p>' : '')+
+      (mode === "complete" && Object.keys(TLUI.shut).some(function(k){ return TLUI.shut[k]; }) ? '<div class="fdrop-h">Teams</div><div class="bubbles"><button type="button" class="bub tl-plain" data-tlexpand>Expand all teams</button></div>' : '');
+    var pct = st.total ? Math.round(st.done / st.total * 100) : 0;
+    var gate = ng ? (function(){ var d = daysBetween(TODAY, tlE(p, ng)); return '<button type="button" class="tl-gate'+(d < 0 ? ' late' : '')+'" data-tlgo="'+ng.id+'" data-tip="Next gate|'+esc(ng.name)+' · '+fmtDate(tlE(p, ng))+'"><i class="gd"></i><span class="nm">'+esc(ng.name)+'</span><b>'+(d < 0 ? (-d)+'d late' : d === 0 ? 'today' : 'in '+d+'d')+'</b></button>'; })()
+      : '<span class="tl-gate done"><i class="gd"></i>All gates passed</span>';
+    return '<div id="tlRoot" class="tl-'+mode+'" style="display:flex;flex-direction:column;gap:16px">'+
+      '<div class="tl-top">'+
+        dd("plan", '<span class="k">Plan</span>'+(mode === "simple" ? "Simple" : "Complete")+chev, planMenu)+
+        dd("zoom", '<span class="k">Zoom</span>'+({fit:"Fit",week:"Weeks",wide:"Wide"})[TLUI.zoom]+chev, zoomMenu)+
+        dd("set", '<svg class="gear" viewBox="0 0 16 16"><path d="M13.5 8.7V7.3l-1.6-.3a4 4 0 00-.4-1l.9-1.3-1-1-1.3.9a4 4 0 00-1-.4L8.7 2.5H7.3L7 4.1a4 4 0 00-1 .4l-1.3-.9-1 1 .9 1.3a4 4 0 00-.4 1l-1.6.3v1.4l1.6.3a4 4 0 00.4 1l-.9 1.3 1 1 1.3-.9a4 4 0 001 .4l.3 1.6h1.4l.3-1.6a4 4 0 001-.4l1.3.9 1-1-.9-1.3a4 4 0 00.4-1zM8 10a2 2 0 110-4 2 2 0 010 4z"/></svg>', settings)+
+        '<div class="tl-right">'+gate+
+          (st.late ? '<span class="tl-late" data-tip="Overdue|'+st.late+' open item'+(st.late===1?' is':'s are')+' past their date">'+st.late+' late</span>' : '')+
+          '<span class="tl-prog" data-tip="Progress|'+st.done+' of '+st.total+' done'+(st.na ? ' · '+st.na+' N/A not counted' : '')+'"><span class="bar"><i style="width:'+pct+'%"></i></span><b>'+st.done+'</b>/'+st.total+'</span>'+
+        '</div>'+
+      '</div>'+
+      (mode === "simple" ? simpleHTML(p)
+        : ganttHTML(p)+'<div class="sec-head"><h2>Lifecycle checklist</h2><span class="sub">Tick when done, N/A when it does not apply.</span></div>'+checklistHTML(p))+
     '</div>';
   }
   function tlRefresh(p, keepOpen){
@@ -2886,7 +3137,6 @@
     setTimeout(function(){ document.addEventListener("mousedown", tlPopOutside, true); window.addEventListener("keydown", tlPopKey, true); }, 0);
     return el;
   }
-  function tlItem(id){ return TL_ITEMS.filter(function(i){ return i.id === id; })[0]; }
   function tlDatePop(p, btn){
     var it = tlItem(btn.dataset.tldt), t = tlOf(p), span = it.type==="task"||it.type==="rec", done = tlState(p,it)==="done";
     var tplS = tlDate(p, it.s), tplE = tlDate(p, it.e);
@@ -3412,6 +3662,58 @@
       row.querySelector("[data-mtwho]").onclick = function(e){ e.stopPropagation(); personPop(p, this, a.who, function(n){ a.who = n; save(true); }); };
     });
   }
+  function tlItemPop(p, anchor, id, def){
+    var t = tlOf(p), it = id ? tlItems(p).filter(function(x){ return x.id === id; })[0] : null, isNew = !it;
+    var d = isNew ? {name:"", track:def.track || "pgm", type:"task", s:def.s || TODAY, e:def.e || shiftDate(def.s || TODAY, 7), own:""}
+                  : {name:it.name, track:it.track, type:it.type, s:tlS(p, it), e:tlE(p, it), own:tlOwner(p, it), parent:it.parent};
+    var simple = !!(it && it.simple);
+    var rec = it && it.type === "rec";
+    var render = function(){
+      var span = d.type === "task";
+      return '<div class="tp-h">'+(isNew ? 'New item' : 'Edit item')+(it && !it.custom && !simple ? '<span class="tp-tpl">from the template</span>' : '')+'</div>'+
+        '<div class="tp-body">'+
+          '<label class="tp-full">Name<input type="text" data-if="name" value="'+esc(d.name)+'" placeholder="What needs to happen"></label>'+
+          (rec ? '' : '<div class="tp-full"><span class="tp-lbl">Type</span><div class="kb-seg tp-type">'+TL_TYPES.map(function(ty){ return '<button type="button" data-ity="'+ty[0]+'" aria-pressed="'+(d.type===ty[0])+'">'+ty[1]+'</button>'; }).join("")+'</div>'+
+            '<span class="tp-help">'+(d.type==="gate" ? 'A decision point. Shows as a large diamond, counts toward "Next gate" and the phase.' : d.type==="ms" ? 'A moment in time, like a merge or an enable. Shows as a small diamond.' : 'Work that takes time. Shows as a bar you can drag.')+'</span></div>')+
+          (simple ? '<label>Under<select class="ctrl" data-if="parent">'+TL_SIMPLE.map(function(x){ return '<option value="'+x[0]+'"'+(x[0]===d.parent?' selected':'')+'>'+esc(x[1])+'</option>'; }).join("")+'</select></label>'
+                  : '<label>Team<select class="ctrl" data-if="track">'+TL_TRACKS.map(function(tk){ return '<option value="'+tk[0]+'"'+(tk[0]===d.track?' selected':'')+'>'+esc(tk[1])+'</option>'; }).join("")+'</select></label>')+
+          '<label>Owner<input type="text" data-if="own" list="tlPeople" value="'+esc(d.own)+'" placeholder="Unassigned"></label>'+
+          (span ? '<label>Start<input type="date" data-if="s" value="'+d.s+'"></label><label>End<input type="date" data-if="e" value="'+d.e+'"></label>'
+                : '<label>'+(d.type==="gate"?"Gate date":"Date")+'<input type="date" data-if="e" value="'+d.e+'"></label><span></span>')+
+        '</div>'+
+        '<datalist id="tlPeople">'+(function(){ var names = mtRoster(p).map(function(r){ return r.name; }); Object.keys(POOL).forEach(function(k){ POOL[k].forEach(function(n){ if(names.indexOf(n) < 0) names.push(n); }); }); return names.map(function(n){ return '<option value="'+esc(n)+'">'; }).join(""); })()+'</datalist>'+
+        '<div class="tp-f">'+(isNew ? '' : (it.custom || simple) ? '<button type="button" class="tp-link tp-del" data-idel>Delete item</button>' : '<button type="button" class="tp-link" data-ireset>Reset to template</button>')+
+          '<button type="button" class="btn pri tp-save" data-isave>'+(isNew ? 'Add' : 'Done')+'</button></div>';
+    };
+    var pop = tlPopOpen(anchor, render()); pop.classList.add("tp-wide");
+    var wire = function(){
+      var nm = pop.querySelector('[data-if="name"]'); if(isNew) nm.focus();
+      pop.querySelectorAll("[data-if]").forEach(function(inp){ inp.addEventListener("input", function(){ d[this.dataset.if] = this.value; if(this.dataset.if === "s" && d.e < d.s) d.e = d.s; }); inp.addEventListener("change", function(){ d[this.dataset.if] = this.value; }); });
+      nm.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); save(); } });
+      pop.querySelectorAll("[data-ity]").forEach(function(b){ b.addEventListener("click", function(){ d.type = this.dataset.ity; if(d.type !== "task") d.s = d.e; pop.innerHTML = render(); wire(); }); });
+      pop.querySelector("[data-isave]").addEventListener("click", save);
+      var del = pop.querySelector("[data-idel]"); if(del) del.addEventListener("click", function(){ t.custom = t.custom.filter(function(c){ return c.id !== id; }); if(t.sc) t.sc = t.sc.filter(function(c){ return c.id !== id; }); delete t.dt[id]; delete t.st[id]; delete t.own[id]; delete t.dn[id]; tlSave(p); tlPopClose(); tlRefresh(p, true); toast("Deleted “"+d.name+"”"); });
+      var rs = pop.querySelector("[data-ireset]"); if(rs) rs.addEventListener("click", function(){ delete t.type[id]; delete t.nm[id]; delete t.trk[id]; delete t.dt[id]; delete t.own[id]; tlSave(p); tlPopClose(); tlRefresh(p, true); });
+    };
+    var save = function(){
+      d.name = (pop.querySelector('[data-if="name"]').value || "").trim();
+      if(!d.name){ pop.querySelector('[data-if="name"]').focus(); return; }
+      var dates = d.type === "task" ? {s:d.s, e:d.e < d.s ? d.s : d.e} : {e:d.e};
+      if(isNew){
+        var nid = "c"+(t.seq++);
+        t.custom.push({id:nid, name:d.name, track:d.track, type:d.type}); t.dt[nid] = dates; if((d.own||"").trim()) t.own[nid] = d.own.trim();
+        toast("Added “"+d.name+"”");
+      } else {
+        if(simple){ var sc = t.sc.filter(function(x){ return x.id === id; })[0]; sc.name = d.name; sc.type = d.type; sc.parent = d.parent || sc.parent; }
+        else if(it.custom){ var c = t.custom.filter(function(x){ return x.id === id; })[0]; c.name = d.name; c.track = d.track; c.type = d.type; }
+        else { if(d.name !== it.tpl.name) t.nm[id] = d.name; else delete t.nm[id]; if(d.track !== it.tpl.track) t.trk[id] = d.track; else delete t.trk[id]; if(d.type !== it.tpl.type) t.type[id] = d.type; else delete t.type[id]; }
+        t.dt[id] = dates;
+        d.own = (d.own || "").trim(); if(d.own !== tlOwner(p, it)) t.own[id] = d.own;
+      }
+      tlSave(p); tlPopClose(); tlRefresh(p, true);
+    };
+    wire();
+  }
   function wireTimeline(p){
     var root = $("tlRoot"); if(!root) return;
     var t = tlOf(p);
@@ -3420,6 +3722,69 @@
     root.querySelectorAll("[data-tldt]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); tlDatePop(p, this); }); });
     root.querySelectorAll("[data-tlown]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); tlOwnPop(p, this); }); });
     root.querySelectorAll("[data-tlna]").forEach(function(b){ b.addEventListener("click", function(){ var id = this.dataset.tlna; t.st[id] = t.st[id] === "na" ? "open" : "na"; tlSave(p); tlRefresh(p, true); }); });
+    // drag a bar to move it, drag its right edge to change the end; snaps to whole days
+    root.querySelectorAll(".gbar[data-drag]").forEach(function(bar){
+      if(!bar.dataset.drag) return;
+      bar.addEventListener("pointerdown", function(e){
+        if(e.button !== 0) return;
+        var it = tlItem(bar.dataset.drag), resize = e.target.classList.contains("gh");
+        var x0 = e.clientX, left0 = bar.offsetLeft, w0 = bar.offsetWidth, perDay = TL_WK / 7, moved = false, dd = 0;
+        var s0 = tlS(p, it), e0 = tlE(p, it);
+        var tip = document.createElement("div"); tip.className = "gdrag-tip"; document.body.appendChild(tip);
+        bar.setPointerCapture(e.pointerId); bar.classList.add("dragging");
+        var move = function(ev){
+          dd = Math.round((ev.clientX - x0) / perDay); if(dd) moved = true;
+          if(resize){ var nw = Math.max(perDay, w0 + dd * perDay); bar.style.width = nw+"px"; dd = Math.round((nw - w0) / perDay); tip.textContent = "Ends "+shortDate(shiftDate(e0, dd)); }
+          else { bar.style.left = (left0 + dd * perDay)+"px"; tip.textContent = shortDate(shiftDate(s0, dd))+" – "+shortDate(shiftDate(e0, dd)); }
+          tip.style.left = (ev.clientX + 12)+"px"; tip.style.top = (ev.clientY - 30)+"px";
+        };
+        var up = function(){
+          bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); tip.remove(); bar.classList.remove("dragging");
+          if(!moved || !dd) return;
+          bar.dataset.justDragged = "1";
+          var o = t.dt[it.id] || {};
+          if(resize){ o.e = shiftDate(e0, dd); if(!o.s) o.s = s0; }
+          else { o.s = shiftDate(s0, dd); o.e = shiftDate(e0, dd); }
+          t.dt[it.id] = o; tlSave(p); tlRefresh(p, true);
+          toast(it.name+": "+shortDate(o.s || s0)+" – "+shortDate(o.e));
+        };
+        bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", up);
+      });
+      bar.addEventListener("click", function(e){ if(this.dataset.justDragged){ e.stopImmediatePropagation(); delete this.dataset.justDragged; } }, true);
+    });
+    root.querySelectorAll("[data-tledit]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); tlItemPop(p, this, this.dataset.tledit); }); });
+    root.querySelectorAll("[data-tladd]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); var s0 = TODAY; tlItemPop(p, this, null, {track:this.dataset.tladd, s:s0}); }); });
+    root.querySelectorAll("[data-tladdstage]").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); var st = TL_STAGES[+this.dataset.tladdstage]; tlItemPop(p, this, null, {track:"pgm", s:tlDate(p, st[2]), e:tlDate(p, Math.max(st[2]+1, st[3]))}); }); });
+    root.querySelectorAll("[data-tlzoom]").forEach(function(b){ b.addEventListener("click", function(){ tlOpenDD = null; TLUI.zoom = this.dataset.tlzoom; tlUISave(); tlRefresh(p, true); }); });
+    var gt = root.querySelector(".gt"), tdy = root.querySelector(".gt-today");
+    if(gt && tdy && TLUI.zoom !== "fit") gt.scrollLeft = Math.max(0, tdy.offsetLeft - 300 - gt.clientWidth * 0.35);
+    var sub = document.querySelector('[data-sec="timeline"] .sec-head .sub');
+    if(sub) sub.textContent = (t.mode || "simple") === "simple" ? "Five key milestones. Add what goes into each, tick it off, drag to reschedule." : "The full launch process from COMP REQ to PROD release. Week 0 is COMP REQ acceptance.";
+    root.querySelectorAll("[data-tldd]").forEach(function(b){ b.addEventListener("click", function(e){
+      e.stopPropagation(); var k = this.dataset.tldd, dd = this.parentElement, open = !dd.classList.contains("open");
+      document.querySelectorAll(".dd.open").forEach(function(x){ x.classList.remove("open"); var fb = x.querySelector(".fbtn"); if(fb) fb.setAttribute("aria-expanded","false"); });
+      tlOpenDD = open ? k : null; if(open){ dd.classList.add("open"); this.setAttribute("aria-expanded","true"); }
+    }); });
+    root.querySelectorAll(".fdrop").forEach(function(d){ d.addEventListener("click", function(e){ e.stopPropagation(); }); });
+    root.querySelectorAll("[data-tlmode]").forEach(function(b){ b.addEventListener("click", function(){ t.mode = this.dataset.tlmode; tlOpenDD = null; tlSave(p); tlRefresh(p, true); }); });
+    var hb2 = root.querySelector("[data-tlhidebtn]"); if(hb2) hb2.addEventListener("click", function(){ TLUI.hideNA = !TLUI.hideNA; tlUISave(); tlRefresh(p, true); });
+    root.querySelectorAll("[data-sptog]").forEach(function(b){ b.addEventListener("click", function(){ var k = p.id+this.dataset.sptog; tlCollapsed[k] = !tlCollapsed[k]; tlRefresh(p, true); }); });
+    root.querySelectorAll(".sp-pn").forEach(function(n){ n.addEventListener("click", function(){ this.parentElement.querySelector("[data-sptog]").click(); }); });
+    root.querySelectorAll("[data-spadd]").forEach(function(b){ b.addEventListener("click", function(){ var inp = this.nextElementSibling; this.hidden = true; inp.hidden = false; inp.focus(); }); });
+    root.querySelectorAll("[data-spin]").forEach(function(inp){
+      var close = function(){ inp.hidden = true; inp.value = ""; inp.previousElementSibling.hidden = false; };
+      inp.addEventListener("keydown", function(e){
+        if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); close(); }
+        if(e.key === "Enter" && this.value.trim()){
+          var par = TL_SIMPLE.filter(function(x){ return x[0] === inp.dataset.spin; })[0], pd = tlParentDate(p, par), id = "s"+(t.seq++);
+          var e1 = pd > shiftDate(TODAY, 7) ? pd : shiftDate(TODAY, 7);
+          t.sc.push({id:id, name:this.value.trim(), type:"task", parent:par[0]}); t.dt[id] = {s:shiftDate(e1, -7), e:e1};
+          tlSave(p); tlRefresh(p, true);
+          var again = document.querySelector('[data-spin="'+par[0]+'"]'); if(again){ again.previousElementSibling.hidden = true; again.hidden = false; again.focus(); }
+        }
+      });
+      inp.addEventListener("blur", function(){ if(!inp.value.trim()) close(); });
+    });
     var hb = root.querySelector("[data-tlhide]"); if(hb) hb.addEventListener("change", function(){ TLUI.hideNA = this.checked; tlUISave(); tlRefresh(p, true); });
     root.querySelectorAll("[data-tllane]").forEach(function(b){ b.addEventListener("click", function(){ var k = this.dataset.tllane; if(TLUI.shut[k]) delete TLUI.shut[k]; else TLUI.shut[k] = true; tlUISave(); tlRefresh(p, true); }); });
     var ex = root.querySelector("[data-tlexpand]"); if(ex) ex.addEventListener("click", function(){ TLUI.shut = {}; tlUISave(); tlRefresh(p, true); });
@@ -3600,7 +3965,7 @@
     if(open){ dd.classList.add("open"); this.setAttribute("aria-expanded","true"); }
   }); });
   document.querySelectorAll(".fdrop").forEach(function(d){ d.addEventListener("click", function(e){ e.stopPropagation(); }); });
-  document.addEventListener("click", function(){ document.querySelectorAll(".dd.open").forEach(function(x){ x.classList.remove("open"); x.querySelector(".fbtn").setAttribute("aria-expanded","false"); }); });
+  document.addEventListener("click", function(){ tlOpenDD = null; document.querySelectorAll(".dd.open").forEach(function(x){ x.classList.remove("open"); x.querySelector(".fbtn").setAttribute("aria-expanded","false"); }); });
   $("dComfy").addEventListener("click", function(){ setDensity("comfortable"); });
   $("dCompact").addEventListener("click", function(){ setDensity("compact"); });
   function setDensity(d){
