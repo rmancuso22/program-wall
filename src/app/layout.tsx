@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { plexMono, plexSans } from "./fonts";
+import { inter, jetbrainsMono } from "./fonts";
 import { getThemePref } from "@/lib/theme-server";
 import { PRODUCT } from "@/lib/config";
 import { TimezoneSync } from "@/components/TimezoneSync";
@@ -23,7 +23,7 @@ export default async function RootLayout({
     <html
       lang="en"
       data-theme-pref={themePref}
-      className={`${plexSans.variable} ${plexMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         <TimezoneSync />

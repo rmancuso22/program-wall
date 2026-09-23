@@ -91,7 +91,7 @@ export function WorkspaceHeader({ projectKey, projectName, projects, themePref }
       </NextLink>
       <ShellDivider />
       <div className={shellStyles.scope}>
-        <span className={shellStyles.tag}>{projectKey}</span>
+        <span className={shellStyles.keyTag}>{projectKey}</span>
         <em>{projectName}</em>
       </div>
     </ShellHeader>

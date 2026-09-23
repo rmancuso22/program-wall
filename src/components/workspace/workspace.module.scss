@@ -1,6 +1,8 @@
 @use '@carbon/react/scss/theme' as *;
 
-$mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+// JetBrains Mono only for project numbers, Jira keys and code; Inter elsewhere.
+$mono: var(--font-mono), ui-monospace, monospace;
+$sans: var(--font-sans), sans-serif;
 
 .body {
   position: fixed;
@@ -59,7 +61,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 
 .navCount {
   margin-left: auto;
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   color: $text-helper;
 }
@@ -116,8 +119,9 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   font-size: 11px;
 }
 
+// Quarter pill: Inter with tabular figures.
 .pillMono {
-  font-family: $mono;
+  font-variant-numeric: tabular-nums;
 }
 
 .dot {

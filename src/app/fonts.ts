@@ -1,16 +1,17 @@
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
-export const plexSans = IBM_Plex_Sans({
+// Inter for everything; JetBrains Mono only for project numbers, Jira keys and
+// code (branch names). Numbers elsewhere use Inter with tabular figures.
+export const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-plex-sans",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
-export const plexMono = IBM_Plex_Mono({
+export const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-plex-mono",
+  variable: "--font-mono",
   display: "swap",
 });

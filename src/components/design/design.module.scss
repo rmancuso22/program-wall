@@ -1,6 +1,8 @@
 @use '@carbon/react/scss/theme' as *;
 
-$mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+// JetBrains Mono only for code; Inter with tabular figures elsewhere.
+$mono: var(--font-mono), ui-monospace, monospace;
+$sans: var(--font-sans), sans-serif;
 
 .doc {
   display: flex;
@@ -43,7 +45,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   border: 1px solid $border-subtle-01;
   background: $layer-02;
   color: $link-primary;
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 11.5px;
   text-decoration: none;
 
@@ -69,8 +72,9 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   padding: 0 10px;
   border: 1px solid currentColor;
   border-radius: 999px;
-  font-family: $mono;
-  font-size: 11px;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 
@@ -236,7 +240,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   grid-column: 2;
   height: 22px;
   border-bottom: 1px solid $border-subtle-01;
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   color: $text-helper;
 
@@ -273,8 +278,10 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   }
 
   span {
-    font-family: $mono;
-    font-size: 10.5px;
+    font-family: $sans;
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: $text-helper;
@@ -301,7 +308,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   overflow: hidden;
   border-radius: 2px;
   color: #fff;
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   letter-spacing: 0.03em;
   white-space: nowrap;
@@ -341,8 +349,10 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   position: absolute;
   top: 2px;
   left: 4px;
-  font-family: $mono;
-  font-size: 9.5px;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: $text-secondary;
@@ -384,7 +394,8 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 }
 
 .monoCell {
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   color: $text-secondary;
   white-space: nowrap;
@@ -501,8 +512,9 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
     border-bottom: 1px solid $border-subtle-01;
     background: $layer-02;
     color: $text-helper;
-    font-family: $mono;
-    font-size: 10px;
+    font-family: $sans;
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.07em;
     text-align: left;

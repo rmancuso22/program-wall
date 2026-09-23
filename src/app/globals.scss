@@ -1,29 +1,17 @@
 // Carbon styles for Next.js App Router.
 // Fonts are self-hosted via next/font/google (see src/app/fonts.ts), so Carbon's
-// own @font-face output is disabled and its font stacks point at the next/font
-// CSS variables instead.
+// own @font-face output is disabled and all its font stacks point at Inter
+// (--font-sans) or JetBrains Mono (--font-mono) instead.
 @use 'sass:string';
 @use '@carbon/react/scss/config' with (
   $css--font-face: false
 );
 @use '@carbon/react/scss/type' with (
   $font-families: (
-    'mono':
-      string.unquote(
-        "var(--font-plex-mono), 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace"
-      ),
-    'sans':
-      string.unquote(
-        "var(--font-plex-sans), 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif"
-      ),
-    'sans-condensed':
-      string.unquote(
-        "'IBM Plex Sans Condensed', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif"
-      ),
-    'serif':
-      string.unquote(
-        "'IBM Plex Serif', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', serif"
-      ),
+    'mono': string.unquote("var(--font-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace"),
+    'sans': string.unquote("var(--font-sans), 'Helvetica Neue', Arial, sans-serif"),
+    'sans-condensed': string.unquote("var(--font-sans), 'Helvetica Neue', Arial, sans-serif"),
+    'serif': string.unquote("var(--font-sans), 'Helvetica Neue', Arial, sans-serif"),
   )
 );
 @use '@carbon/react';
@@ -105,17 +93,27 @@ body {
 body {
   background: theme.$background;
   color: theme.$text-primary;
+  font-family: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
+  // Inter's alternates, as in the design: open digits and a single-storey a.
+  font-feature-settings: 'cv11', 'ss01';
 }
 
 // Shared small utilities used across the app's own components.
+// Project numbers, Jira keys and code only.
 .pw-mono {
-  font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+// Numbers everywhere else: Inter with tabular figures.
+.pw-num {
+  font-variant-numeric: tabular-nums;
 }
 
 .pw-label {
-  font-family: var(--font-plex-mono), 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.07em;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: theme.$text-helper;
 }

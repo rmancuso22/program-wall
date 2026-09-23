@@ -1,7 +1,9 @@
 @use '@carbon/react/scss/theme' as *;
 @use '@carbon/react/scss/components/button/tokens' as button;
 
-$mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+// JetBrains Mono only for project numbers, Jira keys and code; Inter elsewhere.
+$mono: var(--font-mono), ui-monospace, monospace;
+$sans: var(--font-sans), sans-serif;
 
 .header {
   gap: 0;
@@ -21,7 +23,7 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 
 .brand {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   padding: 0 16px;
   color: $text-primary;
@@ -31,6 +33,7 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
 
   b {
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   span {
@@ -67,13 +70,30 @@ $mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
   }
 }
 
+// Scope tag (e.g. FY27 PLANNING): Inter.
 .tag {
-  font-family: $mono;
+  font-family: $sans;
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: $text-helper;
   white-space: nowrap;
+}
+
+// Project number in the workspace header: JetBrains Mono.
+.keyTag {
+  font-family: $mono;
+  font-size: 12px;
+  color: $text-helper;
+  white-space: nowrap;
+}
+
+.logo {
+  width: 16px;
+  height: 16px;
+  fill: #78a9ff;
+  flex: 0 0 auto;
 }
 
 .shellBtn {

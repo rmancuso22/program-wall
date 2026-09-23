@@ -18,7 +18,7 @@ export function AuthCard({
       <div className={styles.panel}>
         <div className={styles.brand}>
           <p className={styles.product}>
-            <strong>IBM</strong> {PRODUCT.name}
+            <strong>{PRODUCT.name}</strong>
           </p>
           <p className={styles.tagline}>{PRODUCT.tagline}</p>
         </div>
