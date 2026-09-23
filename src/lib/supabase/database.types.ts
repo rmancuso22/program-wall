@@ -1206,22 +1206,6 @@ export type Database = {
         }
         Returns: undefined
       }
-      save_project_details: {
-        Args: {
-          p_api_spec_merge: string
-          p_commit_pitch: string
-          p_description: string
-          p_dev_complete: string
-          p_people: Json
-          p_project_id: string
-          p_rag: Database["public"]["Enums"]["project_rag"]
-          p_release: string
-          p_risks: string[]
-          p_srb_merge: string
-          p_status_text: string
-        }
-        Returns: undefined
-      }
       seed_project_meetings: {
         Args: { p_project_id: string }
         Returns: undefined
